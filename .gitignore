@@ -1,0 +1,11 @@
+*.user
+.idea
+*.pyc
+.idea/*
+.idea/
+logs/
+data/
+dist/
+project/*
+bin/*
+*.bz2
