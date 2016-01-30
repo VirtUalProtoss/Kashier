@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network serialport
+QT       += core gui network serialport sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,7 +22,10 @@ SOURCES += main.cpp\
     client.cpp \
     server.cpp \
     onyma.cpp \
-    kkm.cpp
+    kkm.cpp \
+    kashier.cpp \
+    service.cpp \
+    openmn.cpp
 
 HEADERS  += mainwindow.h \
     loginwindow.h \
@@ -31,7 +34,10 @@ HEADERS  += mainwindow.h \
     client.h \
     server.h \
     onyma.h \
-    kkm.h
+    kkm.h \
+    kashier.h \
+    service.h \
+    openmn.h
 
 FORMS    += mainwindow.ui \
     loginwindow.ui \

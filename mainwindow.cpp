@@ -26,3 +26,23 @@ void MainWindow::on_btnPay_clicked()
     if (!edtSumma->text().isEmpty())
         pWnd->show();
 }
+
+void MainWindow::setPayments(QSqlQueryModel *model)
+{
+    //tblPayments->setModel(model);
+    viewPayments->setModel(model);
+    viewPayments->show();
+}
+
+void MainWindow::on_btnPaymentsWInfoRefresh_clicked()
+{
+    QString sql = "select * from api_dogpayment where operid = 27452 and mdate = to_date('29.01.16', 'dd.mm.yy')";
+    //QString sql = "select login from api_operators";
+    //onyma->execSQL(&sql, true);
+    setPayments(onyma->getTable(&sql, true));
+}
+
+void MainWindow::setOnyma(Onyma *olink)
+{
+    onyma = olink;
+}
