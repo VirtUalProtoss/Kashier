@@ -4,36 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network serialport
+QT       += core network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 
 TARGET = Kashier
 TEMPLATE = app
 
 CONFIG += c++11
 
+SOURCES += main.cpp \
+    objectmanager.cpp
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    loginwindow.cpp \
-    paymentwindow.cpp \
-    settingswindow.cpp \
-    client.cpp \
-    server.cpp \
-    onyma.cpp \
-    kkm.cpp
+HEADERS += \
+    objectmanager.h
 
-HEADERS  += mainwindow.h \
-    loginwindow.h \
-    paymentwindow.h \
-    settingswindow.h \
-    client.h \
-    server.h \
-    onyma.h \
-    kkm.h
-
-FORMS    += mainwindow.ui \
-    loginwindow.ui \
-    paymentwindow.ui \
-    settingswindow.ui
+include(client/client.pri)
+include(server/server.pri)

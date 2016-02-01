@@ -28,7 +28,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -93,49 +93,32 @@
         <item row="1" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QListWidget" name="lstInfo"/>
+           <widget class="QTableView" name="viewAccounts"/>
           </item>
           <item>
-           <widget class="QTableWidget" name="grdData">
-            <property name="minimumSize">
-             <size>
-              <width>650</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="columnCount">
-             <number>0</number>
-            </property>
-           </widget>
+           <widget class="QTableView" name="viewRemainders"/>
           </item>
          </layout>
         </item>
         <item row="2" column="0">
          <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Подключения</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QTableView" name="viewConnections"/>
+          </item>
           <item row="1" column="0">
-           <widget class="QListWidget" name="lstPays"/>
+           <widget class="QTableView" name="viewAccountPayments"/>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
              <string>Платежи</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QListWidget" name="lstConnections">
-            <property name="minimumSize">
-             <size>
-              <width>650</width>
-              <height>0</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Подключения</string>
             </property>
            </widget>
           </item>
@@ -377,7 +360,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTableWidget" name="tblPayments"/>
+           <widget class="QTableView" name="viewPayments"/>
           </item>
          </layout>
         </item>
@@ -388,6 +371,9 @@
         <string>Детализация</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_6">
+        <item row="1" column="0">
+         <widget class="QTableView" name="viewDetails"/>
+        </item>
         <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
@@ -409,6 +395,43 @@
                  <width>200</width>
                  <height>0</height>
                 </size>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="QDateTimeEdit" name="edtDetailPeriodTo">
+               <property name="minimumSize">
+                <size>
+                 <width>128</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="displayFormat">
+                <string>dd.MM.yy HH:mm:ss</string>
+               </property>
+               <property name="calendarPopup">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="5">
+              <widget class="QPushButton" name="btnDetailsRefresh">
+               <property name="text">
+                <string>Обновить</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>Дата по</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Дата с</string>
                </property>
               </widget>
              </item>
@@ -438,47 +461,10 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="4">
-              <widget class="QDateTimeEdit" name="edtDetailPeriodTo">
-               <property name="minimumSize">
-                <size>
-                 <width>128</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="displayFormat">
-                <string>dd.MM.yy HH:mm:ss</string>
-               </property>
-               <property name="calendarPopup">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="2">
               <widget class="QLabel" name="label_11">
                <property name="text">
                 <string>Класс услуг</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="3">
-              <widget class="QLabel" name="label_12">
-               <property name="text">
-                <string>Дата с</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="4">
-              <widget class="QLabel" name="label_13">
-               <property name="text">
-                <string>Дата по</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="5">
-              <widget class="QPushButton" name="btnDetailsRefresh">
-               <property name="text">
-                <string>Обновить</string>
                </property>
               </widget>
              </item>
@@ -499,9 +485,6 @@
            </widget>
           </item>
          </layout>
-        </item>
-        <item row="1" column="0">
-         <widget class="QTableWidget" name="tblDetails"/>
         </item>
        </layout>
       </widget>
@@ -559,9 +542,6 @@
   <tabstop>edtSumma</tabstop>
   <tabstop>btnPay</tabstop>
   <tabstop>chkMulti</tabstop>
-  <tabstop>lstPays</tabstop>
-  <tabstop>grdData</tabstop>
-  <tabstop>lstConnections</tabstop>
   <tabstop>cmbOperator</tabstop>
  </tabstops>
  <resources/>
