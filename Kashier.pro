@@ -14,10 +14,12 @@ TEMPLATE = app
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    objectmanager.cpp
+    objectmanager.cpp \
+    ktask.cpp
 
 HEADERS += \
-    objectmanager.h
+    objectmanager.h \
+    ktask.h
 
 include(client/client.pri)
 include(server/server.pri)
