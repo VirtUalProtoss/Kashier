@@ -3,8 +3,7 @@
 
 #include <QObject>
 
-class ShtrihProtocol : public QObject
-{
+class ShtrihProtocol : public QObject {
     Q_OBJECT
 public:
     explicit ShtrihProtocol(QObject *parent = 0);

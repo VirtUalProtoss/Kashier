@@ -1,7 +1,6 @@
 #include "shtrihprotocol.h"
 
-ShtrihProtocol::ShtrihProtocol(QObject *parent) : QObject(parent)
-{
+ShtrihProtocol::ShtrihProtocol(QObject *parent) : QObject(parent) {
 
 }
 

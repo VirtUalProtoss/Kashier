@@ -10,10 +10,9 @@
 #include <QMap>
 #include <QVariant>
 #include <QDebug>
-#include <QSqlRecord>
+#include <QtSql/QSqlRecord>
 
-class Onyma : public QObject
-{
+class Onyma : public QObject {
     Q_OBJECT
 public:
     explicit Onyma(QObject *parent = 0);

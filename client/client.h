@@ -3,8 +3,7 @@
 
 #include <QObject>
 
-class Client : public QObject
-{
+class Client : public QObject {
     Q_OBJECT
 public:
     explicit Client(QObject *parent = 0);

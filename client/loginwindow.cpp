@@ -1,11 +1,9 @@
 #include "loginwindow.h"
 
-LoginWindow::LoginWindow(QWidget *parent) : QDialog(parent)
-{
+LoginWindow::LoginWindow(QWidget *parent) : QDialog(parent) {
     setupUi(this);
 }
 
-LoginWindow::~LoginWindow()
-{
+LoginWindow::~LoginWindow() {
 
 }

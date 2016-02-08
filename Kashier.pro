@@ -4,22 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core network
-
-
-
-TARGET = Kashier
-TEMPLATE = app
-
 CONFIG += c++11
 
-SOURCES += main.cpp \
-    objectmanager.cpp \
-    ktask.cpp
+TEMPLATE = subdirs
+SUBDIRS  = \
+    client/client.pro \
+    server/server.pro
 
-HEADERS += \
-    objectmanager.h \
-    ktask.h
-
-include(client/client.pri)
-include(server/server.pri)

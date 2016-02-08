@@ -25,8 +25,7 @@ struct errorCode {
     QString name;
 };
 
-class KKM : public QObject
-{
+class KKM : public QObject {
     Q_OBJECT
 public:
     explicit KKM(QObject *parent = 0);

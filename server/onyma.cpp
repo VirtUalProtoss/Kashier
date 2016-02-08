@@ -19,13 +19,11 @@
 
 using namespace std;
 
-Onyma::Onyma(QObject *parent) : QObject(parent)
-{
+Onyma::Onyma(QObject *parent) : QObject(parent) {
 
 }
 
-int Onyma::connectDB()
-{
+int Onyma::connectDB() {
     db.setHostName("10.110.32.148");
     db.setDatabaseName("onyma");
     db.setUserName("onyma_api");
@@ -42,8 +40,7 @@ int Onyma::connectDB()
     return 0;
 }
 
-QSqlQuery Onyma::execSQL(QString *sql)
-{
+QSqlQuery Onyma::execSQL(QString *sql) {
     QSqlQuery query(*sql, db);
     int fieldNo = 0;
     while (query.next()) {
@@ -53,12 +50,10 @@ QSqlQuery Onyma::execSQL(QString *sql)
     return query;
 }
 
-QSqlQueryModel* Onyma::getTable(QString *sql, QMap<QString, QVariant> *params)
-{
+QSqlQueryModel* Onyma::getTable(QString *sql, QMap<QString, QVariant> *params) {
     QSqlQuery query(db);
     query.prepare(*sql);
-    foreach (QString key, params->keys())
-    {
+    foreach (QString key, params->keys()) {
         query.bindValue(key, params->value(key));
     }
 
@@ -68,15 +63,13 @@ QSqlQueryModel* Onyma::getTable(QString *sql, QMap<QString, QVariant> *params)
     return model;
 }
 
-int Onyma::disconnectDB()
-{
+int Onyma::disconnectDB() {
     db.close();
     db.removeDatabase("onyma");
     return 0;
 }
 
-bool Onyma::auth(QString *username, QString *password)
-{
+bool Onyma::auth(QString *username, QString *password) {
     QString auth_sql = "begin api_dog.auth('%1','%2'); end;";
     QSqlQuery authQuery(auth_sql.arg(*username).arg(*password), db);
     authentificated = true;

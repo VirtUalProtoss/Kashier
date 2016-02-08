@@ -3,8 +3,7 @@
 
 #include <QObject>
 
-class OpenMN : public QObject
-{
+class OpenMN : public QObject {
     Q_OBJECT
 public:
     explicit OpenMN(QObject *parent = 0);

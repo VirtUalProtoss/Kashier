@@ -8,8 +8,7 @@ namespace Ui {
     class SettingsWindow;
 }
 
-class SettingsWindow : public QDialog, private Ui_SettingsWindow
-{
+class SettingsWindow : public QDialog, private Ui_SettingsWindow {
     Q_OBJECT
 
 public:

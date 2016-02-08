@@ -8,8 +8,7 @@ namespace Ui {
     class PaymentWindow;
 }
 
-class PaymentWindow : public QDialog, private Ui_PaymentWindow
-{
+class PaymentWindow : public QDialog, private Ui_PaymentWindow {
     Q_OBJECT
 
 public:

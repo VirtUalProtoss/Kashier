@@ -3,8 +3,7 @@
 
 #include <QObject>
 
-class Kashier : public QObject
-{
+class Kashier : public QObject {
     Q_OBJECT
 public:
     explicit Kashier(QObject *parent = 0);

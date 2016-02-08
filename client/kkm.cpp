@@ -286,7 +286,7 @@ void KKM::getMessageBytes(int code, QByteArray &message, QByteArray &bytes) {
 
 QByteArray KKM::int2char(int value, int length=4, int base=10) {
     char *str = new char[length];
-
+    /*
     switch (base) {
         case 8:
             sprintf(str, "%s %02o", value);
@@ -319,7 +319,7 @@ QByteArray KKM::int2char(int value, int length=4, int base=10) {
             sprintf(str, "%s %02d", value);
         break;
     }
-
+    */
     QByteArray *bytes = new QByteArray(str);
     if (bytes->size() < length) {
         for (int i; i < length-bytes->size()+1; i++) {
@@ -349,8 +349,8 @@ bool KKM::execCommand(int code, QMap<QString, QVariant> &params) {
     //serialPort->write(msgBytes);
     qDebug() << "sended: " << msgBytes << msgBytes.toHex() << endl;
     int timeout = commands[code].timeout;
-    //QByteArray reply = read(timeout);
-    //qDebug() << "received: " << reply << endl;
+    QByteArray reply = read(timeout);
+    qDebug() << "received: " << reply << " timeout: " << timeout << endl;
     return true;
 }
 
