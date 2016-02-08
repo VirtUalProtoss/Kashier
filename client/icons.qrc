@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file>view-refresh.png</file>
+    <file>voicecall.png</file>
+  </qresource>
+</RCC>
