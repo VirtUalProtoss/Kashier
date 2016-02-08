@@ -12,7 +12,8 @@ SOURCES += \
     $$PWD/loginwindow.cpp \
     $$PWD/mainwindow.cpp \
     $$PWD/paymentwindow.cpp \
-    $$PWD/settingswindow.cpp
+    $$PWD/settingswindow.cpp \
+    $$PWD/shtrihprotocol.cpp
     $$PWD/../objectmanager.cpp
 
 HEADERS  += \
@@ -24,7 +25,8 @@ HEADERS  += \
     $$PWD/paymentwindow.h \
     $$PWD/settingswindow.h \
     $$PWD/../objectmanager.h \
-    $$PWD/../server/onyma.h
+    $$PWD/../server/onyma.h \
+    $$PWD/shtrihprotocol.h
 
 FORMS    += $$PWD/mainwindow.ui \
     $$PWD/loginwindow.ui \
