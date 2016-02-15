@@ -1,10 +1,10 @@
-#include "server.h"
+#include "tcpserver.h"
 #include <QCoreApplication>
 
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
 
-    Server server(8765);
+    TCPServer server(8765);
 
     app.exec();
 }

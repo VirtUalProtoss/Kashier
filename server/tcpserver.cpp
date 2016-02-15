@@ -1,11 +1,11 @@
-#include "server.h"
+#include "tcpserver.h"
 #include "serversocketadapter.h"
 
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QString>
 
-Server::Server(int nPort, QObject *parent) : QObject(parent),
+TCPServer::TCPServer(int nPort, QObject *parent) : QObject(parent),
     m_ptcpServer(new QTcpServer(this)) {
 
     connect(m_ptcpServer, SIGNAL(newConnection()), SLOT(on_newConnection()));
@@ -16,7 +16,7 @@ Server::Server(int nPort, QObject *parent) : QObject(parent),
     }
 }
 
-void Server::on_newConnection() {
+void TCPServer::on_newConnection() {
     QTextStream(stdout) << "new connection" << endl;
 
     QTcpSocket* pclientSock = m_ptcpServer->nextPendingConnection();
@@ -30,14 +30,14 @@ void Server::on_newConnection() {
     connect(pSockHandle, SIGNAL(message(QString)), SLOT(on_message(QString)));
 }
 
-void Server::on_disconnected() {
+void TCPServer::on_disconnected() {
     QTextStream(stdout) << "client disconnected" << endl;
     ISocketAdapter* client = static_cast<ServerSocketAdapter*>(sender());
     m_clients.removeOne(client);
     delete client;
 }
 
-void Server::on_message(QString msg) {
+void TCPServer::on_message(QString msg) {
 
     qDebug() << ((ServerSocketAdapter*)sender())->getAddress() << ":" << msg;
     foreach (ISocketAdapter *sock, m_clients)

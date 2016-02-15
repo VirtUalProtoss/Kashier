@@ -16,19 +16,21 @@ QT += network sql
 
 # Input
 SOURCES += main.cpp \
-    server.cpp \
     onyma.cpp \
     openmn.cpp \
     service.cpp \
     ../common/isocketadapter.cpp \
+    ../common/kashierprotocol.cpp \
     serversocketadapter.cpp \
-    ../common/socketadapter.cpp
+    ../common/socketadapter.cpp \
+    tcpserver.cpp
 
 HEADERS += \
-    server.h \
     onyma.h \
     openmn.h \
     service.h \
     ../common/isocketadapter.h \
+    ../common/kashierprotocol.h \
     serversocketadapter.h \
-    ../common/socketadapter.h
+    ../common/socketadapter.h \
+    tcpserver.h

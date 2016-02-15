@@ -24,6 +24,7 @@ SOURCES += main.cpp \
     clientsocketadapter.cpp \
     ../common/isocketadapter.cpp \
     ../common/socketadapter.cpp \
+    ../common/kashierprotocol.cpp \
     ../common/objectmanager.cpp
 
 HEADERS  += \
@@ -38,6 +39,7 @@ HEADERS  += \
     ../common/objectmanager.h \
     ../common/isocketadapter.h \
     ../common/socketadapter.h \
+    ../common/kashierprotocol.h \
     shtrihprotocol.h
 
 FORMS    += mainwindow.ui \

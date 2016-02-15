@@ -7,10 +7,10 @@ class QTcpServer;
 class QTcpSocket;
 class ISocketAdapter;
 
-class Server : public QObject {
+class TCPServer : public QObject {
     Q_OBJECT
 public:
-    explicit Server(int nPort, QObject *parent = 0);
+    explicit TCPServer(int nPort, QObject *parent = 0);
 public slots:
     void on_newConnection();
     void on_disconnected();
