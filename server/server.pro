@@ -23,6 +23,11 @@ SOURCES += main.cpp \
     ../common/kashierprotocol.cpp \
     serversocketadapter.cpp \
     ../common/socketadapter.cpp \
+    ../common/imessagebody.cpp \
+    ../common/imessagetype.cpp \
+    ../common/imessage.cpp \
+    ../common/imessagesender.cpp \
+    ../common/imessagereceiver.cpp \
     tcpserver.cpp
 
 HEADERS += \
@@ -33,4 +38,9 @@ HEADERS += \
     ../common/kashierprotocol.h \
     serversocketadapter.h \
     ../common/socketadapter.h \
+    ../common/imessagebody.h \
+    ../common/imessagetype.h \
+    ../common/imessage.h \
+    ../common/imessagesender.h \
+    ../common/imessagereceiver.h \
     tcpserver.h

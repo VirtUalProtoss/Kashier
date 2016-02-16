@@ -9,3 +9,6 @@ dist/
 project/*
 bin/*
 *.bz2
+code/*
+code/
+*.*~

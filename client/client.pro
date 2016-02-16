@@ -25,6 +25,11 @@ SOURCES += main.cpp \
     ../common/isocketadapter.cpp \
     ../common/socketadapter.cpp \
     ../common/kashierprotocol.cpp \
+    ../common/imessagebody.cpp \
+    ../common/imessagetype.cpp \
+    ../common/imessage.cpp \
+    ../common/imessagesender.cpp \
+    ../common/imessagereceiver.cpp \
     ../common/objectmanager.cpp
 
 HEADERS  += \
@@ -40,6 +45,11 @@ HEADERS  += \
     ../common/isocketadapter.h \
     ../common/socketadapter.h \
     ../common/kashierprotocol.h \
+    ../common/imessagebody.h \
+    ../common/imessagetype.h \
+    ../common/imessage.h \
+    ../common/imessagesender.h \
+    ../common/imessagereceiver.h \
     shtrihprotocol.h
 
 FORMS    += mainwindow.ui \
