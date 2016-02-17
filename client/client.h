@@ -5,8 +5,13 @@
 #include <QMap>
 #include <QDebug>
 
-#include "../common/isocketadapter.h"
+#include "../common/transport/isocketadapter.h"
 #include "clientsocketadapter.h"
+
+#include "../common/objectmanager.h"
+#include "../common/logic/ilogic.h"
+#include "../common/logic/kkm/kkm.h"
+#include "../common/logic/local/local.h"
 
 
 class Client : public QObject {
@@ -15,6 +20,7 @@ public:
     explicit Client(QObject *parent = 0);
     void send(QString command, QList<QMap<QString, QVariant>>* params);
     void send(QString command, QMap<QString, QVariant>* params);
+    void initComponents();
 private:
     void sendCommand(QString command, QMap<QString, QVariant> *params);
 
@@ -26,6 +32,7 @@ public slots:
 
 protected:
     ISocketAdapter *pSock;
+    ObjectManager *objectManager;
 };
 
 #endif // CLIENT_H

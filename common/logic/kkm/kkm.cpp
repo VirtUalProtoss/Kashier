@@ -150,7 +150,7 @@ QString errorCodes[200] = {
     "", "", "", "", "", "", "", "", "", "" //190
 };
 
-KKM::KKM(QObject *parent) : QObject(parent) {
+KKM::KKM(QObject *parent) : ILogic(parent) {
     // Test!
     serialPort->setPortName(serialPortName);
     serialPort->setBaudRate(serialPortBaudRate);

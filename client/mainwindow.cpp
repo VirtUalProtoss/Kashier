@@ -7,6 +7,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), client(new Client(this)) {
     setupUi(this);
     edtPaymentsDate->setDate(QDate::currentDate());
+    client->initComponents();
 }
 
 MainWindow::~MainWindow() {
@@ -33,17 +34,17 @@ void MainWindow::on_actionLogin_triggered() {
 void MainWindow::on_btnPay_clicked() {
     if (!edtSumma->text().isEmpty())
         pWnd->show();
+    else
+        statusbar->showMessage(trUtf8("Нужно ввести сумму платежа!"));
 }
 
 void MainWindow::on_btnPaymentsWInfoRefresh_clicked() {
-    QString sql = "select * from api_dogpayment where operid = 27452 and mdate = :mdate"; // to_date('29.01.16', 'dd.mm.yy')
     statusbar->showMessage("Обновляю список платежей...");
     QMap<QString, QVariant> params;
     params["mdate"] = edtPaymentsDate->date();
     params["operator"] = cmbPayOperator->currentText();
 
-    client->send("OP", &params);
-    //setPayments(onyma->getTable(&sql, &params));
+    client->send("getPayments", &params);
     statusbar->showMessage("");
 }
 

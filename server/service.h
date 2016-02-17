@@ -3,6 +3,12 @@
 
 #include <QObject>
 
+#include "../common/logic/ilogic.h"
+#include "../common/logic/billing/onyma/onyma.h"
+#include "../common/logic/ats/openmn.h"
+#include "../common/logic/local/local.h"
+
+
 class Service : public QObject {
     Q_OBJECT
 public:

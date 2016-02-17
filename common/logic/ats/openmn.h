@@ -3,7 +3,10 @@
 
 #include <QObject>
 
-class OpenMN : public QObject {
+#include "../ilogic.h"
+
+
+class OpenMN : public ILogic {
     Q_OBJECT
 public:
     explicit OpenMN(QObject *parent = 0);

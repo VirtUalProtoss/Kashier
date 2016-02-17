@@ -7,6 +7,9 @@
 #include <QString>
 #include <QDebug>
 
+#include "../ilogic.h"
+
+
 QT_USE_NAMESPACE
 
 #define ENQ 0x05
@@ -25,7 +28,7 @@ struct errorCode {
     QString name;
 };
 
-class KKM : public QObject {
+class KKM : public ILogic {
     Q_OBJECT
 public:
     explicit KKM(QObject *parent = 0);

@@ -16,31 +16,42 @@ QT += network sql
 
 # Input
 SOURCES += main.cpp \
-    onyma.cpp \
-    openmn.cpp \
+    ../common/logic/billing/onyma/onyma.cpp \
+    ../common/logic/ats/openmn.cpp \
     service.cpp \
-    ../common/isocketadapter.cpp \
-    ../common/kashierprotocol.cpp \
+    ../common/transport/isocketadapter.cpp \
     serversocketadapter.cpp \
-    ../common/socketadapter.cpp \
-    ../common/imessagebody.cpp \
-    ../common/imessagetype.cpp \
-    ../common/imessage.cpp \
-    ../common/imessagesender.cpp \
-    ../common/imessagereceiver.cpp \
-    tcpserver.cpp
+    ../common/transport/socketadapter.cpp \
+    ../common/queue/imessagebody.cpp \
+    ../common/queue/imessagetype.cpp \
+    ../common/queue/imessage.cpp \
+    ../common/queue/imessagesender.cpp \
+    ../common/queue/imessagereceiver.cpp \
+    tcpserver.cpp \
+    ../common/queue/query.cpp \
+    ../common/objectmanager.cpp \
+    ../common/logic/local/local.cpp \
+    ../common/queue/queuebroker.cpp \
+    ../common/logic/ilogic.cpp \
+    ../common/transport/itransport.cpp
 
 HEADERS += \
-    onyma.h \
-    openmn.h \
+    ../common/logic/billing/onyma/onyma.h \
+    ../common/logic/ats/openmn.h \
     service.h \
-    ../common/isocketadapter.h \
-    ../common/kashierprotocol.h \
+    ../common/transport/isocketadapter.h \
     serversocketadapter.h \
-    ../common/socketadapter.h \
-    ../common/imessagebody.h \
-    ../common/imessagetype.h \
-    ../common/imessage.h \
-    ../common/imessagesender.h \
-    ../common/imessagereceiver.h \
-    tcpserver.h
+    ../common/transport/socketadapter.h \
+    ../common/queue/imessagebody.h \
+    ../common/queue/imessagetype.h \
+    ../common/queue/imessage.h \
+    ../common/queue/imessagesender.h \
+    ../common/queue/imessagereceiver.h \
+    tcpserver.h \
+    ../common/queue/iqueuebroker.h \
+    ../common/queue/query.h \
+    ../common/objectmanager.h \
+    ../common/logic/local/local.h \
+    ../common/queue/queuebroker.h \
+    ../common/logic/ilogic.h \
+    ../common/transport/itransport.h

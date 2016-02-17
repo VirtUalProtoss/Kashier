@@ -2,21 +2,27 @@
 #define OBJECTMANAGER_H
 
 #include <QObject>
+#include <QList>
+#include <QDebug>
 
-#include "ktask.h"
 
-class ObjectManager : public QObject
-{
+#include "queue/iqueuebroker.h"
+#include "queue/queuebroker.h"
+#include "logic/ilogic.h"
+
+
+class ObjectManager : public QObject {
     Q_OBJECT
 public:
     explicit ObjectManager(QObject *parent = 0);
-    void sendCommand(QString *receiver, QMap<QString, QVariant> *data, QObject *slot);
-
-private:
-    KTask *tasks[];
+    void addComponent(ILogic* component);
 signals:
 
 public slots:
+
+private:
+    IQueueBroker *broker;
+    QList<ILogic*> components;
 };
 
 #endif // OBJECTMANAGER_H

@@ -1,7 +1,7 @@
 #ifndef SERVERSOCKETADAPTER_H
 # define SERVERSOCKETADAPTER_H
 
-# include "../common/socketadapter.h"
+# include "../common/transport/socketadapter.h"
 
 class ServerSocketAdapter : public SocketAdapter {
     Q_OBJECT

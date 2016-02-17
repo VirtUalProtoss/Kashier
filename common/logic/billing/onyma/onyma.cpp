@@ -19,7 +19,7 @@
 
 using namespace std;
 
-Onyma::Onyma(QObject *parent) : QObject(parent) {
+Onyma::Onyma(QObject *parent) : ILogic(parent) {
 
 }
 

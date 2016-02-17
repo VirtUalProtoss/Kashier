@@ -12,7 +12,10 @@
 #include <QDebug>
 #include <QtSql/QSqlRecord>
 
-class Onyma : public QObject {
+#include "../../ilogic.h"
+
+
+class Onyma : public ILogic {
     Q_OBJECT
 public:
     explicit Onyma(QObject *parent = 0);
