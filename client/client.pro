@@ -30,6 +30,7 @@ SOURCES += main.cpp \
     ../common/queue/query.cpp \
     ../common/objectmanager.cpp \
     ../common/logic/local/local.cpp \
+    ../common/queue/iqueuebroker.cpp \
     ../common/queue/queuebroker.cpp \
     ../common/logic/ilogic.cpp \
     ../common/transport/itransport.cpp

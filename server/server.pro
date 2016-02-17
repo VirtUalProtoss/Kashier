@@ -33,7 +33,8 @@ SOURCES += main.cpp \
     ../common/logic/local/local.cpp \
     ../common/queue/queuebroker.cpp \
     ../common/logic/ilogic.cpp \
-    ../common/transport/itransport.cpp
+    ../common/transport/itransport.cpp \
+    ../common/queue/iqueuebroker.cpp
 
 HEADERS += \
     ../common/logic/billing/onyma/onyma.h \
