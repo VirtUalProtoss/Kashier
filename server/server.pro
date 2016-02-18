@@ -29,7 +29,6 @@ SOURCES += main.cpp \
     ../common/queue/imessagereceiver.cpp \
     tcpserver.cpp \
     ../common/queue/query.cpp \
-    ../common/objectmanager.cpp \
     ../common/logic/local/local.cpp \
     ../common/queue/queuebroker.cpp \
     ../common/logic/ilogic.cpp \
@@ -51,7 +50,6 @@ HEADERS += \
     tcpserver.h \
     ../common/queue/iqueuebroker.h \
     ../common/queue/query.h \
-    ../common/objectmanager.h \
     ../common/logic/local/local.h \
     ../common/queue/queuebroker.h \
     ../common/logic/ilogic.h \

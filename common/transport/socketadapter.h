@@ -1,7 +1,7 @@
 #ifndef SOCKETADAPTER_H
 # define SOCKETADAPTER_H
 
-# include "isocketadapter.h"
+#include "isocketadapter.h"
 
 
 class QTcpSocket;

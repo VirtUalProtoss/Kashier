@@ -14,12 +14,11 @@ public:
     explicit IQueueBroker(QObject *parent);
     virtual void send(IMessage* message);
     virtual void receive(IMessage* message);
-    virtual void subscribe(
-            ITransport* sourceTransport,
-            ILogic* sourceComponent,
-            IMessage* messageType,
-            ITransport* destinationTransport,
-            ILogic* destinationComponent);
+    virtual void startBroking();
+    virtual void addSubscribe(QString &subscribe);
+    virtual void addComponent(ILogic* component);
+    virtual void addComponent(ITransport* component);
+    void addComponentMap(ITransport* transport, ILogic* component);
 signals:
 
 public slots:

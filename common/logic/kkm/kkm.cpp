@@ -269,6 +269,10 @@ void KKM::beep()
     execCommand(19, params);
 }
 
+QString KKM::getName() {
+    return QString("KKM");
+}
+
 void KKM::getMessageBytes(int code, QByteArray &message, QByteArray &bytes) {
     //QByteArray stx = int2char(STX, 1, 16);
     //bytes.append(stx);

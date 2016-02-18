@@ -13,6 +13,7 @@ class IMessage : public QObject {
 public:
     explicit IMessage(QObject *parent = 0);
     static IMessage fromStream(QByteArray* message);
+    QString getName();
 signals:
 
 public slots:

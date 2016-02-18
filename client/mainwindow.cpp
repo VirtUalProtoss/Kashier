@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), client(new Client
     setupUi(this);
     edtPaymentsDate->setDate(QDate::currentDate());
     client->initComponents();
+    client->prepareSubcribes();
 }
 
 MainWindow::~MainWindow() {

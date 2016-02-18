@@ -28,12 +28,12 @@ SOURCES += main.cpp \
     ../common/queue/imessagesender.cpp \
     ../common/queue/imessagereceiver.cpp \
     ../common/queue/query.cpp \
-    ../common/objectmanager.cpp \
     ../common/logic/local/local.cpp \
     ../common/queue/iqueuebroker.cpp \
     ../common/queue/queuebroker.cpp \
     ../common/logic/ilogic.cpp \
-    ../common/transport/itransport.cpp
+    ../common/transport/itransport.cpp \
+    ../common/logic/gui/gui.cpp
 
 HEADERS  += \
     client.h \
@@ -52,11 +52,11 @@ HEADERS  += \
     ../common/queue/imessagereceiver.h \
     ../common/queue/iqueuebroker.h \
     ../common/queue/query.h \
-    ../common/objectmanager.h \
     ../common/logic/local/local.h \
     ../common/queue/queuebroker.h \
     ../common/logic/ilogic.h \
-    ../common/transport/itransport.h
+    ../common/transport/itransport.h \
+    ../common/logic/gui/gui.h
 
 FORMS    += mainwindow.ui \
     loginwindow.ui \

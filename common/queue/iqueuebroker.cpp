@@ -6,19 +6,33 @@ IQueueBroker::IQueueBroker(QObject *parent) : QObject(parent) {
 }
 
 void IQueueBroker::send(IMessage *message) {
-
+    qDebug() << message;
 }
 
 void IQueueBroker::receive(IMessage *message) {
+    qDebug() << message;
+}
+
+void IQueueBroker::startBroking() {
 
 }
 
-void IQueueBroker::subscribe(
-        ITransport *sourceTransport,
-        ILogic *sourceComponent,
-        IMessage *messageType,
-        ITransport *destinationTransport,
-        ILogic *destinationComponent)
+void IQueueBroker::addSubscribe(QString &subscribe)
 {
-    qDebug() << "virtual subscribe()" << endl;
+
+}
+
+void IQueueBroker::addComponent(ILogic *component)
+{
+
+}
+
+void IQueueBroker::addComponent(ITransport *component)
+{
+
+}
+
+void IQueueBroker::addComponentMap(ITransport *transport, ILogic *component)
+{
+
 }

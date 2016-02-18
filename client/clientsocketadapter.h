@@ -7,6 +7,8 @@ class ClientSocketAdapter : public SocketAdapter {
     Q_OBJECT
 public:
     explicit ClientSocketAdapter(QObject *parent);
+    QString getAddress();
+    bool isLocal();
 };
 
 #endif // CLIENTSOCKETADAPTER_H

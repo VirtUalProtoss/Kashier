@@ -2,9 +2,10 @@
 # define ISOCKETADAPTER_H
 
 # include <QObject>
+#include "itransport.h"
 
 
-class ISocketAdapter : public QObject {
+class ISocketAdapter : public ITransport {
     Q_OBJECT
 public:
     explicit ISocketAdapter(QObject *parent);

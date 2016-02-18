@@ -16,6 +16,9 @@ class ObjectManager : public QObject {
 public:
     explicit ObjectManager(QObject *parent = 0);
     void addComponent(ILogic* component);
+    void addComponent(ITransport* component);
+    void startBroking();
+    void addSubscribe(QString &subscribe);
 signals:
 
 public slots:
@@ -23,6 +26,10 @@ public slots:
 private:
     IQueueBroker *broker;
     QList<ILogic*> components;
+    QList<ITransport*> transports;
+    ITransport* getTransport(QString &transport);
+    ILogic* getLogic(QString &logic);
+    IMessage* getMessage(QString &messageType);
 };
 
 #endif // OBJECTMANAGER_H

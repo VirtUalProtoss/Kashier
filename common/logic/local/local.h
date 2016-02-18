@@ -8,6 +8,7 @@
 class Local : public ILogic {
 public:
     Local(QObject *parent);
+    QString getName();
 };
 
 #endif // LOCAL_H

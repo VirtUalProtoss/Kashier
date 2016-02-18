@@ -35,6 +35,7 @@ public:
     int openSerialPort();
     bool initConnection(int retryCount);
     void beep();
+    QString getName();
 
 private:
     bool ready = false;

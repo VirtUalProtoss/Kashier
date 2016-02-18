@@ -8,10 +8,11 @@
 #include "../common/transport/isocketadapter.h"
 #include "clientsocketadapter.h"
 
-#include "../common/objectmanager.h"
 #include "../common/logic/ilogic.h"
 #include "../common/logic/kkm/kkm.h"
 #include "../common/logic/local/local.h"
+#include "../common/logic/gui/gui.h"
+#include "../common/queue/queuebroker.h"
 
 
 class Client : public QObject {
@@ -21,6 +22,7 @@ public:
     void send(QString command, QList<QMap<QString, QVariant>>* params);
     void send(QString command, QMap<QString, QVariant>* params);
     void initComponents();
+    void prepareSubcribes();
 private:
     void sendCommand(QString command, QMap<QString, QVariant> *params);
 
@@ -32,7 +34,7 @@ public slots:
 
 protected:
     ISocketAdapter *pSock;
-    ObjectManager *objectManager;
+    IQueueBroker* broker;
 };
 
 #endif // CLIENT_H
