@@ -46,6 +46,7 @@ void MainWindow::on_btnPaymentsWInfoRefresh_clicked() {
     params["operator"] = cmbPayOperator->currentText();
 
     client->send("getPayments", &params);
+
     statusbar->showMessage("");
 }
 

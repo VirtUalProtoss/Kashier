@@ -11,6 +11,7 @@ public:
 signals:
 
 public slots:
+    void on_receive(QString message);
 };
 
 #endif // IMESSAGERECEIVER_H
