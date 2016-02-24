@@ -1,10 +1,14 @@
-#include "tcpserver.h"
 #include <QCoreApplication>
+
+#include "service.h"
+
 
 int main(int argc, char *argv[]) {
     QCoreApplication app(argc, argv);
 
-    TCPServer server(8765);
+    Service service(8765);
+    service.initComponents();
+    service.prepareSubcribes();
 
     app.exec();
 }

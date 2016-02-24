@@ -5,19 +5,7 @@ Client::Client(QObject *parent) :
     pSock(new ClientSocketAdapter(this)),
     broker(new QueueBroker(this))
 {
-    connect(pSock, SIGNAL(message(QString)), SLOT(on_message(QString)));
-}
 
-void Client::send(QString command, QList<QMap<QString, QVariant> > *params) {
-    qDebug() << command << ' ' << params << endl;
-}
-
-void Client::send(QString command, QMap<QString, QVariant> *params) {
-    qDebug() << command << ' ';
-    foreach (QString key, params->keys()) {
-        qDebug() << key + ":" + params->value(key).toString() + ", ";
-    }
-    qDebug() << endl;
 }
 
 void Client::initComponents() {
@@ -32,6 +20,8 @@ void Client::initComponents() {
 //    broker->addComponentMap(tLocal, kkm);
 //    broker->addComponentMap(tLocal, local);
 //    broker->addComponentMap(tLocal, gui);
+
+
 }
 
 void Client::prepareSubcribes() {
@@ -43,20 +33,3 @@ void Client::prepareSubcribes() {
     foreach (QString subscribe, subscribes)
         broker->addSubscribe(subscribe);
 }
-
-void Client::sendCommand(QString command, QMap<QString, QVariant> *params) {
-    QString streamData;
-    foreach (QString key, params->keys()) {
-        streamData += key + "->" + params->value(key).toString() + ",";
-    }
-    pSock->sendString(command + ":" + streamData);
-}
-
-void Client::on_message(QString text) {
-    qDebug() << text << endl;
-}
-
-void Client::on_send() {
-
-}
-

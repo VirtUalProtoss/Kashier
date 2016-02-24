@@ -17,6 +17,7 @@
 
 class Onyma : public ILogic {
     Q_OBJECT
+
 public:
     explicit Onyma(QObject *parent = 0);
     int connectDB();
@@ -28,7 +29,9 @@ public:
 private:
     QSqlDatabase db = QSqlDatabase::addDatabase("QOCI", "onyma");
     bool authentificated = false;
+
 signals:
+    void message(QString);
 
 public slots:
 };

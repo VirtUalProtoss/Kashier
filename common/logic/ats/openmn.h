@@ -11,8 +11,6 @@ class OpenMN : public ILogic {
 public:
     explicit OpenMN(QObject *parent = 0);
 
-signals:
-
 public slots:
 };
 

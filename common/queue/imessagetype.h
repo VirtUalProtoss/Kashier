@@ -6,11 +6,14 @@
 class IMessageType : public QObject {
     Q_OBJECT
 public:
-    explicit IMessageType(QObject *parent = 0);
+    explicit IMessageType(QObject *parent = 0, QString type = "Message");
 
 signals:
 
 public slots:
+
+private:
+    QString m_type;
 };
 
 #endif // IMESSAGETYPE_H

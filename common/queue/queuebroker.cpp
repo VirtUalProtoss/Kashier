@@ -14,6 +14,13 @@ void QueueBroker::send(IMessage *message) {
 
 void QueueBroker::receive(IMessage *message) {
 
+    Packet pkg;
+    QString sender = message->getSender();
+    qDebug() << "receive(IMessage)" << sender << message->getText();
+}
+
+void QueueBroker::receive(QString message) {
+    qDebug() << "receive(QString)" << message;
 }
 
 void QueueBroker::subscribe(
@@ -36,15 +43,25 @@ void QueueBroker::startBroking() {
 void QueueBroker::addComponent(ILogic *component) {
     qDebug() << components.size();
     components.append(component);
+    connect(component, SIGNAL(message(IMessage*)), SLOT(receive(IMessage*)));
 }
 
 void QueueBroker::addComponent(ITransport *component) {
     qDebug() << transports.size();
     transports.append(component);
+    connect(component, SIGNAL(message(QString)), SLOT(receive(QString)));
 }
 
 void QueueBroker::addComponentMap(ITransport *transport, ILogic *component) {
 
+}
+
+void QueueBroker::removeComponent(ITransport *component) {
+    transports.removeOne(component);
+}
+
+void QueueBroker::removeComponent(ILogic *component) {
+    components.removeOne(component);
 }
 
 QMap<ITransport *, ILogic *> QueueBroker::getComponentMap(QString &pair) {
@@ -68,6 +85,7 @@ QMap<ITransport *, ILogic *> QueueBroker::getComponentMap(QString &pair) {
 void QueueBroker::addSubscribe(QString &subscribe) {
     QStringList items = subscribe.split(";");
 
+    /*
     QMap<ITransport *, ILogic *> sourceMap = getComponentMap(items[0]);
     foreach (ITransport key, sourceMap.values()) {
         if (key.isLocal())
@@ -76,6 +94,7 @@ void QueueBroker::addSubscribe(QString &subscribe) {
 
         }
     }
+
 
     IMessage* messageType = getMessage(items[2]);
 
@@ -90,7 +109,8 @@ void QueueBroker::addSubscribe(QString &subscribe) {
     //}
 
     //subscribe(sourceTransport, sourceComponent, messageType, destinationTransport, destinationComponent);
-    qDebug() << "subscribe()";
+    */
+    qDebug() << "subscribe()" << subscribe;
 }
 
 ILogic* QueueBroker::getLogic(QString &logic) {

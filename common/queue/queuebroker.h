@@ -6,9 +6,11 @@
 #include "iqueuebroker.h"
 #include "imessage.h"
 #include "query.h"
+#include "packet.h"
 
 
 class QueueBroker : public IQueueBroker {
+
 public:
     QueueBroker(QObject *parent);
     void putMessage(IMessage* message);
@@ -20,6 +22,9 @@ public:
     void addComponent(ILogic* component);
     void addComponent(ITransport* component);
     void addComponentMap(ITransport* transport, ILogic* component);
+    void removeComponent(ITransport* component);
+    void removeComponent(ILogic* component);
+
 private:
     QList<IMessage*> queue;
     QList<QObject*> subscribes;
@@ -42,6 +47,7 @@ private:
 public slots:
     void send(IMessage *message);
     void receive(IMessage *message);
+    void receive(QString message);
 };
 
 #endif // QUEUEBROKER_H

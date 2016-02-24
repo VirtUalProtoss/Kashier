@@ -14,14 +14,21 @@ public:
     explicit IMessage(QObject *parent = 0);
     static IMessage fromStream(QByteArray* message);
     QString getName();
+    void setType(IMessageType* type);
+    void setBody(IMessageBody* body);
+    void setSender(QString sender);
+    void setText(QString text);
+    QString getText();
+    QString getSender();
 signals:
 
 public slots:
 
 private:
-    IMessageSender* sender;
-    IMessageType* type;
-    IMessageBody body;
+    QString m_sender;
+    IMessageType* m_type;
+    IMessageBody* m_body;
+    QString m_text;
 };
 
 #endif // IMESSAGE_H

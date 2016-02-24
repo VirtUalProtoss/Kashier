@@ -7,7 +7,8 @@
 #include "loginwindow.h"
 #include "settingswindow.h"
 #include "paymentwindow.h"
-#include "client.h"
+
+#include "../common/queue/messagebuilder.h"
 
 
 namespace Ui {
@@ -26,7 +27,7 @@ private:
     SettingsWindow *sWnd = new SettingsWindow(this);
     PaymentWindow *pWnd = new PaymentWindow(this);
     void search();
-
+    QString getName();
 
 private slots:
     void on_actionExit_triggered();
@@ -37,8 +38,11 @@ private slots:
     void on_btnSearch_clicked();
     void on_edtSearch_returnPressed();
 
+signals:
+    void message(QString, QMap<QString, QVariant>*);
+    void message(IMessage*);
 protected:
-    Client *client;
+
 };
 
 #endif // MAINWINDOW_H

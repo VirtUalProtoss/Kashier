@@ -19,18 +19,8 @@ class Client : public QObject {
     Q_OBJECT
 public:
     explicit Client(QObject *parent = 0);
-    void send(QString command, QList<QMap<QString, QVariant>>* params);
-    void send(QString command, QMap<QString, QVariant>* params);
     void initComponents();
     void prepareSubcribes();
-private:
-    void sendCommand(QString command, QMap<QString, QVariant> *params);
-
-signals:
-
-public slots:
-    void on_message(QString text);
-    void on_send();
 
 protected:
     ISocketAdapter *pSock;

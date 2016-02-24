@@ -6,33 +6,41 @@ IQueueBroker::IQueueBroker(QObject *parent) : QObject(parent) {
 }
 
 void IQueueBroker::send(IMessage *message) {
-    qDebug() << message;
+    qDebug() << "IQueueBroker::send(IMessage *message)" << message;
 }
 
 void IQueueBroker::receive(IMessage *message) {
-    qDebug() << message;
+    qDebug() << "IQueueBroker::receive(IMessage *message)" << message;
+}
+
+void IQueueBroker::receive(QString message) {
+
 }
 
 void IQueueBroker::startBroking() {
 
 }
 
-void IQueueBroker::addSubscribe(QString &subscribe)
-{
+void IQueueBroker::addSubscribe(QString &subscribe) {
 
 }
 
-void IQueueBroker::addComponent(ILogic *component)
-{
+void IQueueBroker::addComponent(ILogic *component) {
 
 }
 
-void IQueueBroker::addComponent(ITransport *component)
-{
+void IQueueBroker::addComponent(ITransport *component) {
 
 }
 
-void IQueueBroker::addComponentMap(ITransport *transport, ILogic *component)
-{
+void IQueueBroker::removeComponent(ITransport *component) {
+
+}
+
+void IQueueBroker::removeComponent(ILogic *component) {
+
+}
+
+void IQueueBroker::addComponentMap(ITransport *transport, ILogic *component) {
 
 }

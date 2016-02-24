@@ -33,7 +33,9 @@ SOURCES += main.cpp \
     ../common/queue/queuebroker.cpp \
     ../common/logic/ilogic.cpp \
     ../common/transport/itransport.cpp \
-    ../common/logic/gui/gui.cpp
+    ../common/logic/gui/gui.cpp \
+    ../common/queue/messagebuilder.cpp \
+    ../common/queue/packet.cpp
 
 HEADERS  += \
     client.h \
@@ -56,7 +58,9 @@ HEADERS  += \
     ../common/queue/queuebroker.h \
     ../common/logic/ilogic.h \
     ../common/transport/itransport.h \
-    ../common/logic/gui/gui.h
+    ../common/logic/gui/gui.h \
+    ../common/queue/messagebuilder.h \
+    ../common/queue/packet.h
 
 FORMS    += mainwindow.ui \
     loginwindow.ui \

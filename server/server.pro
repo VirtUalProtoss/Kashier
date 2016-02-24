@@ -27,13 +27,14 @@ SOURCES += main.cpp \
     ../common/queue/imessage.cpp \
     ../common/queue/imessagesender.cpp \
     ../common/queue/imessagereceiver.cpp \
-    tcpserver.cpp \
     ../common/queue/query.cpp \
     ../common/logic/local/local.cpp \
     ../common/queue/queuebroker.cpp \
     ../common/logic/ilogic.cpp \
     ../common/transport/itransport.cpp \
-    ../common/queue/iqueuebroker.cpp
+    ../common/queue/iqueuebroker.cpp \
+    ../common/queue/packet.cpp \
+    ../common/queue/messagebuilder.cpp
 
 HEADERS += \
     ../common/logic/billing/onyma/onyma.h \
@@ -47,10 +48,11 @@ HEADERS += \
     ../common/queue/imessage.h \
     ../common/queue/imessagesender.h \
     ../common/queue/imessagereceiver.h \
-    tcpserver.h \
     ../common/queue/iqueuebroker.h \
     ../common/queue/query.h \
     ../common/logic/local/local.h \
     ../common/queue/queuebroker.h \
     ../common/logic/ilogic.h \
-    ../common/transport/itransport.h
+    ../common/transport/itransport.h \
+    ../common/queue/packet.h \
+    ../common/queue/messagebuilder.h

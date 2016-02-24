@@ -12,16 +12,19 @@ class IQueueBroker : public QObject {
     Q_OBJECT
 public:
     explicit IQueueBroker(QObject *parent);
-    virtual void send(IMessage* message);
-    virtual void receive(IMessage* message);
     virtual void startBroking();
     virtual void addSubscribe(QString &subscribe);
     virtual void addComponent(ILogic* component);
     virtual void addComponent(ITransport* component);
+    virtual void removeComponent(ITransport* component);
+    virtual void removeComponent(ILogic* component);
     void addComponentMap(ITransport* transport, ILogic* component);
 signals:
 
 public slots:
+    virtual void send(IMessage *message);
+    virtual void receive(IMessage *message);
+    virtual void receive(QString message);
 };
 
 #endif // IQUEUEBROKER_H

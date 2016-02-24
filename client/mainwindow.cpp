@@ -1,14 +1,11 @@
 #include "mainwindow.h"
 #include <QDebug>
 #include <QVariant>
-#include "clientsocketadapter.h"
 
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), client(new Client(this)) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setupUi(this);
     edtPaymentsDate->setDate(QDate::currentDate());
-    client->initComponents();
-    client->prepareSubcribes();
 }
 
 MainWindow::~MainWindow() {
@@ -18,10 +15,18 @@ MainWindow::~MainWindow() {
 void MainWindow::search() {
     if (!edtSearch->text().isEmpty()) {
         QMap<QString, QVariant> params;
+        params["type"] = cmbSearchSelect->currentText();
         params["text"] = edtSearch->text();
-        client->send(QString("S"), &params);
+        MessageBuilder* msgBuild = new MessageBuilder(this);
+        msgBuild->setType(QString("Query"));
+        msgBuild->setSender(getName());
+        emit message(msgBuild->getMessage(QString("Billing"), QString("search"), params));
     } else
         statusbar->showMessage(trUtf8("Нужно заполнить поле для поиска!"));
+}
+
+QString MainWindow::getName() {
+    return QString("GUI<" + objectName() + ">");
 }
 
 void MainWindow::on_actionExit_triggered() {
@@ -44,9 +49,10 @@ void MainWindow::on_btnPaymentsWInfoRefresh_clicked() {
     QMap<QString, QVariant> params;
     params["mdate"] = edtPaymentsDate->date();
     params["operator"] = cmbPayOperator->currentText();
-
-    client->send("getPayments", &params);
-
+    MessageBuilder* msgBuild = new MessageBuilder(this);
+    msgBuild->setType(QString("Query"));
+    msgBuild->setSender(getName());
+    emit message(msgBuild->getMessage(QString("Billing"), QString("getPayments"), params));
     statusbar->showMessage("");
 }
 
