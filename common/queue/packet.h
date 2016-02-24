@@ -15,7 +15,8 @@ public:
     QString sourceComponent;
     QString destinationTransport;
     QString destinationComponent;
-    IMessage msg;
+    IMessage* msg;
+    QString toString();
 signals:
 
 public slots:

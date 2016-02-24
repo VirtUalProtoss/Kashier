@@ -17,15 +17,20 @@ public:
     void setType(IMessageType* type);
     void setBody(IMessageBody* body);
     void setSender(QString sender);
+    void setTarget(QString target);
     void setText(QString text);
     QString getText();
     QString getSender();
+    QString getTarget();
+
+    QString toString();
 signals:
 
 public slots:
 
 private:
     QString m_sender;
+    QString m_target;
     IMessageType* m_type;
     IMessageBody* m_body;
     QString m_text;

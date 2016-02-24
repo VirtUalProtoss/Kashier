@@ -28,9 +28,9 @@ public:
 private:
     QList<IMessage*> queue;
     QList<QObject*> subscribes;
-    QList<ILogic*> components;
-    QList<ITransport*> transports;
-    QMap<ITransport*, ILogic*> componentMap;
+    QMap<ILogic*, QString> components;
+    QMap<ITransport*, QString> transports;
+    //QMap<ITransport*, ILogic*> componentMap;
     QMap<QString, ITransport*> remoteComponents;
 
     QMap<ITransport*, ILogic*> getComponentMap(QString &pair);

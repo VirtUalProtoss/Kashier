@@ -8,6 +8,7 @@ class IMessageType : public QObject {
 public:
     explicit IMessageType(QObject *parent = 0, QString type = "Message");
 
+    QString toString();
 signals:
 
 public slots:

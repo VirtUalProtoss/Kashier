@@ -4,3 +4,7 @@ IMessageType::IMessageType(QObject *parent, QString type) : QObject(parent), m_t
 
 }
 
+
+QString IMessageType::toString() {
+    return m_type;
+}

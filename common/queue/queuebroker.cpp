@@ -13,10 +13,15 @@ void QueueBroker::send(IMessage *message) {
 }
 
 void QueueBroker::receive(IMessage *message) {
-
     Packet pkg;
     QString sender = message->getSender();
-    qDebug() << "receive(IMessage)" << sender << message->getText();
+    QString target = message->getTarget();
+    pkg.sourceTransport = QString("Local");
+    pkg.sourceComponent = sender;
+    pkg.destinationComponent = target;
+    pkg.destinationTransport = transports[remoteComponents[target]];
+    pkg.msg = message;
+    qDebug() << "receive(IMessage)" << pkg.toString();
 }
 
 void QueueBroker::receive(QString message) {
@@ -42,13 +47,13 @@ void QueueBroker::startBroking() {
 
 void QueueBroker::addComponent(ILogic *component) {
     qDebug() << components.size();
-    components.append(component);
+    components[component] = component->getName();
     connect(component, SIGNAL(message(IMessage*)), SLOT(receive(IMessage*)));
 }
 
 void QueueBroker::addComponent(ITransport *component) {
     qDebug() << transports.size();
-    transports.append(component);
+    transports[component] = component->getName();
     connect(component, SIGNAL(message(QString)), SLOT(receive(QString)));
 }
 
@@ -57,11 +62,11 @@ void QueueBroker::addComponentMap(ITransport *transport, ILogic *component) {
 }
 
 void QueueBroker::removeComponent(ITransport *component) {
-    transports.removeOne(component);
+    transports.remove(component);
 }
 
 void QueueBroker::removeComponent(ILogic *component) {
-    components.removeOne(component);
+    components.remove(component);
 }
 
 QMap<ITransport *, ILogic *> QueueBroker::getComponentMap(QString &pair) {
@@ -115,9 +120,9 @@ void QueueBroker::addSubscribe(QString &subscribe) {
 
 ILogic* QueueBroker::getLogic(QString &logic) {
     ILogic* nLogic = 0;
-    for (int i=0; i < components.length(); i++) {
-        if (components[i]->getName() == logic)
-            nLogic = components[i];
+    foreach (ILogic* key, components.keys()) {
+        if (key->getName() == logic)
+            nLogic = key;
     }
     return nLogic;
 }
@@ -131,17 +136,17 @@ ITransport* QueueBroker::getTransport(QString &transport) {
     ITransport* nTransport = 0;
     if (transport == "Local")
         nTransport = new ITransport(this);
-    else if (transport == "Network")
-        nTransport = transports[0];
+    //else if (transport == "Network")
+    //    nTransport = transports[0];
     else {
         QStringList titems = transport.split(":");
         if (titems.length() > 1) {
             QString addr = titems[1];
-            for (int i=0; i < transports.length(); i++) {
-                QString tAddr = transports[i]->getAddress();
+            foreach (ITransport* key, transports.keys()) {
+                QString tAddr = key->getAddress();
                 if (tAddr.length() > 0) {
                     if (addr == ("<" + tAddr + ">"))
-                        nTransport = transports[i];
+                        nTransport = key;
                 }
             }
         }
