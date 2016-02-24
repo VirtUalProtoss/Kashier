@@ -17,6 +17,7 @@ public:
     QString destinationComponent;
     IMessage* msg;
     QString toString();
+    void fromString(QString msg);
 signals:
 
 public slots:

@@ -4,6 +4,9 @@ IMessageType::IMessageType(QObject *parent, QString type) : QObject(parent), m_t
 
 }
 
+void IMessageType::fromString(QString type) {
+    m_type = type;
+}
 
 QString IMessageType::toString() {
     return m_type;

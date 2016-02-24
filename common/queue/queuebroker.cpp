@@ -12,20 +12,44 @@ void QueueBroker::send(IMessage *message) {
 
 }
 
+void QueueBroker::publishComponents() {
+    QString broker = QString("Broker");
+    Packet* pkt = new Packet(this);
+    pkt->sourceTransport = QString("Local");
+    pkt->sourceComponent = broker;
+    pkt->destinationTransport = QString("Network");
+    pkt->destinationComponent = broker;
+    MessageBuilder* mBuild = new MessageBuilder(this);
+    mBuild->setSender(broker);
+    mBuild->setType(QString("Message"));
+    QMap<QString, QVariant> params;
+
+    foreach (ILogic* logic, components.keys()) {
+        if (!logic->isPublic())
+            continue;
+        params[logic->getName()] = logic->getName();
+    }
+    pkt->msg = mBuild->getMessage(broker, QString("registerComponent"), params);
+    emit network_message(pkt->toString());
+}
+
 void QueueBroker::receive(IMessage *message) {
-    Packet pkg;
-    QString sender = message->getSender();
-    QString target = message->getTarget();
-    pkg.sourceTransport = QString("Local");
-    pkg.sourceComponent = sender;
-    pkg.destinationComponent = target;
-    pkg.destinationTransport = transports[remoteComponents[target]];
-    pkg.msg = message;
-    qDebug() << "receive(IMessage)" << pkg.toString();
+    Packet* pkt = new Packet(this);
+    pkt->sourceTransport = QString("Local");
+    pkt->sourceComponent = message->getSender();
+    pkt->destinationComponent = message->getTarget();
+    pkt->destinationTransport = transports[remoteComponents[message->getTarget()]];
+    pkt->msg = message;
+    qDebug() << "receive(IMessage)" << pkt->toString();
+    if (pkt->destinationTransport != "Local")
+        emit network_message(pkt->toString());
 }
 
 void QueueBroker::receive(QString message) {
-    qDebug() << "receive(QString)" << message;
+
+    Packet* pkt = new Packet(this);
+    pkt->fromString(message);
+    qDebug() << "receive(QString)" << sender() << pkt->toString();
 }
 
 void QueueBroker::subscribe(

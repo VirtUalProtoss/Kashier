@@ -16,5 +16,7 @@ bool ITransport::isLocal() {
     return true;
 }
 
+void ITransport::send(QString data) {
 
+}
 

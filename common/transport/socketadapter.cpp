@@ -49,6 +49,10 @@ void SocketAdapter::sendString(const QString& str) {
     m_ptcpSocket->write(block);
 }
 
+void SocketAdapter::on_send(QString msg) {
+    sendString(msg);
+}
+
 void SocketAdapter::on_disconnected() {
     m_ptcpSocket->deleteLater();
     emit disconnected();

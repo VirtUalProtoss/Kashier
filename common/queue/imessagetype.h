@@ -9,12 +9,13 @@ public:
     explicit IMessageType(QObject *parent = 0, QString type = "Message");
 
     QString toString();
+    void fromString(QString type);
 signals:
 
 public slots:
 
 private:
-    QString m_type;
+    QString m_type = "";
 };
 
 #endif // IMESSAGETYPE_H

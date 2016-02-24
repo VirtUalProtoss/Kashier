@@ -13,6 +13,7 @@ public:
     explicit ILogic(QObject *parent);
     virtual QString getName();
     virtual void setName(QString &name);
+    bool isPublic();
 
 signals:
     void message(QString);

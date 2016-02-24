@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+#include "../queue/packet.h"
+
+
 class ITransport : public QObject {
     Q_OBJECT
 public:
@@ -10,6 +13,7 @@ public:
     QString getAddress();
     QString getName();
     bool isLocal();
+    void send(QString data);
 signals:
 
 public slots:

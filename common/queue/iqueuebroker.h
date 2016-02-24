@@ -18,9 +18,10 @@ public:
     virtual void addComponent(ITransport* component);
     virtual void removeComponent(ITransport* component);
     virtual void removeComponent(ILogic* component);
+    virtual void publishComponents();
     void addComponentMap(ITransport* transport, ILogic* component);
 signals:
-
+    void network_message(QString);
 public slots:
     virtual void send(IMessage *message);
     virtual void receive(IMessage *message);

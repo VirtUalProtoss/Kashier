@@ -25,6 +25,7 @@ void Service::on_newConnection() {
     connect(pSockHandle, SIGNAL(disconnected()), SLOT(on_disconnected()));
     connect(pSockHandle, SIGNAL(message(QString)), SLOT(on_message(QString)));
     connect(pSockHandle, SIGNAL(message(QString)), broker, SLOT(receive(QString)));
+    connect(broker, SIGNAL(network_message(QString)), pSockHandle, SLOT(on_send(QString)));
 }
 
 void Service::on_disconnected() {

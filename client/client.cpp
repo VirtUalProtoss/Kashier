@@ -8,6 +8,10 @@ Client::Client(QObject *parent) :
 
 }
 
+void Client::publishComponents() {
+    broker->publishComponents();
+}
+
 void Client::initComponents() {
     ILogic* kkm = new KKM(this);
     ILogic* local = new Local(this);
@@ -20,8 +24,7 @@ void Client::initComponents() {
 //    broker->addComponentMap(tLocal, kkm);
 //    broker->addComponentMap(tLocal, local);
 //    broker->addComponentMap(tLocal, gui);
-
-
+    connect(broker, SIGNAL(network_message(QString)), pSock, SLOT(on_send(QString)));
 }
 
 void Client::prepareSubcribes() {

@@ -11,6 +11,8 @@ public:
       SocketAdapter(QObject *parent, QTcpSocket *pSock = 0);
       virtual ~SocketAdapter();
       virtual void sendString(const QString& str);
+public slots:
+      void on_send(QString);
 protected slots:
       void on_readyRead();
       void on_disconnected();

@@ -2,6 +2,7 @@
 #define IMESSAGE_H
 
 #include <QObject>
+#include <QStringList>
 
 #include "imessagebody.h"
 #include "imessagetype.h"
@@ -24,6 +25,7 @@ public:
     QString getTarget();
 
     QString toString();
+    void fromString(QString msg);
 signals:
 
 public slots:

@@ -22,6 +22,7 @@ public:
     void initComponents();
     void prepareSubcribes();
 
+    void publishComponents();
 protected:
     ISocketAdapter *pSock;
     IQueueBroker* broker;

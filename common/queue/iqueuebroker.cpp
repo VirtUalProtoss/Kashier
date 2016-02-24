@@ -41,6 +41,10 @@ void IQueueBroker::removeComponent(ILogic *component) {
 
 }
 
+void IQueueBroker::publishComponents() {
+
+}
+
 void IQueueBroker::addComponentMap(ITransport *transport, ILogic *component) {
 
 }

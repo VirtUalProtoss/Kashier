@@ -7,6 +7,7 @@
 #include "imessage.h"
 #include "query.h"
 #include "packet.h"
+#include "messagebuilder.h"
 
 
 class QueueBroker : public IQueueBroker {
@@ -25,6 +26,7 @@ public:
     void removeComponent(ITransport* component);
     void removeComponent(ILogic* component);
 
+    void publishComponents();
 private:
     QList<IMessage*> queue;
     QList<QObject*> subscribes;
