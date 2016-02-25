@@ -16,14 +16,16 @@ void Client::initComponents() {
     ILogic* kkm = new KKM(this);
     ILogic* local = new Local(this);
     ILogic* gui = new GUI(this);
-//    ITransport* tLocal = new ITransport(this);
+    ITransport* tLocal = new ITransport(this);
     broker->addComponent(kkm);
     broker->addComponent(local);
     broker->addComponent(gui);
+    broker->addComponent(tLocal);
     broker->addComponent(pSock);
-//    broker->addComponentMap(tLocal, kkm);
-//    broker->addComponentMap(tLocal, local);
-//    broker->addComponentMap(tLocal, gui);
+    broker->addComponentMap(tLocal, kkm);
+    broker->addComponentMap(tLocal, local);
+    broker->addComponentMap(tLocal, gui);
+
     connect(broker, SIGNAL(network_message(QString)), pSock, SLOT(on_send(QString)));
 }
 

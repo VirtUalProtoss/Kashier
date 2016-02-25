@@ -8,6 +8,7 @@
 #include "query.h"
 #include "packet.h"
 #include "messagebuilder.h"
+#include "subscribe.h"
 
 
 class QueueBroker : public IQueueBroker {
@@ -27,12 +28,17 @@ public:
     void removeComponent(ILogic* component);
 
     void publishComponents();
+    void routePacket(Packet *packet);
+    QString getMapName(ITransport *transport, ILogic *component);
 private:
     QList<IMessage*> queue;
-    QList<QObject*> subscribes;
+
+    QMap<QString, QMap<QString, QString>> subscribes;
+
     QMap<ILogic*, QString> components;
     QMap<ITransport*, QString> transports;
     //QMap<ITransport*, ILogic*> componentMap;
+    QMap<QString, ITransport*> componentMap;
     QMap<QString, ITransport*> remoteComponents;
 
     QMap<ITransport*, ILogic*> getComponentMap(QString &pair);
@@ -50,6 +56,8 @@ public slots:
     void send(IMessage *message);
     void receive(IMessage *message);
     void receive(QString message);
+protected:
+    void routeMessage(IMessage *msg);
 };
 
 #endif // QUEUEBROKER_H

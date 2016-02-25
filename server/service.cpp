@@ -23,7 +23,7 @@ void Service::on_newConnection() {
     pSockHandle->sendString("connect");
 
     connect(pSockHandle, SIGNAL(disconnected()), SLOT(on_disconnected()));
-    connect(pSockHandle, SIGNAL(message(QString)), SLOT(on_message(QString)));
+    //connect(pSockHandle, SIGNAL(message(QString)), SLOT(on_message(QString)));
     connect(pSockHandle, SIGNAL(message(QString)), broker, SLOT(receive(QString)));
     connect(broker, SIGNAL(network_message(QString)), pSockHandle, SLOT(on_send(QString)));
 }
@@ -44,9 +44,16 @@ void Service::initComponents() {
     ILogic* ats = new OpenMN(this);
     ILogic* local = new Local(this);
     ILogic* billing = new Onyma(this);
+    ITransport* tLocal = new ITransport(this);
+
     broker->addComponent(ats);
     broker->addComponent(local);
     broker->addComponent(billing);
+    broker->addComponent(tLocal);
+
+    broker->addComponentMap(tLocal, ats);
+    broker->addComponentMap(tLocal, billing);
+    broker->addComponentMap(tLocal, local);
 }
 
 void Service::prepareSubcribes() {

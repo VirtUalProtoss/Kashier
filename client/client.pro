@@ -35,7 +35,8 @@ SOURCES += main.cpp \
     ../common/transport/itransport.cpp \
     ../common/logic/gui/gui.cpp \
     ../common/queue/messagebuilder.cpp \
-    ../common/queue/packet.cpp
+    ../common/queue/packet.cpp \
+    ../common/queue/subscribe.cpp
 
 HEADERS  += \
     client.h \
@@ -60,7 +61,8 @@ HEADERS  += \
     ../common/transport/itransport.h \
     ../common/logic/gui/gui.h \
     ../common/queue/messagebuilder.h \
-    ../common/queue/packet.h
+    ../common/queue/packet.h \
+    ../common/queue/subscribe.h
 
 FORMS    += mainwindow.ui \
     loginwindow.ui \
