@@ -39,26 +39,31 @@ void QueueBroker::publishComponents() {
 }
 
 void QueueBroker::routeMessage(IMessage* msg) {
+    QString dest = msg->getTarget();
 
+    emit network_message(msg->toString());
 }
 
 void QueueBroker::receive(IMessage *message) {
+    /*
     Packet* pkt = new Packet(this);
     pkt->sourceTransport = QString("Local");
     pkt->sourceComponent = message->getSender();
     pkt->destinationComponent = message->getTarget();
     pkt->destinationTransport = transports[remoteComponents[message->getTarget()]];
     pkt->msg = message;
-    qDebug() << "receive(IMessage)" << pkt->toString() << pkt->msg->getText();
-    routePacket(pkt);
+    */
+    qDebug() << "receive(IMessage)" << message->toString();
+    //routePacket(pkt);
+    routeMessage(message);
 }
 
 void QueueBroker::receive(QString message) {
-
-    Packet* pkt = new Packet(this);
-    pkt->fromString(message);
-    qDebug() << "receive(QString)" << sender() << pkt->toString() << pkt->msg->getText();
-    routePacket(pkt);
+    //Packet* pkt = new Packet(this);
+    //pkt->fromString(message);
+    qDebug() << "receive(QString)" << sender() << message->toString();
+    //routePacket(pkt);
+    routeMessage(message);
 }
 
 void QueueBroker::routePacket(Packet* packet) {
