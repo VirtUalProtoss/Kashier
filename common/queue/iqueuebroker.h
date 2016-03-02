@@ -19,7 +19,9 @@ public:
     virtual void removeComponent(ITransport* component);
     virtual void removeComponent(ILogic* component);
     virtual void publishComponents();
-    void addComponentMap(ITransport* transport, ILogic* component);
+    virtual void addComponentMap(ITransport* transport, ILogic* component);
+    virtual void addComponentMap(ITransport *transport, QString component);
+    virtual void registerRemoteSubscribe(QString key, QString sub);
 signals:
     void network_message(QString);
 public slots:

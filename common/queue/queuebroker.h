@@ -24,21 +24,24 @@ public:
     void addComponent(ILogic* component);
     void addComponent(ITransport* component);
     void addComponentMap(ITransport* transport, ILogic* component);
+    void addComponentMap(ITransport *transport, QString component);
     void removeComponent(ITransport* component);
     void removeComponent(ILogic* component);
 
     void publishComponents();
     void routePacket(Packet *packet);
     QString getMapName(ITransport *transport, ILogic *component);
+    void registerRemoteSubscribe(QString key, QString sub);
 private:
     QList<IMessage*> queue;
-
-    QMap<QString, QMap<QString, QString>> subscribes;
+    //   source        message  destination
+    QMap<QString, QMap<QString, QList<QString>>> subscribes;
+    QMap<QString, QMap<QString, QList<QString>>> tempSubscribes;
 
     QMap<ILogic*, QString> components;
     QMap<ITransport*, QString> transports;
-    //QMap<ITransport*, ILogic*> componentMap;
-    QMap<QString, ITransport*> componentMap;
+
+    QMap<QString, ILogic*> componentMap;
     QMap<QString, ITransport*> remoteComponents;
 
     QMap<ITransport*, ILogic*> getComponentMap(QString &pair);
@@ -52,12 +55,14 @@ private:
     ILogic* getLogic(QString &logic);
     IMessage* getMessage(QString &messageType);
 
+    void registerRemoteComponents(IMessage *msg, QString srcTransport);
 public slots:
     void send(IMessage *message);
     void receive(IMessage *message);
     void receive(QString message);
 protected:
-    void routeMessage(IMessage *msg);
+    void routeMessage(IMessage *msg, QString srcTransport);
+    bool matchMap(QString src, QString dest);
 };
 
 #endif // QUEUEBROKER_H

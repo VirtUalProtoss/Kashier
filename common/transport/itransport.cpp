@@ -9,7 +9,11 @@ QString ITransport::getAddress() {
 }
 
 QString ITransport::getName() {
-    return QString("ITransport");
+    return name;
+}
+
+void ITransport::setName(QString tName) {
+    name = tName;
 }
 
 bool ITransport::isLocal() {

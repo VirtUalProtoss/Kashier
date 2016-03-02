@@ -2,6 +2,7 @@
 #define ILOGIC_H
 
 #include <QObject>
+#include <QDebug>
 
 #include "../queue/imessage.h"
 
@@ -14,6 +15,7 @@ public:
     virtual QString getName();
     virtual void setName(QString &name);
     bool isPublic();
+    virtual void receive(IMessage*);
 
 signals:
     void message(QString);

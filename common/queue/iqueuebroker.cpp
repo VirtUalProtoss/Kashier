@@ -48,3 +48,11 @@ void IQueueBroker::publishComponents() {
 void IQueueBroker::addComponentMap(ITransport *transport, ILogic *component) {
 
 }
+
+void IQueueBroker::addComponentMap(ITransport *transport, QString component) {
+
+}
+
+void IQueueBroker::registerRemoteSubscribe(QString key, QString sub) {
+
+}

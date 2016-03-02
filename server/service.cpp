@@ -12,25 +12,34 @@ Service::Service(int nPort, QObject *parent) : QObject(parent), broker(new Queue
 }
 
 void Service::on_newConnection() {
-    QTextStream(stdout) << "new connection" << endl;
+
 
     QTcpSocket* pclientSock = m_ptcpServer->nextPendingConnection();
     ISocketAdapter *pSockHandle = new ServerSocketAdapter(pclientSock);
 
     m_clients.push_back(pSockHandle);
-    broker->addComponent(pSockHandle);
 
-    pSockHandle->sendString("connect");
+    QTextStream(stdout) << "new connection from " << pSockHandle->getAddress() << endl;
+    pSockHandle->setName(QString("Network<" + pSockHandle->getAddress() + QString(">")));
+    broker->addComponent(pSockHandle);
+    //broker->addComponentMap(pSockHandle, pSockHandle->getName());
+    //pSockHandle->sendString("connect");
 
     connect(pSockHandle, SIGNAL(disconnected()), SLOT(on_disconnected()));
     //connect(pSockHandle, SIGNAL(message(QString)), SLOT(on_message(QString)));
     connect(pSockHandle, SIGNAL(message(QString)), broker, SLOT(receive(QString)));
     connect(broker, SIGNAL(network_message(QString)), pSockHandle, SLOT(on_send(QString)));
+
+    QStringList subscribes;
+    subscribes << QString(pSockHandle->getName() + ":Broker;Message<Broker>;Local:Broker;Persist");
+    foreach (QString subscribe, subscribes)
+        broker->addSubscribe(subscribe);
 }
 
 void Service::on_disconnected() {
-    QTextStream(stdout) << "client disconnected" << endl;
+
     ISocketAdapter* client = static_cast<ServerSocketAdapter*>(sender());
+    QTextStream(stdout) << "client disconnected: " << client->getAddress() << endl;
     m_clients.removeOne(client);
     broker->removeComponent(client);
     delete client;
@@ -58,6 +67,10 @@ void Service::initComponents() {
 
 void Service::prepareSubcribes() {
     QStringList subscribes;
+    //subscribes << QString("Local:Broker;Message;Local:Broker;Persist");
+    //subscribes << QString("Local:Billing;Query:Billing;Network<" + netAddr + ">:Billing;Persist");
+    //subscribes << QString("Network:Billing;Reply;Local:Local;Persist");
+    //subscribes << QString("Local:KKM;Reply;Local:Local;Persist");
     foreach (QString subscribe, subscribes)
         broker->addSubscribe(subscribe);
 }

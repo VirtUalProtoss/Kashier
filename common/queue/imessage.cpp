@@ -32,6 +32,10 @@ QString IMessage::getText() {
     return m_text;
 }
 
+QString IMessage::getType() {
+    return m_type->toString();
+}
+
 QString IMessage::getSender() {
     return m_sender;
 }
@@ -42,13 +46,13 @@ QString IMessage::getTarget() {
 
 QString IMessage::toString() {
     if (m_target.length() > 0)
-        return m_type->toString() + "<" + m_target + ">:" + getText();
+        return m_type->toString() + "<" + m_target + ">##" + getText();
     else
-        return m_type->toString() + ":" + getText();
+        return m_type->toString() + "##" + getText();
 }
 
 void IMessage::fromString(QString msg) {
-    QStringList items = msg.split(":");
+    QStringList items = msg.split("##");
     IMessageType *type = new IMessageType(this);
     if (items.length() > 1) {
         setText(items[1]);

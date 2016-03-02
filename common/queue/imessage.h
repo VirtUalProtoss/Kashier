@@ -14,18 +14,19 @@ class IMessage : public QObject {
 public:
     explicit IMessage(QObject *parent = 0);
     static IMessage fromStream(QByteArray* message);
-    QString getName();
-    void setType(IMessageType* type);
-    void setBody(IMessageBody* body);
-    void setSender(QString sender);
-    void setTarget(QString target);
-    void setText(QString text);
-    QString getText();
-    QString getSender();
-    QString getTarget();
+    virtual QString getName();
+    virtual void setType(IMessageType* type);
+    virtual void setBody(IMessageBody* body);
+    virtual void setSender(QString sender);
+    virtual void setTarget(QString target);
+    virtual void setText(QString text);
+    virtual QString getText();
+    virtual QString getType();
+    virtual QString getSender();
+    virtual QString getTarget();
 
-    QString toString();
-    void fromString(QString msg);
+    virtual QString toString();
+    virtual void fromString(QString msg);
 signals:
 
 public slots:

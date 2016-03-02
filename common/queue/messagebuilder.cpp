@@ -24,9 +24,9 @@ IMessage* MessageBuilder::getMessage(QString target, QString command, QMap<QStri
     message->setBody(body);
     QString text;
     foreach (QString key, params.keys()) {
-        text += key + ":" + params.value(key).toString() + ";";
+        text += key + "==" + params.value(key).toString() + ";";
     }
 
-    message->setText(command + ";" + text);
+    message->setText(command + "::" + text);
     return message;
 }

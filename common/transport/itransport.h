@@ -10,13 +10,17 @@ class ITransport : public QObject {
     Q_OBJECT
 public:
     explicit ITransport(QObject *parent = 0);
-    QString getAddress();
-    QString getName();
+    virtual QString getAddress();
+    virtual QString getName();
     bool isLocal();
     void send(QString data);
+    virtual void setName(QString tName);
 signals:
 
 public slots:
+
+protected:
+    QString name = QString("ITransport");
 };
 
 #endif // ITRANSPORT_H

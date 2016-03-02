@@ -26,6 +26,7 @@ public:
 protected:
     ISocketAdapter *pSock;
     IQueueBroker* broker;
+    void registerRemoteSubscribe(QString sub);
 };
 
 #endif // CLIENT_H

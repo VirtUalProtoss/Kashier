@@ -14,13 +14,6 @@ void QueueBroker::send(IMessage *message) {
 
 void QueueBroker::publishComponents() {
     QString broker = QString("Broker");
-    /*
-    Packet* pkt = new Packet(this);
-    pkt->sourceTransport = QString("Local");
-    pkt->sourceComponent = broker;
-    pkt->destinationTransport = QString("Network");
-    pkt->destinationComponent = broker;
-    */
     MessageBuilder* mBuild = new MessageBuilder(this);
     mBuild->setSender(broker);
     mBuild->setType(QString("Message"));
@@ -32,38 +25,115 @@ void QueueBroker::publishComponents() {
         params[logic->getName()] = logic->getName();
     }
 
-    //pkt->msg = mBuild->getMessage(broker, QString("registerComponent"), params);
-    //qDebug() << "publishComponents()" << pkt->toString() << pkt->msg->getText();
-    routeMessage(mBuild->getMessage(broker, QString("registerComponent"), params));
-    //routePacket(pkt);
+    routeMessage(mBuild->getMessage(broker, QString("registerComponent"), params), QString("Local"));
 }
 
-void QueueBroker::routeMessage(IMessage* msg) {
-    QString dest = msg->getTarget();
+void QueueBroker::registerRemoteSubscribe(QString key, QString sub) {
+    QString broker = QString("Broker");
+    MessageBuilder* mBuild = new MessageBuilder(this);
+    mBuild->setSender(broker);
+    mBuild->setType(QString("Message"));
+    QMap<QString, QVariant> params;
 
-    emit network_message(msg->toString());
+    params[key] = sub;
+
+    routeMessage(mBuild->getMessage(broker, QString("addSubscribe"), params), QString("Local"));
+}
+
+void QueueBroker::registerRemoteComponents(IMessage* msg, QString srcTransport) {
+    qDebug() << "Registering remote components from" << srcTransport << msg->toString();
+    ITransport* transport = getTransport(srcTransport);
+    if (transport) {
+        QStringList items = msg->getText().split("::");
+        QString command = items[0];
+        qDebug() << "Command:" << command;
+
+        if (command == QString("registerComponent")) {
+            for (int i = 1; i < items.length(); i++) {
+                qDebug() << "Register component:" << srcTransport << items[i];
+                //addComponentMap(transport, srcTransport + ":" + items[i]);
+                QStringList subs = items[i].split("==");
+                foreach (QString key, subs) {
+                    addComponentMap(transport, srcTransport + ":" + subs[1]);
+                }
+            }
+        }
+        else if (command == QString("addSubscribe")) {
+            for (int i = 1; i < items.length(); i++) {
+                qDebug() << "Add subscribe:" << srcTransport << items[i];
+                QStringList subs = items[i].split("==");
+                foreach (QString key, subs) {
+                    addSubscribe(subs[1]);
+                }
+
+            }
+        }
+        else {
+            qDebug() << "No command bind for" << command;
+        }
+    }
+    else {
+        qDebug() << "No transport found for " << srcTransport;
+    }
+}
+
+void QueueBroker::routeMessage(IMessage* msg, QString srcTransport) {
+    QString dest = msg->getTarget();
+    if (dest == QString("Broker")) {
+        if (srcTransport == QString("Local")) {
+            //foreach (ITransport* dTransport, transports.keys()) {
+            qDebug() << "Publish broker message";
+                //dTransport->send(msg->toString());
+            //}
+            emit network_message(msg->toString());
+        }
+        else {
+            registerRemoteComponents(msg, srcTransport);
+        }
+    }
+    else {
+        QString src = srcTransport + ':' + msg->getSender();
+        QString msgType = msg->getType();
+        if (subscribes.contains(src)) {
+            QMap<QString, QList<QString>> subscr = subscribes[src];
+            if (subscr.contains(msgType)) {
+                foreach (QString subDest, subscr[msgType]) {
+                    if (matchMap(dest, subDest)) {
+                        // to local or to network?
+                        //emit network_message(msg->toString());
+                        if (componentMap.contains(dest))
+                            componentMap[dest]->receive(msg);
+                        else if (remoteComponents.contains(dest))
+                            remoteComponents[dest]->send(msg->toString());
+                        else
+                            qDebug() << "No map for" << msg->toString();
+                    }
+                }
+            }
+        }
+    }
+}
+
+bool QueueBroker::matchMap(QString src, QString dest) {
+    if (src == dest)
+        return true;
+    else
+        return false;
 }
 
 void QueueBroker::receive(IMessage *message) {
-    /*
-    Packet* pkt = new Packet(this);
-    pkt->sourceTransport = QString("Local");
-    pkt->sourceComponent = message->getSender();
-    pkt->destinationComponent = message->getTarget();
-    pkt->destinationTransport = transports[remoteComponents[message->getTarget()]];
-    pkt->msg = message;
-    */
     qDebug() << "receive(IMessage)" << message->toString();
-    //routePacket(pkt);
-    routeMessage(message);
+    routeMessage(message, QString("Local"));
 }
 
 void QueueBroker::receive(QString message) {
-    //Packet* pkt = new Packet(this);
-    //pkt->fromString(message);
-    qDebug() << "receive(QString)" << sender() << message->toString();
-    //routePacket(pkt);
-    routeMessage(message);
+    IMessage *msg = new IMessage();
+    msg->fromString(message);
+
+    QString sourceTransport = ((ITransport*)sender())->getName();
+    QString sourceComponent = msg->getSender();
+    qDebug() << "receive(QString)" << sourceTransport << ":" << sourceComponent << msg->toString();
+    routeMessage(msg, sourceTransport);
 }
 
 void QueueBroker::routePacket(Packet* packet) {
@@ -100,6 +170,8 @@ void QueueBroker::addComponent(ILogic *component) {
 void QueueBroker::addComponent(ITransport *component) {
     qDebug() << transports.size();
     transports[component] = component->getName();
+    //if (!remoteComponents.contains(component->getName()))
+    //    remoteComponents[component->getName()] = component;
     //if (component->getName() == "Local")
     //    connect(component, SIGNAL(message(QString)), SLOT(receive(QString)));
 }
@@ -118,9 +190,18 @@ QString QueueBroker::getMapName(ITransport *transport, ILogic *component) {
 void QueueBroker::addComponentMap(ITransport *transport, ILogic *component) {
     QString name = getMapName(transport, component);
     if (!componentMap.contains(name))
-        componentMap[name] = transport;
+        if (transport->isLocal())
+            componentMap[name] = component;
     else
         qDebug() << sender() << ":" << name << "already in component map";
+}
+
+void QueueBroker::addComponentMap(ITransport *transport, QString component) {
+    if (!remoteComponents.contains(component))
+        if (!transport->isLocal())
+            remoteComponents[component] = transport;
+    else
+        qDebug() << sender() << ":" << component << "already in component map";
 }
 
 void QueueBroker::removeComponent(ITransport *component) {
@@ -152,31 +233,29 @@ QMap<ITransport *, ILogic *> QueueBroker::getComponentMap(QString &pair) {
 void QueueBroker::addSubscribe(QString &subscribe) {
     QStringList items = subscribe.split(";");
 
-    /*
-    QMap<ITransport *, ILogic *> sourceMap = getComponentMap(items[0]);
-    foreach (ITransport key, sourceMap.values()) {
-        if (key.isLocal())
-            ILogic* sourceComponent = getLogic(items[1]);
-        else {
-
-        }
+    QString src = items[0];
+    QString msg = items[1];
+    QString dst = items[2];
+    bool persist;
+    if (items[3] == QString("Persist"))
+        persist = true;
+    else
+        persist = false;
+    QMap<QString, QList<QString>> subItems;
+    if (subscribes.contains(src)) {
+        subItems = subscribes[src];
     }
 
-
-    IMessage* messageType = getMessage(items[2]);
-
-    ITransport* destinationTransport = getTransport(items[3]);
-    if (destinationTransport->isLocal())
-        ILogic* destinationComponent = getLogic(items[4]);
+    if (subItems.contains(msg)) {
+        if (!subItems[msg].contains(dst))
+            subItems[msg].append(dst);
+    }
     else {
-        ILogic* destinationComponent = new ILogic(this);
+        QList<QString> subDest;
+        subDest.append(dst);
+        subItems[msg] = subDest;
     }
-    //foreach (QString item, items) {
-    //    qDebug() << item;
-    //}
-
-    //subscribe(sourceTransport, sourceComponent, messageType, destinationTransport, destinationComponent);
-    */
+    subscribes[src] = subItems;
     qDebug() << "subscribe()" << subscribe;
 }
 
@@ -208,6 +287,16 @@ ITransport* QueueBroker::getTransport(QString &transport) {
                 QString tAddr = key->getAddress();
                 if (tAddr.length() > 0) {
                     if (addr == ("<" + tAddr + ">"))
+                        nTransport = key;
+                }
+            }
+        }
+        else {
+            QString addr = titems[0];
+            foreach (ITransport* key, transports.keys()) {
+                QString tAddr = key->getAddress();
+                if (tAddr.length() > 0) {
+                    if (addr == ("Network<" + tAddr + ">"))
                         nTransport = key;
                 }
             }

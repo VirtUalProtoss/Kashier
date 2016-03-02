@@ -9,6 +9,12 @@ public:
     explicit ClientSocketAdapter(QObject *parent);
     QString getAddress();
     bool isLocal();
+    bool isConnected();
+    QString getName();
+public slots:
+    void disconnect();
+private:
+    bool connected = false;
 };
 
 #endif // CLIENTSOCKETADAPTER_H
