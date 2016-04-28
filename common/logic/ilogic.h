@@ -14,7 +14,7 @@ public:
     explicit ILogic(QObject *parent);
     virtual QString getName();
     virtual void setName(QString &name);
-    bool isPublic();
+    virtual bool isPublic();
     virtual void receive(IMessage*);
 
 signals:

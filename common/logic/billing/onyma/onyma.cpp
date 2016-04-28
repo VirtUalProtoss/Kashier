@@ -20,7 +20,8 @@
 using namespace std;
 
 Onyma::Onyma(QObject *parent) : ILogic(parent) {
-
+    if (!connected)
+        connectDB();
 }
 
 int Onyma::connectDB() {
@@ -28,15 +29,15 @@ int Onyma::connectDB() {
     db.setDatabaseName("onyma");
     db.setUserName("onyma_api");
     db.setPassword("onyma_api");
-    bool ok = db.open();
-    if (!ok) {
+    connected = db.open();
+    if (!connected) {
         QSqlError msgError = db.lastError();
         qDebug() << "error open db" << msgError.text() << endl;
         return 1;
     }
-    QString username = "s.sobolevskiy";
-    QString password = "NjgZYX3J";
-    auth(&username, &password);
+    //QString username = "s.sobolevskiy";
+    //QString password = "NjgZYX3J";
+    //auth(&username, &password);
     return 0;
 }
 
@@ -70,8 +71,36 @@ int Onyma::disconnectDB() {
 }
 
 bool Onyma::auth(QString *username, QString *password) {
-    QString auth_sql = "begin api_dog.auth('%1','%2'); end;";
+    QString auth_sql = "begin api_dog.auth('%1','%2'); commit; exception when others then rollback; end;";
     QSqlQuery authQuery(auth_sql.arg(*username).arg(*password), db);
+    // TODO: Refactoring - check auth
     authentificated = true;
     return authentificated;
 }
+
+QString Onyma::getName() {
+    return QString("Onyma");
+}
+
+void Onyma::receive(IMessage *msg) {
+    qDebug() << getName() << "receive message" << msg->toString();
+    QStringList items = msg->getText().split("::");
+    QString command = items[0];
+    qDebug() << "Command:" << command;
+    if (items.length() > 1) {
+        QMap<QString, QVariant> params;
+        QStringList pList = items[1].split(";");
+        foreach (QString param, pList) {
+            if (param.length() == 0)
+                continue;
+            QStringList pArr = param.split("==");
+            QString key = pArr[0];
+            QString value = QString("");
+            if (pArr.length() > 1)
+                value = pArr[1];
+            params[key] = value;
+        }
+        qDebug() << "Params:" << params;
+    }
+}
+

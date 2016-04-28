@@ -20,7 +20,7 @@ void MainWindow::search() {
         MessageBuilder* msgBuild = new MessageBuilder(this);
         msgBuild->setType(QString("Query"));
         msgBuild->setSender(getName());
-        emit message(msgBuild->getMessage(QString("Billing"), QString("search"), params));
+        emit message(msgBuild->getMessage(QString("Onyma"), QString("search"), params));
     } else
         statusbar->showMessage(trUtf8("Нужно заполнить поле для поиска!"));
 }
@@ -52,7 +52,7 @@ void MainWindow::on_btnPaymentsWInfoRefresh_clicked() {
     MessageBuilder* msgBuild = new MessageBuilder(this);
     msgBuild->setType(QString("Query"));
     msgBuild->setSender(getName());
-    emit message(msgBuild->getMessage(QString("Billing"), QString("getPayments"), params));
+    emit message(msgBuild->getMessage(QString("Onyma"), QString("getPayments"), params));
     statusbar->showMessage("");
 }
 

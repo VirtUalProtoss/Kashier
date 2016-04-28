@@ -8,3 +8,7 @@ QString Local::getName() {
     return QString("Local");
 }
 
+bool Local::isPublic() {
+    return false;
+}
+

@@ -45,27 +45,27 @@ QString IMessage::getTarget() {
 }
 
 QString IMessage::toString() {
+    QString target;
     if (m_target.length() > 0)
-        return m_type->toString() + "<" + m_target + ">##" + getText();
+        target = m_target;
     else
-        return m_type->toString() + "##" + getText();
+        target = QString("*");
+
+    return m_sender + "##" + target + "##" + m_type->toString() + "##" + getText();
 }
 
 void IMessage::fromString(QString msg) {
     QStringList items = msg.split("##");
     IMessageType *type = new IMessageType(this);
     if (items.length() > 1) {
-        setText(items[1]);
-        QStringList tItems = items[0].split("<");
-        type->fromString(tItems[0]);
-        if (tItems.length() > 1) {
-            m_target = tItems[1].split(">")[0];
-        }
-        m_text = items[1];
+        m_sender = items[0];
+        m_target = items[1];
+        type->fromString(items[2]);
+        m_text = items[3];
     }
     else {
         type->fromString(QString("Message"));
-        m_text = items[0];
+        m_text = items[1];
     }
     m_type = type;
 }

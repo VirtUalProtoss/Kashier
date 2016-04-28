@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "../common/transport/isocketadapter.h"
+#include "../common/transport/transportlocal.h"
 #include "clientsocketadapter.h"
 
 #include "../common/logic/ilogic.h"

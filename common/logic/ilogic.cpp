@@ -20,7 +20,7 @@ bool ILogic::isPublic() {
 }
 
 void ILogic::receive(IMessage *msg) {
-    qDebug() << "Logic" << getName() << "receive message" << msg->toString();
+    qDebug() << "ILogic" << getName() << "receive message" << msg->toString();
 }
 
 void ILogic::emit_message(IMessage *msg) {

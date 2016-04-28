@@ -12,9 +12,9 @@ public:
     explicit ITransport(QObject *parent = 0);
     virtual QString getAddress();
     virtual QString getName();
-    bool isLocal();
-    void send(QString data);
-    virtual void setName(QString tName);
+    virtual bool isLocal();
+    virtual void send(QString);
+    virtual void setName(QString);
 signals:
 
 public slots:

@@ -57,3 +57,7 @@ void SocketAdapter::on_disconnected() {
     m_ptcpSocket->deleteLater();
     emit disconnected();
 }
+
+void SocketAdapter::disconnect() {
+
+}

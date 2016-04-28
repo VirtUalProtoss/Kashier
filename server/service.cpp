@@ -1,10 +1,9 @@
 #include "service.h"
 
-Service::Service(int nPort, QObject *parent) : QObject(parent), broker(new QueueBroker(this)), m_ptcpServer(new QTcpServer(this))
-{
+Service::Service(int nPort, QObject *parent) : QObject(parent), broker(new QueueBroker(this)), m_ptcpServer(new QTcpServer(this)) {
     connect(m_ptcpServer, SIGNAL(newConnection()), SLOT(on_newConnection()));
 
-    if (false == m_ptcpServer->listen(QHostAddress::Any, nPort)) {
+    if (false == m_ptcpServer->listen(QHostAddress::AnyIPv4, nPort)) {
         m_ptcpServer->close();
         throw m_ptcpServer->errorString();
     }
@@ -19,7 +18,7 @@ void Service::on_newConnection() {
 
     m_clients.push_back(pSockHandle);
 
-    QTextStream(stdout) << "new connection from " << pSockHandle->getAddress() << endl;
+    QTextStream(stdout) << "New connection from " << pSockHandle->getAddress() << endl;
     pSockHandle->setName(QString("Network<" + pSockHandle->getAddress() + QString(">")));
     broker->addComponent(pSockHandle);
     //broker->addComponentMap(pSockHandle, pSockHandle->getName());
@@ -34,12 +33,13 @@ void Service::on_newConnection() {
     subscribes << QString(pSockHandle->getName() + ":Broker;Message<Broker>;Local:Broker;Persist");
     foreach (QString subscribe, subscribes)
         broker->addSubscribe(subscribe);
+    broker->publishComponents();
 }
 
 void Service::on_disconnected() {
 
     ISocketAdapter* client = static_cast<ServerSocketAdapter*>(sender());
-    QTextStream(stdout) << "client disconnected: " << client->getAddress() << endl;
+    QTextStream(stdout) << "Client disconnected: " << client->getAddress() << endl;
     m_clients.removeOne(client);
     broker->removeComponent(client);
     delete client;
@@ -53,7 +53,7 @@ void Service::initComponents() {
     ILogic* ats = new OpenMN(this);
     ILogic* local = new Local(this);
     ILogic* billing = new Onyma(this);
-    ITransport* tLocal = new ITransport(this);
+    ITransport* tLocal = new TransportLocal(this);
 
     broker->addComponent(ats);
     broker->addComponent(local);

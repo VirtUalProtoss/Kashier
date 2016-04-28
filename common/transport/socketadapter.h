@@ -13,6 +13,7 @@ public:
       virtual void sendString(const QString& str);
 public slots:
       void on_send(QString);
+      void disconnect();
 protected slots:
       void on_readyRead();
       void on_disconnected();

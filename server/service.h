@@ -10,6 +10,7 @@
 #include "../common/logic/ats/openmn.h"
 #include "../common/logic/local/local.h"
 #include "../common/queue/queuebroker.h"
+#include "../common/transport/transportlocal.h"
 #include "serversocketadapter.h"
 
 class QTcpServer;

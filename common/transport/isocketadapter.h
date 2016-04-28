@@ -13,6 +13,7 @@ public:
     virtual void sendString(const QString& str) = 0;
     bool isLocal();
     virtual bool isConnected();
+
 signals:
     void message(QString text);
     void disconnected();

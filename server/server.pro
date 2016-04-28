@@ -35,7 +35,8 @@ SOURCES += main.cpp \
     ../common/queue/iqueuebroker.cpp \
     ../common/queue/packet.cpp \
     ../common/queue/messagebuilder.cpp \
-    ../common/queue/subscribe.cpp
+    ../common/queue/subscribe.cpp \
+    ../common/transport/transportlocal.cpp
 
 HEADERS += \
     ../common/logic/billing/onyma/onyma.h \
@@ -57,4 +58,5 @@ HEADERS += \
     ../common/transport/itransport.h \
     ../common/queue/packet.h \
     ../common/queue/messagebuilder.h \
-    ../common/queue/subscribe.h
+    ../common/queue/subscribe.h \
+    ../common/transport/transportlocal.h

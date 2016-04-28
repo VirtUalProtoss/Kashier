@@ -10,6 +10,7 @@ class OpenMN : public ILogic {
     Q_OBJECT
 public:
     explicit OpenMN(QObject *parent = 0);
+    QString getName();
 
 public slots:
 };

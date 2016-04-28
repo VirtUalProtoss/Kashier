@@ -25,10 +25,13 @@ public:
     QSqlQueryModel* getTable(QString *sql, QMap<QString, QVariant> *params);
     int disconnectDB();
     bool auth(QString *username, QString *password);
+    QString getName();
+    void receive(IMessage *);
 
 private:
     QSqlDatabase db = QSqlDatabase::addDatabase("QOCI", "onyma");
     bool authentificated = false;
+    bool connected = false;
 
 signals:
     void message(QString);

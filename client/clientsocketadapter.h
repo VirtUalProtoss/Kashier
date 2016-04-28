@@ -11,6 +11,7 @@ public:
     bool isLocal();
     bool isConnected();
     QString getName();
+    void send(QString);
 public slots:
     void disconnect();
 private:
