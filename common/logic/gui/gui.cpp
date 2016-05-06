@@ -32,3 +32,7 @@ void GUI::addWindow(QMainWindow *window) {
 void GUI::addWindow(QDialog *window) {
     m_dialogs.append(window);
 }
+
+void GUI::receive(IMessage *msg) {
+    qDebug() << "GUI" << getName() << "receive message" << msg->toString();
+}

@@ -19,6 +19,7 @@ public:
 
     void addWindow(QMainWindow *window);
     void addWindow(QDialog *window);
+    void receive(IMessage *);
 
 private:
     QList<QDialog*> m_dialogs;

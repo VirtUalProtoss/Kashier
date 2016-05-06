@@ -32,7 +32,9 @@ private:
     QSqlDatabase db = QSqlDatabase::addDatabase("QOCI", "onyma");
     bool authentificated = false;
     bool connected = false;
+    QMap<QString, int> commandMap;
 
+    void execCommand(QString command, QMap<QString, QVariant> params);
 signals:
     void message(QString);
 
