@@ -20,15 +20,24 @@
 using namespace std;
 
 Onyma::Onyma(QObject *parent) : ILogic(parent) {
+    //QSqlDatabase::addDatabase("QOCI", "onyma");
+    //db = QSqlDatabase::addDatabase("QPSQL", "onyma");
     if (!connected)
         connectDB();
 }
 
 int Onyma::connectDB() {
+
+    /*
     db.setHostName("10.110.32.148");
     db.setDatabaseName("onyma");
     db.setUserName("onyma_api");
     db.setPassword("onyma_api");
+    */
+    db.setHostName("localhost");
+    db.setDatabaseName("proman");
+    db.setUserName("proman");
+    db.setPassword("proman_proman");
     connected = db.open();
     if (!connected) {
         QSqlError msgError = db.lastError();
@@ -37,7 +46,8 @@ int Onyma::connectDB() {
     }
     QString username = "s.sobolevskiy";
     QString password = "NjgZYX3J";
-    auth(&username, &password);
+    //authentificated = auth(&username, &password);
+
     return 0;
 }
 
@@ -61,10 +71,10 @@ QSqlQueryModel* Onyma::getTable(QString *sql, QMap<QString, QVariant> *params) {
 
 
     QSqlQueryModel *model = new QSqlQueryModel();
-    query.exec();
-    //qDebug() << query.executedQuery();
+    query.exec(QString("select * from test_table"));
+    qDebug() << query.executedQuery();
     model->setQuery(query);
-    /*
+
     if (query.isSelect()) {
     while (query.next()) {
         QSqlRecord row = query.record();
@@ -77,7 +87,7 @@ QSqlQueryModel* Onyma::getTable(QString *sql, QMap<QString, QVariant> *params) {
     } else {
         qDebug() << "Not select!";
     }
-    */
+
     qDebug() << "Fetched rows:" << model->rowCount();
     return model;
 }
@@ -102,6 +112,7 @@ QString Onyma::getName() {
 
 void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
     qDebug() << "Command:" << command << "Params:" << params;
+
     QString pays_sql = "\
         select * \
         from ( \
@@ -151,6 +162,7 @@ void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
             %2 \
     ";
 
+    pays_sql = "select * from test_table";
 
     if (command == "getPayments") {
         QString param1;
@@ -160,8 +172,20 @@ void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
         pays_sql = pays_sql.arg(param1);
         pays_sql = pays_sql.arg("");
     }
-    //qDebug() << pays_sql;
-    getTable(&pays_sql, &params);
+    qDebug() << pays_sql;
+    QSqlQueryModel *model = getTable(&pays_sql, &params);
+
+
+    //MessageBuilder* msgBuild = new MessageBuilder();
+    //msgBuild->setType(QString("Reply"));
+    //msgBuild->setSender(getName());
+    //msgBuild->setHash(params["hash"]);
+    IMessage* msg = new IMessage();
+    msg->setHash(params["hash"].toString());
+    msg->setSender(getName());
+    //msg->setType(QString("Reply"));
+    //QString("Onyma"), QString("search"), params);
+    emit message(msg);
 }
 
 void Onyma::receive(IMessage *msg) {
@@ -182,6 +206,7 @@ void Onyma::receive(IMessage *msg) {
                 value = pArr[1];
             params[key] = value;
         }
+        params["hash"] = msg->getHash();
         execCommand(command, params);
     }
 }

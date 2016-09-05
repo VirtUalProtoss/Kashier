@@ -42,13 +42,14 @@ void MainWindow::on_btnPay_clicked() {
         pWnd->show();
     else
         statusbar->showMessage(trUtf8("Нужно ввести сумму платежа!"));
+
 }
 
 void MainWindow::on_btnPaymentsWInfoRefresh_clicked() {
     statusbar->showMessage("Обновляю список платежей...");
     QMap<QString, QVariant> params;
     params["ab.mdate"] = "to_date('" + edtPaymentsDate->date().toString("yyyy-MM-dd") + "', 'yyyy-mm-dd')";
-    params["ab.operid"] = cmbPayOperator->currentText().length() > 0 ? cmbPayOperator->currentText() : "27471"; // 27452
+    params["ab.operid"] = cmbPayOperator->currentText().length() > 0 ? cmbPayOperator->currentText() : "34491"; // 27452
     MessageBuilder* msgBuild = new MessageBuilder(this);
     msgBuild->setType(QString("Query"));
     msgBuild->setSender(getName());

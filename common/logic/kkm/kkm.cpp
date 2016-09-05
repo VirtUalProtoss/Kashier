@@ -152,8 +152,8 @@ QString errorCodes[200] = {
 
 KKM::KKM(QObject *parent) : ILogic(parent) {
     // Test!
-    serialPort->setPortName(serialPortName);
-    serialPort->setBaudRate(serialPortBaudRate);
+    //serialPort->setPortName(serialPortName);
+    //serialPort->setBaudRate(serialPortBaudRate);
     //int oRes = openSerialPort();
     //if (oRes != 0)
     //    return;
@@ -324,11 +324,12 @@ QByteArray KKM::int2char(int value, int length=4, int base=10) {
         break;
     }
     */
+    for (int i=0; i<length; i++) {
+        str[i] = 0;
+    }
     QByteArray *bytes = new QByteArray(str);
-    if (bytes->size() < length) {
-        for (int i; i < length-bytes->size()+1; i++) {
-            bytes->append('0');
-        }
+    for(int i = 0; i != sizeof(value); ++i) {
+        bytes->append((char)((value & (0xFF << (i*8))) >> (i*8)));
     }
 
     return *bytes;
@@ -352,9 +353,9 @@ bool KKM::execCommand(int code, QMap<QString, QVariant> &params) {
 
     //serialPort->write(msgBytes);
     qDebug() << "sended: " << msgBytes << msgBytes.toHex() << endl;
-    int timeout = commands[code].timeout;
-    QByteArray reply = read(timeout);
-    qDebug() << "received: " << reply << " timeout: " << timeout << endl;
+    //int timeout = commands[code].timeout;
+    //QByteArray reply = read(timeout);
+    //qDebug() << "received: " << reply << " timeout: " << timeout << endl;
     return true;
 }
 

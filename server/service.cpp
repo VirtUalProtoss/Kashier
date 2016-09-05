@@ -28,6 +28,7 @@ void Service::on_newConnection() {
     //connect(pSockHandle, SIGNAL(message(QString)), SLOT(on_message(QString)));
     connect(pSockHandle, SIGNAL(message(QString)), broker, SLOT(receive(QString)));
     connect(broker, SIGNAL(network_message(QString)), pSockHandle, SLOT(on_send(QString)));
+    //connect(broker, SIGNAL(network_message(QString)), pSockHandle, SLOT(send(*IMessage)));
 
     QStringList subscribes;
     subscribes << QString(pSockHandle->getName() + ":Broker;Message<Broker>;Local:Broker;Persist");

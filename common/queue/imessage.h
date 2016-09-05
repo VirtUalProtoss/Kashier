@@ -20,6 +20,8 @@ public:
     virtual void setSender(QString sender);
     virtual void setTarget(QString target);
     virtual void setText(QString text);
+    virtual void setHash(QString hash);
+    virtual QString getHash();
     virtual QString getText();
     virtual QString getType();
     virtual QString getSender();
@@ -34,6 +36,7 @@ public slots:
 private:
     QString m_sender;
     QString m_target;
+    QString m_hash;
     IMessageType* m_type;
     IMessageBody* m_body;
     QString m_text;

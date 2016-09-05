@@ -28,6 +28,16 @@ void IMessage::setText(QString text) {
     m_text = text;
 }
 
+void IMessage::setHash(QString hash)
+{
+    m_hash = hash;
+}
+
+QString IMessage::getHash()
+{
+    return m_hash;
+}
+
 QString IMessage::getText() {
     return m_text;
 }

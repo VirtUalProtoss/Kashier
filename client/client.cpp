@@ -13,7 +13,7 @@ void Client::publishComponents() {
 }
 
 void Client::initComponents() {
-    ILogic* kkm = new KKM(this);
+    KKM* kkm = new KKM(this);
     ILogic* local = new Local(this);
     ILogic* gui = new GUI(this);
     ITransport* tLocal = new TransportLocal(this);
@@ -29,6 +29,8 @@ void Client::initComponents() {
     connect(broker, SIGNAL(network_message(QString)), pSock, SLOT(on_send(QString)));
     connect(pSock, SIGNAL(disconnected()), pSock, SLOT(disconnect()));
     connect(pSock, SIGNAL(message(QString)), broker, SLOT(receive(QString)));
+
+    //kkm->beep();
 }
 
 void Client::prepareSubcribes() {

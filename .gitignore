@@ -12,3 +12,4 @@ bin/*
 code/*
 code/
 *.*~
+*.pro.user.*

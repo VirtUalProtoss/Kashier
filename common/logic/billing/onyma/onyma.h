@@ -14,6 +14,7 @@
 
 #include "../../ilogic.h"
 
+#include "../common/queue/messagebuilder.h"
 
 class Onyma : public ILogic {
     Q_OBJECT
@@ -29,7 +30,7 @@ public:
     void receive(IMessage *);
 
 private:
-    QSqlDatabase db = QSqlDatabase::addDatabase("QOCI", "onyma");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL", "onyma");
     bool authentificated = false;
     bool connected = false;
     QMap<QString, int> commandMap;
@@ -37,6 +38,7 @@ private:
     void execCommand(QString command, QMap<QString, QVariant> params);
 signals:
     void message(QString);
+    void message(IMessage*);
 
 public slots:
 };
