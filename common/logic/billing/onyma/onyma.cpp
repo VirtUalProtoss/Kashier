@@ -44,8 +44,8 @@ int Onyma::connectDB() {
         qDebug() << "error open db" << msgError.text() << endl;
         return 1;
     }
-    QString username = "s.sobolevskiy";
-    QString password = "NjgZYX3J";
+    //QString username = "s.sobolevskiy";
+    //QString password = "NjgZYX3J";
     //authentificated = auth(&username, &password);
 
     return 0;
@@ -180,12 +180,12 @@ void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
     //msgBuild->setType(QString("Reply"));
     //msgBuild->setSender(getName());
     //msgBuild->setHash(params["hash"]);
-    IMessage* msg = new IMessage();
-    msg->setHash(params["hash"].toString());
-    msg->setSender(getName());
+    //IMessage* msg = new IMessage();
+    //msg->setHash(params["hash"].toString());
+    //msg->setSender(getName());
     //msg->setType(QString("Reply"));
     //QString("Onyma"), QString("search"), params);
-    emit message(msg);
+    //emit message(msg);
 }
 
 void Onyma::receive(IMessage *msg) {
