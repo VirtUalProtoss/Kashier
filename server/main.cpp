@@ -10,5 +10,5 @@ int main(int argc, char *argv[]) {
     service.initComponents();
     service.prepareSubcribes();
 
-    app.exec();
+    return app.exec();
 }

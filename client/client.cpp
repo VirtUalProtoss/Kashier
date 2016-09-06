@@ -35,7 +35,7 @@ void Client::initComponents() {
 
 void Client::prepareSubcribes() {
 
-    QString netAddr = QString("127.0.0.1");
+    QString netAddr = QString("10.19.205.9");
     if (pSock->isConnected()) {
         netAddr = pSock->getAddress();
     }

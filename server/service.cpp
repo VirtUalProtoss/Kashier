@@ -68,9 +68,9 @@ void Service::initComponents() {
 
 void Service::prepareSubcribes() {
     QStringList subscribes;
-    //subscribes << QString("Local:Broker;Message;Local:Broker;Persist");
+    subscribes << QString("Local:Broker;Message;Local:Broker;Persist");
     //subscribes << QString("Local:Billing;Query:Billing;Network<" + netAddr + ">:Billing;Persist");
-    //subscribes << QString("Network:Billing;Reply;Local:Local;Persist");
+    subscribes << QString("Network:Billing;Reply;Local:Local;Persist");
     //subscribes << QString("Local:KKM;Reply;Local:Local;Persist");
     foreach (QString subscribe, subscribes)
         broker->addSubscribe(subscribe);

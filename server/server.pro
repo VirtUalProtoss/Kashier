@@ -12,7 +12,10 @@ DESTDIR  = ../bin
 
 CONFIG += c++11
 
+CONFIG(release, release): DEFINES += QT_NO_DEBUG_OUTPUT
+
 QT += network sql
+QT -= gui
 
 # Input
 SOURCES += main.cpp \
