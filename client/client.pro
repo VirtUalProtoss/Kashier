@@ -1,5 +1,5 @@
 
-QT       += gui network
+QT       += gui network serialport
 equals(QT_MAJOR_VERSION, 4): QT -= serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
