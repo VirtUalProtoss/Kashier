@@ -3,12 +3,14 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = server
+#TARGET = server
 DEPENDPATH += .
 INCLUDEPATH += .
 
+include(../../../QxOrm/QxOrm.pri)
+
 OBJECTS_DIR = _build
-DESTDIR  = ../bin
+DESTDIR  = ../../bin
 
 CONFIG += c++11
 
@@ -16,6 +18,21 @@ CONFIG(release, release): DEFINES += QT_NO_DEBUG_OUTPUT
 
 QT += network sql
 QT -= gui
+
+INCLUDEPATH += ../../../QxOrm/include/
+LIBS += -L"../../lib"
+
+!contains(DEFINES, _QX_NO_PRECOMPILED_HEADER) {
+PRECOMPILED_HEADER = ./precompiled.h
+} # !contains(DEFINES, _QX_NO_PRECOMPILED_HEADER)
+
+CONFIG(debug, debug|release) {
+TARGET = serverd
+LIBS += -l"QxOrmd"
+} else {
+TARGET = server
+LIBS += -l"QxOrm"
+} # CONFIG(debug, debug|release)
 
 # Input
 SOURCES += main.cpp \
@@ -39,7 +56,8 @@ SOURCES += main.cpp \
     ../common/queue/packet.cpp \
     ../common/queue/messagebuilder.cpp \
     ../common/queue/subscribe.cpp \
-    ../common/transport/transportlocal.cpp
+    ../common/transport/transportlocal.cpp \
+    ../common/logic/billing/onyma/orm/api_dog_list.cpp
 
 HEADERS += \
     ../common/logic/billing/onyma/onyma.h \
@@ -62,4 +80,7 @@ HEADERS += \
     ../common/queue/packet.h \
     ../common/queue/messagebuilder.h \
     ../common/queue/subscribe.h \
-    ../common/transport/transportlocal.h
+    ../common/transport/transportlocal.h \
+    ../common/logic/billing/onyma/orm/api_dog_list.h \
+    precompiled.h \
+    export.h
