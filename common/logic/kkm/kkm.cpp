@@ -200,8 +200,6 @@ QByteArray KKM::read(int timeout) {
     return readData;
 }
 
-
-
 bool KKM::initConnection(int retryCount=10) {
     if (retryCount < 0) {
         QByteArray data;
@@ -290,40 +288,6 @@ void KKM::getMessageBytes(int code, QByteArray &message, QByteArray &bytes) {
 
 QByteArray KKM::int2char(int value, int length=4, int base=10) {
     char *str = new char[length];
-    /*
-    switch (base) {
-        case 8:
-            sprintf(str, "%s %02o", value);
-        break;
-        case 10: {
-                int ecount = value/256;
-
-                if (ecount > 0) {
-                    char arr[ecount];
-                    for (int i=0; i < ecount; i++) {
-                        if (i==ecount-1)
-                            arr[i] = value%256+'0';
-                        else
-                            arr[i] = 0xff+'0';
-                    };
-                    strcpy(str, arr);
-                }
-                else {
-                    int val = value % 256;
-                    char  vhex = (val & 0x00)+'0';
-                    strcpy(str, &vhex);
-                    qDebug() << val << vhex << endl;
-                }
-            }
-        break;
-        case 16:
-            sprintf(str, "%s %02x", value);
-        break;
-        default:
-            sprintf(str, "%s %02d", value);
-        break;
-    }
-    */
     for (int i=0; i<length; i++) {
         str[i] = 0;
     }
@@ -358,8 +322,3 @@ bool KKM::execCommand(int code, QMap<QString, QVariant> &params) {
     //qDebug() << "received: " << reply << " timeout: " << timeout << endl;
     return true;
 }
-
-
-
-
-

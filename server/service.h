@@ -5,12 +5,14 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+#include "../common/queue/queuebroker.h"
+
 #include "../common/logic/ilogic.h"
 #include "../common/logic/billing/onyma/onyma.h"
 #include "../common/logic/ats/openmn.h"
 #include "../common/logic/local/local.h"
-#include "../common/queue/queuebroker.h"
 #include "../common/transport/transportlocal.h"
+
 #include "serversocketadapter.h"
 
 class QTcpServer;

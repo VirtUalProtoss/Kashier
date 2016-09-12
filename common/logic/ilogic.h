@@ -18,8 +18,8 @@ public:
     virtual void receive(IMessage*);
 
 signals:
-    virtual void message(QString);
-    virtual void message(IMessage*);
+    void message(QString);
+    void message(IMessage*);
 
 public slots:
     void emit_message(IMessage*);

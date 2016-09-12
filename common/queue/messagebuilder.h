@@ -16,6 +16,7 @@ public:
     void setType(QString type);
     IMessage* getMessage(QString target, QString command, QMap<QString, QVariant> params);
     void setSender(QString sender);
+    void setText(QString text);
 signals:
 
 public slots:

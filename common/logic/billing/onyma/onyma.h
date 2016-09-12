@@ -17,6 +17,9 @@
 #include "../common/queue/messagebuilder.h"
 #include "../common/queue/imessage.h"
 
+#include "orm/test_table.h"
+
+
 class Onyma : public ILogic {
     Q_OBJECT
 

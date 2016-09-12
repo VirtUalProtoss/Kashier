@@ -53,7 +53,7 @@ void MainWindow::on_btnPaymentsWInfoRefresh_clicked() {
     MessageBuilder* msgBuild = new MessageBuilder(this);
     msgBuild->setType(QString("Query"));
     msgBuild->setSender(getName());
-    emit message(msgBuild->getMessage(QString("Onyma"), QString("getPayments"), params));
+    emit message(msgBuild->getMessage(QString("Billing"), QString("getPayments"), params));
     statusbar->showMessage("");
 }
 
@@ -62,8 +62,6 @@ void MainWindow::on_viewPayments_doubleClicked() {
     statusbar->showMessage(idx.data().toString());
     //tabWidget->setCurrentIndex(0);
 }
-
-
 
 void MainWindow::on_btnSearch_clicked() {
     search();

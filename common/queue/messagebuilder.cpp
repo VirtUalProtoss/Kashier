@@ -17,6 +17,11 @@ void MessageBuilder::setSender(QString sender) {
     message->setSender(sender);
 }
 
+void MessageBuilder::setText(QString text)
+{
+    message->setText(text);
+}
+
 IMessage* MessageBuilder::getMessage(QString target, QString command, QMap<QString, QVariant> params) {
     //setType(QString("Query") + "<" + target + ">");
     message->setTarget(target);

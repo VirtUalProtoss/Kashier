@@ -14,7 +14,7 @@ DESTDIR  = ../../bin
 
 CONFIG += c++11
 
-CONFIG(release, release): DEFINES += QT_NO_DEBUG_OUTPUT
+#CONFIG(release, release): DEFINES += QT_NO_DEBUG_OUTPUT
 
 QT += network sql
 QT -= gui
@@ -22,15 +22,17 @@ QT -= gui
 INCLUDEPATH += ../../../QxOrm/include/
 LIBS += -L"../../lib"
 
+#QT_MESSAGE_PATTERN="%{file} %{line} %{message}"
+
 !contains(DEFINES, _QX_NO_PRECOMPILED_HEADER) {
 PRECOMPILED_HEADER = ./precompiled.h
 } # !contains(DEFINES, _QX_NO_PRECOMPILED_HEADER)
 
 CONFIG(debug, debug|release) {
-TARGET = serverd
+TARGET = kashier-daemond
 LIBS += -l"QxOrmd"
 } else {
-TARGET = server
+TARGET = kashier-daemon
 LIBS += -l"QxOrm"
 } # CONFIG(debug, debug|release)
 
@@ -57,7 +59,8 @@ SOURCES += main.cpp \
     ../common/queue/messagebuilder.cpp \
     ../common/queue/subscribe.cpp \
     ../common/transport/transportlocal.cpp \
-    ../common/logic/billing/onyma/orm/api_dog_list.cpp
+    ../common/logic/billing/onyma/orm/api_dog_list.cpp \
+    ../common/logic/billing/onyma/orm/test_table.cpp
 
 HEADERS += \
     ../common/logic/billing/onyma/onyma.h \
@@ -83,4 +86,5 @@ HEADERS += \
     ../common/transport/transportlocal.h \
     ../common/logic/billing/onyma/orm/api_dog_list.h \
     precompiled.h \
-    export.h
+    export.h \
+    ../common/logic/billing/onyma/orm/test_table.h

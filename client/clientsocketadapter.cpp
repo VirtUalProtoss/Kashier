@@ -7,7 +7,7 @@
 
 ClientSocketAdapter::ClientSocketAdapter(QObject *parent) : SocketAdapter(parent) {
     // TODO: replace this to set params from config (ini file)
-    m_ptcpSocket->connectToHost("192.168.0.11", 8765);
+    m_ptcpSocket->connectToHost("127.0.0.1", 8765);
     if (m_ptcpSocket->waitForConnected(1000)) {
          connected = true;
          setName(QString("Network<" + getAddress() + QString(">")));
@@ -15,8 +15,7 @@ ClientSocketAdapter::ClientSocketAdapter(QObject *parent) : SocketAdapter(parent
 }
 
 QString ClientSocketAdapter::getAddress() {
-    //QString addr = m_ptcpSocket->peerAddress().toString();
-    QString addr = m_ptcpSocket->localAddress().toString();
+    QString addr = m_ptcpSocket->localAddress().toString() + ":" + QString(m_ptcpSocket->localPort());
     return addr;
 }
 

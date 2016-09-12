@@ -11,8 +11,6 @@ Service::Service(int nPort, QObject *parent) : QObject(parent), broker(new Queue
 }
 
 void Service::on_newConnection() {
-
-
     QTcpSocket* pclientSock = m_ptcpServer->nextPendingConnection();
     ISocketAdapter *pSockHandle = new ServerSocketAdapter(pclientSock);
 
@@ -25,10 +23,9 @@ void Service::on_newConnection() {
     //pSockHandle->sendString("connect");
 
     connect(pSockHandle, SIGNAL(disconnected()), SLOT(on_disconnected()));
-    //connect(pSockHandle, SIGNAL(message(QString)), SLOT(on_message(QString)));
     connect(pSockHandle, SIGNAL(message(QString)), broker, SLOT(receive(QString)));
-    connect(broker, SIGNAL(network_message(QString)), pSockHandle, SLOT(on_send(QString)));
-    //connect(broker, SIGNAL(network_message(QString)), pSockHandle, SLOT(send(*IMessage)));
+    connect(pSockHandle, SIGNAL(message(QString)), SLOT(on_message(QString)));
+    connect(broker, SIGNAL(network_message(QString)), pSockHandle, SLOT(on_send(QString))); // broadcast messages
 
     QStringList subscribes;
     subscribes << QString(pSockHandle->getName() + ":Broker;Message<Broker>;Local:Broker;Persist");
@@ -47,13 +44,18 @@ void Service::on_disconnected() {
 }
 
 void Service::on_message(QString msg) {
-    qDebug() << ((ServerSocketAdapter*)sender())->getAddress() << ":" << msg;
+    ServerSocketAdapter *target = (ServerSocketAdapter*)sender();
+    qDebug() << target->getAddress() << ":" << msg;
+    target->sendString(msg);
 }
 
 void Service::initComponents() {
+    qDebug() << "Service::initComponents()";
+
     ILogic* ats = new OpenMN(this);
     ILogic* local = new Local(this);
     ILogic* billing = new Onyma(this);
+    //connect(billing, SIGNAL(message(IMessage*)), billing, SLOT(emit_message(IMessage*)));
     ITransport* tLocal = new TransportLocal(this);
 
     broker->addComponent(ats);
@@ -64,12 +66,14 @@ void Service::initComponents() {
     broker->addComponentMap(tLocal, ats);
     broker->addComponentMap(tLocal, billing);
     broker->addComponentMap(tLocal, local);
+
 }
 
 void Service::prepareSubcribes() {
     QStringList subscribes;
     subscribes << QString("Local:Broker;Message;Local:Broker;Persist");
-    //subscribes << QString("Local:Billing;Query:Billing;Network<" + netAddr + ">:Billing;Persist");
+    subscribes << QString("Local:Billing;Query:Billing;Network:Billing;Persist");
+    subscribes << QString("Local:Billing;Reply;Local:Local;Persist");
     subscribes << QString("Network:Billing;Reply;Local:Local;Persist");
     //subscribes << QString("Local:KKM;Reply;Local:Local;Persist");
     foreach (QString subscribe, subscribes)

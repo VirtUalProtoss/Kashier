@@ -9,5 +9,5 @@ ServerSocketAdapter::ServerSocketAdapter(QTcpSocket* pSock, QObject *parent) :
 
 QString ServerSocketAdapter::getAddress() {
     m_ptcpSocket->IPv4Protocol;
-    return m_ptcpSocket->peerAddress().toString(); //toString();
+    return m_ptcpSocket->peerAddress().toString() + ":" + QString(m_ptcpSocket->peerPort());
 }

@@ -24,6 +24,9 @@ Onyma::Onyma(QObject *parent) : ILogic(parent) {
     //db = QSqlDatabase::addDatabase("QPSQL", "onyma");
     if (!connected)
         connectDB();
+    //QMap<QString, QVariant> params;
+    //execCommand("getPayments", params);
+    //connect(SIGNAL(message(IMessage*)), SLOT(emit_message(IMessage*)));
 }
 
 int Onyma::connectDB() {
@@ -34,7 +37,8 @@ int Onyma::connectDB() {
     db.setUserName("onyma_api");
     db.setPassword("onyma_api");
     */
-    db.setHostName("localhost");
+    /*
+    db.setHostName("192.168.0.10");
     db.setDatabaseName("proman");
     db.setUserName("proman");
     db.setPassword("proman_proman");
@@ -44,9 +48,16 @@ int Onyma::connectDB() {
         qDebug() << "error open db" << msgError.text() << endl;
         return 1;
     }
+    */
     //QString username = "s.sobolevskiy";
     //QString password = "NjgZYX3J";
     //authentificated = auth(&username, &password);
+
+    qx::QxSqlDatabase::getSingleton()->setDriverName("QPSQL");
+    qx::QxSqlDatabase::getSingleton()->setDatabaseName("proman");
+    qx::QxSqlDatabase::getSingleton()->setHostName("192.168.0.10");
+    qx::QxSqlDatabase::getSingleton()->setUserName("proman");
+    qx::QxSqlDatabase::getSingleton()->setPassword("proman_proman");
 
     return 0;
 }
@@ -107,61 +118,34 @@ bool Onyma::auth(QString *username, QString *password) {
 }
 
 QString Onyma::getName() {
-    return QString("Onyma");
+    return QString("Billing");
+}
+
+QString test() {
+
+    QSqlError daoError; // = qx::dao::delete_all<test_table>();
+    test_table_ptr test_table_1; test_table_1.reset(new test_table());
+
+    //test_table_1->m_dogid = 12345678901;
+    //test_table_1->m_name = "test_dog1";
+    //daoError = qx::dao::insert(test_table_1);
+
+    //qx::QxSqlQuery query("WHERE test_table.dogid = :dogid");
+    //query.bind(":dogid", test_table_1->m_dogid);
+
+    list_test_table lst_tt;
+    //daoError = qx::dao::fetch_by_query(query, lst_tt);
+    daoError = qx::dao::fetch_all(lst_tt);
+    QString sDump;
+    sDump = qx::serialization::json::to_string(lst_tt);
+
+    return sDump;
 }
 
 void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
     qDebug() << "Command:" << command << "Params:" << params;
 
-    QString pays_sql = "\
-        select * \
-        from ( \
-            select \
-                pays.* \
-                , decode( \
-                    pays.bcid, \
-                    0, decode(pays.vdog, 'Интернет', 1, 'Телевидение', 1, -1), \
-                    24, decode(pays.vdog, 'Телефония', 2, 'LM', 3, 'Канал связи', 3, 'Прочие услуги НТ', 3, -1), \
-                    25, decode(pays.vdog, 'Телефония', 2, -1), \
-                    23, decode(pays.vdog, 'Телефония', 2, -1), \
-                    22, decode(pays.vdog, 'Телефония', 5, -1), \
-                    29, decode(pays.vdog, 'Телефония', 4, -1), \
-                    26, decode(pays.vdog, 'Телефония', 6, -1), \
-                    27, decode(pays.vdog, 'Телефония', 7, -1), \
-                    -1 \
-                ) section \
-            from ( \
-                select \
-                    nvl(ab.cdate, ab.mdate) cdate \
-                    , ab.billid \
-                    , ab.mdate \
-                    , round(ab.amount, 2) amount \
-                    , ab.ntype \
-                    , abt.remark bill_type \
-                    , ab.bcid \
-                    , ab.operid \
-                    , ao.name oper_name \
-                    , ab.dogid \
-                    , adl.dogcode \
-                    , adl.utid \
-                    , ab.rmrk rmrk \
-                    , nvl(api_func.get_add_dog_attrib(ab.dogid, 364, sysdate), 'Интернет') vdog \
-                    , decode(adl.utid, 25, api_func.get_add_dog_attrib(adl.dogid, 291, sysdate), 26, api_func.get_add_dog_attrib(adl.dogid, 12, sysdate)) client \
-                    , round(nvl(api_func.get_remainder(adl.dogid, sysdate), 0.0), 2) remainder \
-                from api_dogpayment ab \
-                join api_dog_list adl on ab.dogid = adl.dogid \
-                join api_bill_type abt on ab.ntype = abt.ntype \
-                join api_operators ao on ab.operid = ao.operid \
-                where \
-                    1 = 1 \
-                    %1 \
-            ) pays \
-        ) \
-        where \
-            1 = 1 \
-            %2 \
-    ";
-
+    /*
     pays_sql = "select * from test_table";
 
     if (command == "getPayments") {
@@ -174,18 +158,24 @@ void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
     }
     qDebug() << pays_sql;
     QSqlQueryModel *model = getTable(&pays_sql, &params);
+    */
 
-
-    //MessageBuilder* msgBuild = new MessageBuilder();
-    //msgBuild->setType(QString("Reply"));
-    //msgBuild->setSender(getName());
+    MessageBuilder* msgBuild = new MessageBuilder();
+    msgBuild->setType(QString("Reply"));
+    msgBuild->setSender(getName());
     //msgBuild->setHash(params["hash"]);
-    //IMessage* msg = new IMessage();
+    //IMessage *msg = new IMessage();
     //msg->setHash(params["hash"].toString());
     //msg->setSender(getName());
     //msg->setType(QString("Reply"));
     //QString("Onyma"), QString("search"), params);
+    QString result = test();
+    qDebug("%s", qPrintable(result));
+    msgBuild->setText(result);
     //emit message(msg);
+    IMessage *msg = msgBuild->getMessage(params["target"].toString(), QString("getPayments"), params);
+    emit message(msg);
+    //test();
 }
 
 void Onyma::receive(IMessage *msg) {
@@ -207,6 +197,7 @@ void Onyma::receive(IMessage *msg) {
             params[key] = value;
         }
         params["hash"] = msg->getHash();
+        params["target"] = msg->getSender();
         execCommand(command, params);
     }
 }

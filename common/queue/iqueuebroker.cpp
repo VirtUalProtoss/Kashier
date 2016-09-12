@@ -14,7 +14,7 @@ void IQueueBroker::receive(IMessage *message) {
 }
 
 void IQueueBroker::receive(QString message) {
-
+    qDebug() << "IQueueBroker::receive(QString message)" << message;
 }
 
 void IQueueBroker::startBroking() {

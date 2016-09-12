@@ -5,11 +5,15 @@ equals(QT_MAJOR_VERSION, 4): QT -= serialport
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TEMPLATE = app
-TARGET = client
+CONFIG(debug, debug|release) {
+    TARGET = kashierd
+} else {
+    TARGET = kashier
+}
 DEPENDPATH += .
 INCLUDEPATH += .
 OBJECTS_DIR = _build
-DESTDIR  = ../bin
+DESTDIR  = ../../bin
 
 CONFIG += c++11
 

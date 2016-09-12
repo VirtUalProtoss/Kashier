@@ -21,6 +21,7 @@ public:
     virtual void setTarget(QString target);
     virtual void setText(QString text);
     virtual void setHash(QString hash);
+    virtual bool needResponce() { return false; }
     virtual QString getHash();
     virtual QString getText();
     virtual QString getType();
