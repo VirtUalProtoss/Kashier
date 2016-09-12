@@ -8,6 +8,7 @@ data/
 dist/
 project/*
 bin/*
+lib/*
 *.bz2
 code/*
 code/
