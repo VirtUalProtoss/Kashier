@@ -14,9 +14,9 @@ void Client::publishComponents() {
 
 void Client::initComponents() {
     KKM* kkm = new KKM(this);
-    ILogic* local = new Local(this);
-    ILogic* gui = new GUI(this);
-    ITransport* tLocal = new TransportLocal(this);
+    Local* local = new Local(this);
+    GUI* gui = new GUI(this);
+    TransportLocal* tLocal = new TransportLocal(this);
     broker->addComponent(kkm);
     broker->addComponent(local);
     broker->addComponent(gui);
@@ -33,13 +33,19 @@ void Client::initComponents() {
     //kkm->beep();
 }
 
+void Client::disconnect() {
+    ;
+}
+
 void Client::prepareSubcribes() {
 
     QString netAddr = QString("127.0.0.1");
     if (pSock->isConnected()) {
         netAddr = pSock->getAddress();
     }
+
     qDebug() << netAddr;
+
     QStringList subscribes;
     subscribes << QString("Network<" + netAddr + ">:Broker;Message<Broker>;Local:Broker;Persist");
     subscribes << QString("Local:GUI<MainWindow>;Query:Billing;Network<" + netAddr + ">:Billing;Persist");

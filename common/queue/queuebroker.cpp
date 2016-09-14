@@ -1,7 +1,7 @@
 #include "queuebroker.h"
 
-QueueBroker::QueueBroker(QObject *parent) : IQueueBroker(parent) {
-
+QueueBroker::QueueBroker(QObject *parent) : QObject(parent) {
+    ;
 }
 
 void QueueBroker::putMessage(IMessage *message) {

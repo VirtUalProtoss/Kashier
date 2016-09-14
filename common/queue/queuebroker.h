@@ -2,23 +2,23 @@
 #define QUEUEBROKER_H
 
 #include <QDebug>
+#include <QObject>
 
-#include "iqueuebroker.h"
 #include "imessage.h"
 #include "query.h"
 #include "packet.h"
 #include "messagebuilder.h"
 #include "subscribe.h"
 
+#include "../logic/ilogic.h"
+#include "../transport/itransport.h"
 
-class QueueBroker : public IQueueBroker {
 
+class QueueBroker : public QObject {
+    Q_OBJECT
 public:
-    QueueBroker(QObject *parent);
+    explicit QueueBroker(QObject *parent);
     void putMessage(IMessage* message);
-    //void send(IMessage* message);
-    //void receive(IMessage* message);
-
     void startBroking();
     void addSubscribe(QString &subscribe);
     void addComponent(ILogic* component);
@@ -56,13 +56,15 @@ private:
     IMessage* getMessage(QString &messageType);
 
     void registerRemoteComponents(IMessage *msg, QString srcTransport);
+    void routeMessage(IMessage *msg, QString srcTransport);
+    bool matchMap(QString src, QString dest);
+
 public slots:
     void send(IMessage *message);
     void receive(IMessage *message);
     void receive(QString message);
-protected:
-    void routeMessage(IMessage *msg, QString srcTransport);
-    bool matchMap(QString src, QString dest);
+signals:
+    void network_message(QString);
 };
 
 #endif // QUEUEBROKER_H

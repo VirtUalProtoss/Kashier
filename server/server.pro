@@ -54,7 +54,6 @@ SOURCES += main.cpp \
     ../common/queue/queuebroker.cpp \
     ../common/logic/ilogic.cpp \
     ../common/transport/itransport.cpp \
-    ../common/queue/iqueuebroker.cpp \
     ../common/queue/packet.cpp \
     ../common/queue/messagebuilder.cpp \
     ../common/queue/subscribe.cpp \
@@ -74,7 +73,6 @@ HEADERS += \
     ../common/queue/imessage.h \
     ../common/queue/imessagesender.h \
     ../common/queue/imessagereceiver.h \
-    ../common/queue/iqueuebroker.h \
     ../common/queue/query.h \
     ../common/logic/local/local.h \
     ../common/queue/queuebroker.h \

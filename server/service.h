@@ -36,7 +36,7 @@ public slots:
     void on_message(QString msg);
 private:
     QList<ISocketAdapter*> m_clients;
-    IQueueBroker* broker;
+    QueueBroker* broker;
     QTcpServer* m_ptcpServer;
 };
 

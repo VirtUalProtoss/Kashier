@@ -24,9 +24,11 @@ public:
     void prepareSubcribes();
 
     void publishComponents();
+public slots:
+    void disconnect();
 protected:
     ISocketAdapter *pSock;
-    IQueueBroker* broker;
+    QueueBroker* broker;
     void registerRemoteSubscribe(QString sub);
 };
 
