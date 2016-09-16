@@ -9,13 +9,16 @@
 
 class ITransport : public QObject, public PluginInterface {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "Kashier.ITransport")
+    Q_INTERFACES(PluginInterface)
 public:
     explicit ITransport(QObject *parent = 0);
     virtual QString getAddress();
     virtual QString getName();
+    virtual void setName(QString);
     virtual bool isLocal();
     virtual void send(QString);
-    virtual void setName(QString);
+
 signals:
 
 public slots:

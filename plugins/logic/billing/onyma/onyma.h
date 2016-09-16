@@ -12,10 +12,10 @@
 #include <QDebug>
 #include <QtSql/QSqlRecord>
 
-#include "../../ilogic.h"
+#include "ilogic.h"
 
-#include "../common/queue/messagebuilder.h"
-#include "../common/queue/imessage.h"
+#include "queue/messagebuilder.h"
+#include "queue/imessage.h"
 
 #include "orm/test_table.h"
 

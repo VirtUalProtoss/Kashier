@@ -22,8 +22,12 @@ Service::Service(QObject *parent) : QObject(parent), broker(new QueueBroker(this
 void Service::loadPlugins() {
     qDebug() << "Load plugins";
     QDir dir(QCoreApplication::applicationDirPath());
-    if (false == dir.cd("../plugins")) return;
+    if (false == dir.cd("../plugins")) {
+        qDebug() << "Plugins dir not found";
+        return;
+    }
     foreach (QString fileName, dir.entryList(QDir::Files)) {
+        qDebug() << "Load plugin" << fileName;
         QPluginLoader loader(dir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
         if (nullptr == plugin) continue;
@@ -31,5 +35,6 @@ void Service::loadPlugins() {
         if (nullptr == pI) continue;
         //m_ui->methods->addItem(pI->text(), (unsigned int) pI);
         broker->addComponent(pI);
+        //qDebug() << pI->getName();
     }
 }

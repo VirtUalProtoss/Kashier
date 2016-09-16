@@ -2,7 +2,6 @@
 #define ILOGIC_H
 
 #include <QObject>
-#include <QDebug>
 
 #include "imessage.h"
 #include "plugininterface.h"
@@ -10,11 +9,13 @@
 
 class ILogic : public QObject, public PluginInterface {
     Q_OBJECT
-
+    //Q_PLUGIN_METADATA(IID "Kashier.ILogic")
+    //Q_INTERFACES(PluginInterface)
 public:
-    explicit ILogic(QObject *parent);
+    explicit ILogic(QObject *parent = 0);
+
     virtual QString getName();
-    virtual void setName(QString &name);
+    virtual void setName(QString name);
     virtual bool isPublic();
     virtual void receive(IMessage*);
 
