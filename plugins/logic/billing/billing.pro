@@ -3,6 +3,7 @@ CONFIG += c++11 plugin
 
 TEMPLATE = lib
 DESTDIR  = ../../../../bin/plugins
+DEPENDPATH += ../../../../lib
 INCLUDEPATH += . \
     ../../../common \
     ../../../common/queue \
@@ -15,12 +16,12 @@ HEADERS += onyma/onyma.h
 SOURCES += onyma/onyma.cpp
 
 CONFIG(debug, debug|release) {
-    win32: LIBS += -L../../lib/ -lKashierCommond -lQxOrmd
-    unix: LIBS += -L../../lib/ -lKashierCommond -lQxOrmd -Wl,-rpath,lib -Wl,-rpath,.
+    win32: LIBS += -L../../../../lib/ -lKashierCommond -lQxOrmd
+    unix: LIBS += -L../../../../lib/ -lKashierCommond -lQxOrmd -Wl,-rpath,lib -Wl,-rpath,.
     TARGET = logic_billing_onymad
 } else {
-    win32: LIBS += -L../../lib/ -lKashierCommon -lQxOrm
-    unix: LIBS += -L../../lib/ -lKashierCommon -lQxOrm -Wl,-rpath,lib -Wl,-rpath,.
+    win32: LIBS += -L../../../../lib/ -lKashierCommon -lQxOrm
+    unix: LIBS += -L../../../../lib/ -lKashierCommon -lQxOrm -Wl,-rpath,lib -Wl,-rpath,.
     TARGET = logic_billing_onyma
 } # CONFIG(debug, debug|release)
 
