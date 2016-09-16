@@ -22,7 +22,8 @@
 
 class Onyma : public ILogic {
     Q_OBJECT
-
+    Q_PLUGIN_METADATA(IID "Kashier.Logic.Billing.Onyma")
+    Q_INTERFACES(PluginInterface)
 public:
     explicit Onyma(QObject *parent = 0);
     int connectDB();

@@ -7,7 +7,6 @@
 CONFIG += c++11
 
 TEMPLATE = subdirs
-SUBDIRS  = \
+SUBDIRS  = common/common.pro \
     app/app.pro \
-    common/common.pro \
     plugins/plugins.pro

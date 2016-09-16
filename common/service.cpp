@@ -22,7 +22,7 @@ Service::Service(QObject *parent) : QObject(parent), broker(new QueueBroker(this
 void Service::loadPlugins() {
     qDebug() << "Load plugins";
     QDir dir(QCoreApplication::applicationDirPath());
-    if (false == dir.cd("../plugins")) {
+    if (false == dir.cd("plugins")) {
         qDebug() << "Plugins dir not found";
         return;
     }
