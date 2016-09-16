@@ -3,10 +3,11 @@
 
 #include <QObject>
 
-#include "../queue/packet.h"
+#include "packet.h"
+#include "plugininterface.h"
 
 
-class ITransport : public QObject {
+class ITransport : public QObject, public PluginInterface {
     Q_OBJECT
 public:
     explicit ITransport(QObject *parent = 0);

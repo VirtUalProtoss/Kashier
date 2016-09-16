@@ -195,6 +195,10 @@ void QueueBroker::addComponent(ITransport *component) {
     //    connect(component, SIGNAL(message(QString)), SLOT(receive(QString)));
 }
 
+void QueueBroker::addComponent(PluginInterface *component) {
+
+}
+
 QString QueueBroker::getMapName(ITransport *transport, ILogic *component) {
     QString addr = transport->getAddress();
     QString name;

@@ -8,6 +8,7 @@ CONFIG += c++11
 
 TEMPLATE = subdirs
 SUBDIRS  = \
-    app/app.pro \
-    common/common.pro \
-    plugins/plugins.pro
+    transport/transport.pro \
+    logic/logic.pro \
+    db/orm.pro \
+    db/simple.pro

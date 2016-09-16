@@ -4,10 +4,11 @@
 #include <QObject>
 #include <QDebug>
 
-#include "../queue/imessage.h"
+#include "imessage.h"
+#include "plugininterface.h"
 
 
-class ILogic : public QObject {
+class ILogic : public QObject, public PluginInterface {
     Q_OBJECT
 
 public:
