@@ -19,8 +19,9 @@
 
 #include "orm/test_table.h"
 
+#include "plugininterface.h"
 
-class Onyma : public ILogic {
+class Onyma : public ILogic, public PluginInterface {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "Kashier.Logic.Billing.Onyma")
     Q_INTERFACES(PluginInterface)

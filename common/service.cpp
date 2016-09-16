@@ -30,9 +30,17 @@ void Service::loadPlugins() {
         qDebug() << "Load plugin" << fileName;
         QPluginLoader loader(dir.absoluteFilePath(fileName));
         QObject *plugin = loader.instance();
-        if (nullptr == plugin) continue;
+        if (nullptr == plugin) {
+            qDebug() << "Skip non-plugin library";
+            qDebug() << loader.isLoaded();
+            qDebug() << loader.errorString();
+            continue;
+        }
         PluginInterface *pI = qobject_cast<PluginInterface*>(plugin);
-        if (nullptr == pI) continue;
+        if (nullptr == pI) {
+            qDebug() << "Skip alien plugin";
+            continue;
+        }
         //m_ui->methods->addItem(pI->text(), (unsigned int) pI);
         broker->addComponent(pI);
         //qDebug() << pI->getName();

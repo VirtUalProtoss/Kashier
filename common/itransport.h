@@ -4,10 +4,8 @@
 #include <QObject>
 
 #include "packet.h"
-#include "plugininterface.h"
 
-
-class ITransport : public QObject, public PluginInterface {
+class ITransport : public QObject {
     Q_OBJECT
 public:
     explicit ITransport(QObject *parent = 0);

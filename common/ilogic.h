@@ -4,13 +4,11 @@
 #include <QObject>
 
 #include "imessage.h"
-#include "plugininterface.h"
 
 
-class ILogic : public QObject, public PluginInterface {
+class ILogic : public QObject {
     Q_OBJECT
-    //Q_PLUGIN_METADATA(IID "Kashier.ILogic")
-    //Q_INTERFACES(PluginInterface)
+
 public:
     explicit ILogic(QObject *parent = 0);
 
