@@ -14,6 +14,7 @@ public:
     virtual void setName(QString);
     virtual bool isLocal();
     virtual void send(QString);
+    QString getType() { return QString("Transport"); }
 
 signals:
 

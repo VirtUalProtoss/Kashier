@@ -6,6 +6,7 @@
 #include <QPluginLoader>
 #include <QCoreApplication>
 #include "plugininterface.h"
+#include <typeinfo>
 
 
 Service::Service(QObject *parent) : QObject(parent), broker(new QueueBroker(this)) {
@@ -42,10 +43,11 @@ void Service::loadPlugins() {
             continue;
         }
         //m_ui->methods->addItem(pI->text(), (unsigned int) pI);
-        broker->addComponent(pI);
-        ILogic* com = pI->getInstance(com);
 
-        qDebug() << com->getName();
-        com->run();
+        broker->addComponent(pI);
+        //ILogic* com = pI->getInstance(com);
+
+        //qDebug() << com->getName();
+        //com->run();
     }
 }

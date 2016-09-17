@@ -13,6 +13,7 @@ public:
     virtual ~PluginInterface();
     virtual ILogic* getInstance(ILogic*);
     virtual ITransport* getInstance(ITransport*);
+    virtual QString getType();
 };
 Q_DECLARE_INTERFACE(PluginInterface, "Kashier.PluginInterface")
 

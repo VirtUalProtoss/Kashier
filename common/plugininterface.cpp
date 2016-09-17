@@ -18,3 +18,8 @@ ITransport* PluginInterface::getInstance(ITransport *)
 {
 
 }
+
+QString PluginInterface::getType()
+{
+    return QString("PluginInterface");
+}

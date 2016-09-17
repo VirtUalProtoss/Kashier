@@ -196,7 +196,18 @@ void QueueBroker::addComponent(ITransport *component) {
 }
 
 void QueueBroker::addComponent(PluginInterface *component) {
-
+    QString ctype = QString("Transport"); //component->getType();
+    if (ctype == QString("Logic")) {
+        ILogic* com = component->getInstance(com);
+        addComponent(com);
+    }
+    else if (ctype == QString("Transport")) {
+        ITransport* com = component->getInstance(com);
+        addComponent(com);
+    }
+    else {
+        qDebug() << "Component type" << ctype << "not implement";
+    }
 }
 
 QString QueueBroker::getMapName(ITransport *transport, ILogic *component) {
