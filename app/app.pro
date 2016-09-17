@@ -1,6 +1,6 @@
 CONFIG += c++11
 TEMPLATE = app
-
+QT -= gui
 SOURCES += main.cpp
 INCLUDEPATH += ../common
 DESTDIR  = ../../bin

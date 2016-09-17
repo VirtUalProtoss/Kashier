@@ -19,11 +19,33 @@
 
 using namespace std;
 
+QString test() {
+
+    QSqlError daoError; // = qx::dao::delete_all<test_table>();
+    test_table_ptr test_table_1; test_table_1.reset(new test_table());
+
+    //test_table_1->m_dogid = 12345678901;
+    //test_table_1->m_name = "test_dog1";
+    //daoError = qx::dao::insert(test_table_1);
+
+    //qx::QxSqlQuery query("WHERE test_table.dogid = :dogid");
+    //query.bind(":dogid", test_table_1->m_dogid);
+
+    list_test_table lst_tt;
+    //daoError = qx::dao::fetch_by_query(query, lst_tt);
+    daoError = qx::dao::fetch_all(lst_tt);
+    QString sDump;
+    sDump = qx::serialization::json::to_string(lst_tt);
+
+    return sDump;
+}
+
 Onyma::Onyma(QObject *parent) : ILogic(parent) {
     //QSqlDatabase::addDatabase("QOCI", "onyma");
     //db = QSqlDatabase::addDatabase("QPSQL", "onyma");
     if (!connected)
         connectDB();
+    run();
     //QMap<QString, QVariant> params;
     //execCommand("getPayments", params);
     //connect(SIGNAL(message(IMessage*)), SLOT(emit_message(IMessage*)));
@@ -121,26 +143,6 @@ QString Onyma::getName() {
     return QString("Billing");
 }
 
-QString test() {
-
-    QSqlError daoError; // = qx::dao::delete_all<test_table>();
-    test_table_ptr test_table_1; test_table_1.reset(new test_table());
-
-    //test_table_1->m_dogid = 12345678901;
-    //test_table_1->m_name = "test_dog1";
-    //daoError = qx::dao::insert(test_table_1);
-
-    //qx::QxSqlQuery query("WHERE test_table.dogid = :dogid");
-    //query.bind(":dogid", test_table_1->m_dogid);
-
-    list_test_table lst_tt;
-    //daoError = qx::dao::fetch_by_query(query, lst_tt);
-    daoError = qx::dao::fetch_all(lst_tt);
-    QString sDump;
-    sDump = qx::serialization::json::to_string(lst_tt);
-
-    return sDump;
-}
 
 void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
     qDebug() << "Command:" << command << "Params:" << params;

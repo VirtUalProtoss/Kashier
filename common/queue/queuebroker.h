@@ -27,7 +27,7 @@ public:
     void addSubscribe(QString &subscribe);
     void addComponent(ILogic* component);
     void addComponent(ITransport* component);
-    void addComponent(PluginInterface* component);
+    void addComponent(PluginInterface* component, QMap<QString, QVariant> params);
     void addComponentMap(ITransport* transport, ILogic* component);
     void addComponentMap(ITransport *transport, QString component);
     void removeComponent(ITransport* component);

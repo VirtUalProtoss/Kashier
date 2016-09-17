@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include "kashiercommon_global.h"
+#include "plugininterface.h"
+#include <QSettings>
 
 class QueueBroker;
 
@@ -12,10 +14,14 @@ public:
     explicit Service(QObject *parent = 0);
 
     void loadPlugins();
+    PluginInterface* loadPlugin(QString fileName);
+    void loadConfig(QString fileName, QString filePath="");
+    void loadComponents(QSettings &sett, QString section);
 signals:
 
 private:
     QueueBroker* broker;
+    QString appDir;
 };
 
 #endif // SERVICE_H

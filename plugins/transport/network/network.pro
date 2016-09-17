@@ -2,6 +2,7 @@
 CONFIG += c++11 plugin
 
 QT += network
+QT -= gui
 
 TEMPLATE = lib
 DESTDIR  = ../../../../bin/plugins

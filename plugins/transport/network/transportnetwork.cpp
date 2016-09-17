@@ -2,20 +2,36 @@
 
 TransportNetwork::TransportNetwork(QObject *parent) : ITransport(parent) {
     m_broker = static_cast<QueueBroker*>(parent);
-	QString mode;
-	if (mode=="server") {
-		m_ptcpServer = new QTcpServer(this);
-		connect(m_ptcpServer, SIGNAL(newConnection()), SLOT(on_newConnection()));
-	}
-	if (mode=="client") {
-		m_ptcpClient = new ClientSocketAdapter(this);
+    //QString mode = QString("server");
+    //QMap<QString, QVariant> params;
+    //params["address"] = "0.0.0.0";
+    //changeMode(mode, params);
+}
+
+void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) {
+    if (mode=="server") {
+        m_ptcpServer = new QTcpServer(this);
+        connect(m_ptcpServer, SIGNAL(newConnection()), SLOT(on_newConnection()));
+        if (params.contains("address")){
+            QString addr = params["address"].toString();
+            int port = 8765;
+            if (params.contains("port")) port = params["port"].toInt();
+            if (false == m_ptcpServer->listen(QHostAddress(addr), port)) {
+                m_ptcpServer->close();
+                throw m_ptcpServer->errorString();
+            }
+        }
+
+    }
+    if (mode=="client") {
+        m_ptcpClient = new ClientSocketAdapter(this);
         connect(m_broker, 		SIGNAL(network_message(QString)), 	m_ptcpClient, 	SLOT(on_send(QString)));
-	    connect(m_ptcpClient, 	SIGNAL(disconnected()), 			m_ptcpClient, 	SLOT(disconnect()));
+        connect(m_ptcpClient, 	SIGNAL(disconnected()), 			m_ptcpClient, 	SLOT(disconnect()));
         connect(m_ptcpClient, 	SIGNAL(message(QString)), 			m_broker, 		SLOT(receive(QString)));
-	}
-	if (mode=="proxy") {
-		;
-	}
+    }
+    if (mode=="proxy") {
+        ;
+    }
 }
 
 QString TransportNetwork::getName() {

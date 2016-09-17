@@ -1,4 +1,5 @@
 #include "queuebroker.h"
+#include <typeinfo>
 
 QueueBroker::QueueBroker(QObject *parent) : QObject(parent) {
     ;
@@ -195,19 +196,17 @@ void QueueBroker::addComponent(ITransport *component) {
     //    connect(component, SIGNAL(message(QString)), SLOT(receive(QString)));
 }
 
-void QueueBroker::addComponent(PluginInterface *component) {
-    QString ctype = QString("Transport"); //component->getType();
-    if (ctype == QString("Logic")) {
-        ILogic* com = component->getInstance(com);
-        addComponent(com);
+void QueueBroker::addComponent(PluginInterface *component, QMap<QString, QVariant> params) {
+    qDebug() << params;
+    ILogic* lcom = dynamic_cast<ILogic *>(component);
+    if (lcom) {
+        addComponent(lcom);
     }
-    else if (ctype == QString("Transport")) {
-        ITransport* com = component->getInstance(com);
-        addComponent(com);
+    ITransport* tcom = dynamic_cast<ITransport *>(component);
+    if (tcom) {
+        addComponent(tcom);
     }
-    else {
-        qDebug() << "Component type" << ctype << "not implement";
-    }
+    qDebug() << typeid(*component).name();
 }
 
 QString QueueBroker::getMapName(ITransport *transport, ILogic *component) {

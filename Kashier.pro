@@ -6,6 +6,8 @@
 
 CONFIG += c++11
 
+QT -= gui
+
 TEMPLATE = subdirs
 SUBDIRS  = common/common.pro \
     app/app.pro \

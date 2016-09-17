@@ -23,6 +23,7 @@ public:
     QString getName();
     QString getAddress();
 
+    void changeMode(QString mode, QMap<QString, QVariant> params);
 signals:
 
 public slots:
