@@ -7,8 +7,8 @@
 CONFIG += c++11
 
 TEMPLATE = subdirs
-SUBDIRS  = logic/logic.pro
-#    transport/transport.pro \
+SUBDIRS  = logic/logic.pro \
+    transport/transport.pro
 
 #    db/orm.pro \
 #    db/simple.pro

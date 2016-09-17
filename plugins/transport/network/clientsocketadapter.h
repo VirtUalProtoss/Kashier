@@ -1,7 +1,7 @@
 #ifndef CLIENTSOCKETADAPTER_H
 # define CLIENTSOCKETADAPTER_H
 
-# include "../common/transport/socketadapter.h"
+# include "socketadapter.h"
 
 class ClientSocketAdapter : public SocketAdapter {
     Q_OBJECT

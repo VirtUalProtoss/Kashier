@@ -24,6 +24,11 @@ void ILogic::receive(IMessage *msg) {
     qDebug() << "ILogic" << getName() << "receive message" << msg->toString();
 }
 
+void ILogic::run()
+{
+
+}
+
 void ILogic::emit_message(IMessage *msg) {
     emit message(msg);
 }

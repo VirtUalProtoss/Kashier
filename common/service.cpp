@@ -43,6 +43,9 @@ void Service::loadPlugins() {
         }
         //m_ui->methods->addItem(pI->text(), (unsigned int) pI);
         broker->addComponent(pI);
-        //qDebug() << pI->getName();
+        ILogic* com = pI->getInstance(com);
+
+        qDebug() << com->getName();
+        com->run();
     }
 }

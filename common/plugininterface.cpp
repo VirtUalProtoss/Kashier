@@ -8,3 +8,13 @@ PluginInterface::~PluginInterface()
 {
 
 }
+
+ILogic* PluginInterface::getInstance(ILogic *)
+{
+
+}
+
+ITransport* PluginInterface::getInstance(ITransport *)
+{
+
+}

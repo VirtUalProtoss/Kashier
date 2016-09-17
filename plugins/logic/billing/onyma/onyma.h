@@ -34,6 +34,8 @@ public:
     bool auth(QString *username, QString *password);
     QString getName();
     void receive(IMessage *);
+    ILogic* getInstance(ILogic* com) { return (ILogic*)this; };
+    void run();
 
 private:
     QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL", "onyma");

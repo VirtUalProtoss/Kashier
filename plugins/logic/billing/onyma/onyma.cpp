@@ -30,7 +30,7 @@ Onyma::Onyma(QObject *parent) : ILogic(parent) {
 }
 
 int Onyma::connectDB() {
-
+    qDebug() << "connectDB()";
     /*
     db.setHostName("10.110.32.148");
     db.setDatabaseName("onyma");
@@ -200,5 +200,13 @@ void Onyma::receive(IMessage *msg) {
         params["target"] = msg->getSender();
         execCommand(command, params);
     }
+}
+
+void Onyma::run()
+{
+    qDebug() << "run()";
+    connectDB();
+    QMap<QString, QVariant> params;
+    execCommand(QString("getPayments"), params);
 }
 

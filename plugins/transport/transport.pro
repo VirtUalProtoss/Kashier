@@ -1,4 +1,6 @@
 
 CONFIG += c++11
 
-TEMPLATE = library
+TEMPLATE = subdirs
+
+SUBDIRS = network/network.pro
