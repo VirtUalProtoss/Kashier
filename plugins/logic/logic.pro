@@ -2,5 +2,7 @@
 CONFIG += c++11
 
 TEMPLATE = subdirs
-SUBDIRS = billing/billing.pro
+defined(QXORM_INCLUDE) {
+    SUBDIRS = billing/billing.pro
+}
 #    gui/gui.pro

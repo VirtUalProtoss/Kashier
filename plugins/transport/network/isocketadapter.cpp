@@ -9,5 +9,5 @@ ISocketAdapter::~ISocketAdapter() {
 }
 
 bool ISocketAdapter::isConnected() {
-
+    return false;
 }
