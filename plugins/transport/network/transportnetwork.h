@@ -22,6 +22,7 @@ public:
     explicit TransportNetwork(QObject *parent = 0);
     QString getName();
     QString getAddress();
+    bool isLocal() { return false; }
 
     void changeMode(QString mode, QMap<QString, QVariant> params);
 signals:

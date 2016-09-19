@@ -53,8 +53,15 @@ QString TransportNetwork::getName() {
 }
 
 QString TransportNetwork::getAddress() {
-
-    return QString("127.0.0.1");
+    if (m_mode == "server") {
+        return m_ptcpServer->serverAddress().toString() + ":" + QString(m_ptcpServer->serverPort());
+    }
+    else if (m_mode == "client") {
+        return m_ptcpClient->getAddress();
+    }
+    else {
+        return QString("127.0.0.1");
+    }
 }
 
 void TransportNetwork::on_newConnection() {

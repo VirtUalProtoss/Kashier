@@ -1,12 +1,13 @@
 #include "subscribe.h"
 #include <QStringList>
-
+#include <QDebug>
 
 Subscribe::Subscribe(QObject *parent) : QObject(parent) {
 
 }
 
 Subscribe::Subscribe(QString sub) {
+    m_subscribe = sub;
     QStringList coms = sub.split(";");
     if (coms.length() == 4) {
         QStringList source = coms[0].split("::");
@@ -19,7 +20,7 @@ Subscribe::Subscribe(QString sub) {
             m_source_component = normalizeComponentName(source[1]);
         }
         QStringList destination = coms[1].split("::");
-        if (source.length() == 1) {
+        if (destination.length() == 1) {
             m_destination_transport = normalizeAddress(QString(""));
             m_destination_component = normalizeComponentName(destination[0]);
         }
@@ -81,4 +82,8 @@ QString Subscribe::normalizeComponentName(QString cName) {
         }
     }
     return nName;
+}
+
+QString Subscribe::hash() {
+    return m_destination_transport + "::" + m_destination_component + ";" + m_type;
 }

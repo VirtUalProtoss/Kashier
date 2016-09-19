@@ -39,25 +39,20 @@ public:
     void routePacket(Packet *packet);
     QString getMapName(ITransport *transport, ILogic *component);
     void registerRemoteSubscribe(QString key, QString sub);
+    QList<ITransport *> getTransports(QString trName);
 private:
     QList<IMessage*> queue;
-    //   source        message  destination
-    QMap<QString, QMap<QString, QList<Subscribe*>>> subscribes;
+    //   source   message_type  subscription list
+    QMap<QString, QMap<QString, QMap<QString, Subscribe*>>> subscribes;
     QMap<QString, QMap<QString, QList<Subscribe*>>> tempSubscribes;
 
-    QMap<ILogic*, QString> components;
-    QMap<ITransport*, QString> transports;
+    QMap<QString, ILogic*> components;
+    QMap<QString, ITransport*> transports;
 
     QMap<QString, ILogic*> componentMap;
     QMap<QString, ITransport*> remoteComponents;
 
     //QMap<ITransport*, ILogic*> getComponentMap(QString &pair);
-    void subscribe(
-            ITransport& sourceTransport,
-            ILogic& sourceComponent,
-            IMessage& messageType,
-            ITransport& destinationTransport,
-            ILogic& destinationComponent);
     ITransport* getTransport(QString &transport);
     ILogic* getLogic(QString &logic);
     IMessage* getMessage(QString &messageType);

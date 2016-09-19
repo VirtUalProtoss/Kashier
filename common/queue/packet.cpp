@@ -38,3 +38,7 @@ void Packet::setDestinationAddress(QString addr)
     destinationAddress = addr.split(":")[0];
     destinationPort = addr.split(":")[1].toInt();
 }
+
+void Packet::setData(QString pdata) {
+    data = pdata;
+}
