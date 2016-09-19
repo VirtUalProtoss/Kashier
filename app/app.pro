@@ -19,3 +19,5 @@ CONFIG(debug, debug|release) {
     unix: LIBS += -L../../lib/ -lKashierCommon -Wl,-rpath,lib -Wl,-rpath,.
     TARGET = kashier
 }
+
+VERSION = 0.0.1

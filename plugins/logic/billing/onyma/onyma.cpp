@@ -43,9 +43,9 @@ QString test() {
 Onyma::Onyma(QObject *parent) : ILogic(parent) {
     //QSqlDatabase::addDatabase("QOCI", "onyma");
     //db = QSqlDatabase::addDatabase("QPSQL", "onyma");
-    if (!connected)
-        connectDB();
-    run();
+    //if (!connected)
+    //    connectDB();
+    //run();
     //QMap<QString, QVariant> params;
     //execCommand("getPayments", params);
     //connect(SIGNAL(message(IMessage*)), SLOT(emit_message(IMessage*)));
@@ -54,16 +54,6 @@ Onyma::Onyma(QObject *parent) : ILogic(parent) {
 int Onyma::connectDB() {
     qDebug() << "connectDB()";
     /*
-    db.setHostName("10.110.32.148");
-    db.setDatabaseName("onyma");
-    db.setUserName("onyma_api");
-    db.setPassword("onyma_api");
-    */
-    /*
-    db.setHostName("192.168.0.10");
-    db.setDatabaseName("proman");
-    db.setUserName("proman");
-    db.setPassword("proman_proman");
     connected = db.open();
     if (!connected) {
         QSqlError msgError = db.lastError();
@@ -74,12 +64,20 @@ int Onyma::connectDB() {
     //QString username = "s.sobolevskiy";
     //QString password = "NjgZYX3J";
     //authentificated = auth(&username, &password);
+    if (_initParams->contains("driver")) {
+        qx::QxSqlDatabase::getSingleton()->setDriverName(_initParams->value("driver").toString());
+    }
+    else {
+        qx::QxSqlDatabase::getSingleton()->setDriverName("QSQLITE");
+    }
 
-    qx::QxSqlDatabase::getSingleton()->setDriverName("QPSQL");
-    qx::QxSqlDatabase::getSingleton()->setDatabaseName("proman");
-    qx::QxSqlDatabase::getSingleton()->setHostName("192.168.0.10");
-    qx::QxSqlDatabase::getSingleton()->setUserName("proman");
-    qx::QxSqlDatabase::getSingleton()->setPassword("proman_proman");
+    qx::QxSqlDatabase::getSingleton()->setDatabaseName(_initParams->value("database").toString());
+    qx::QxSqlDatabase::getSingleton()->setHostName(_initParams->value("host").toString());
+    if (_initParams->contains("port")) {
+        qx::QxSqlDatabase::getSingleton()->setPort(_initParams->value("port").toInt());
+    }
+    qx::QxSqlDatabase::getSingleton()->setUserName(_initParams->value("username").toString());
+    qx::QxSqlDatabase::getSingleton()->setPassword(_initParams->value("password").toString());
 
     return 0;
 }
@@ -143,7 +141,6 @@ QString Onyma::getName() {
     return QString("Billing");
 }
 
-
 void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
     qDebug() << "Command:" << command << "Params:" << params;
 
@@ -204,8 +201,7 @@ void Onyma::receive(IMessage *msg) {
     }
 }
 
-void Onyma::run()
-{
+void Onyma::run() {
     qDebug() << "run()";
     connectDB();
     QMap<QString, QVariant> params;

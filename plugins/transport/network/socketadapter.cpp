@@ -37,6 +37,14 @@ void SocketAdapter::on_readyRead() {
     }
 }
 
+QString SocketAdapter::getName() {
+    return name;
+}
+
+void SocketAdapter::setName(QString pName) {
+    name = pName;
+}
+
 void SocketAdapter::sendString(const QString& str) {
     QByteArray block;
     QDataStream sendStream(&block, QIODevice::ReadWrite);

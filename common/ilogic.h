@@ -12,6 +12,7 @@ class ILogic : public QObject {
 public:
     explicit ILogic(QObject *parent = 0);
 
+    virtual void setInitParams(QMap<QString, QVariant>* initParams);
     virtual QString getName();
     virtual void setName(QString name);
     virtual bool isPublic();
@@ -22,12 +23,14 @@ public:
 signals:
     void message(QString);
     void message(IMessage*);
+    void init_complete();
 
 public slots:
     void emit_message(IMessage*);
 
-private:
+protected:
     QString name = "ILogic";
+    QMap<QString, QVariant>* _initParams;
 };
 
 #endif // ILOGIC_H

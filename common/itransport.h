@@ -15,13 +15,16 @@ public:
     virtual bool isLocal();
     virtual void send(QString);
     QString getType() { return QString("Transport"); }
+    virtual void setInitParams(QMap<QString, QVariant>* initParams);
 
 signals:
+    void init_complete();
 
 public slots:
 
 protected:
     QString name = QString("ITransport");
+    QMap<QString, QVariant>* _initParams;
 };
 
 #endif // ITRANSPORT_H

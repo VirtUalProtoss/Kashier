@@ -24,3 +24,9 @@ void ITransport::send(QString data) {
 
 }
 
+void ITransport::setInitParams(QMap<QString, QVariant> *initParams)
+{
+    _initParams = initParams;
+    emit init_complete();
+}
+

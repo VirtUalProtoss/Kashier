@@ -13,6 +13,7 @@
 #include "ilogic.h"
 #include "itransport.h"
 #include "plugininterface.h"
+#include "subscribe.h"
 
 //class ILogic;
 //class ITransport;
@@ -34,14 +35,15 @@ public:
     void removeComponent(ILogic* component);
 
     void publishComponents();
+    QList<Subscribe *> searchSubscribes(QString source, QString mType);
     void routePacket(Packet *packet);
     QString getMapName(ITransport *transport, ILogic *component);
     void registerRemoteSubscribe(QString key, QString sub);
 private:
     QList<IMessage*> queue;
     //   source        message  destination
-    QMap<QString, QMap<QString, QList<QString>>> subscribes;
-    QMap<QString, QMap<QString, QList<QString>>> tempSubscribes;
+    QMap<QString, QMap<QString, QList<Subscribe*>>> subscribes;
+    QMap<QString, QMap<QString, QList<Subscribe*>>> tempSubscribes;
 
     QMap<ILogic*, QString> components;
     QMap<ITransport*, QString> transports;
@@ -49,7 +51,7 @@ private:
     QMap<QString, ILogic*> componentMap;
     QMap<QString, ITransport*> remoteComponents;
 
-    QMap<ITransport*, ILogic*> getComponentMap(QString &pair);
+    //QMap<ITransport*, ILogic*> getComponentMap(QString &pair);
     void subscribe(
             ITransport& sourceTransport,
             ILogic& sourceComponent,
@@ -67,9 +69,11 @@ private:
 public slots:
     void send(IMessage *message);
     void receive(IMessage *message);
+    void receive(Packet *pkt);
     void receive(QString message);
 signals:
-    void network_message(QString);
+    //void network_message(QString);
+    void message(Packet*);
 };
 
 #endif // QUEUEBROKER_H

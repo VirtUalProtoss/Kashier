@@ -49,7 +49,6 @@ void Service::loadPlugins() {
     }
 }
 
-
 QMap<QString, QVariant> getSectionValues(QSettings &sett, QString section) {
     QMap<QString, QVariant> data;
     QStringList sections = sett.childGroups();
@@ -81,7 +80,9 @@ void Service::loadComponents(QSettings &sett, QString section) {
         if (data.contains("dll")) {
             QString dllName = getDLLFullName(data["dll"].toString());
             PluginInterface* pluginDLL = loadPlugin(pluginDir + dir.separator() + dllName);
-            broker->addComponent(pluginDLL, data);
+            if (pluginDLL) {
+                broker->addComponent(pluginDLL, data);
+            }
         }
     }
 }
@@ -101,6 +102,11 @@ void Service::loadConfig(QString fileName, QString filePath) {
     loadComponents(sett, "transports");
     loadComponents(sett, "components");
 
-    QMap<QString, QVariant> maps;
-    QMap<QString, QVariant> subscribes;
+    //QMap<QString, QVariant> maps;
+    QMap<QString, QVariant> subscribes = getSectionValues(sett, "subscribes");
+    foreach (QString key, subscribes.keys()) {
+        QString value = subscribes[key].toString();
+        broker->addSubscribe(value);
+    }
+
 }

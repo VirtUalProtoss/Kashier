@@ -6,17 +6,22 @@
 
 
 ClientSocketAdapter::ClientSocketAdapter(QObject *parent) : SocketAdapter(parent) {
-    // TODO: replace this to set params from config (ini file)
-    m_ptcpSocket->connectToHost("127.0.0.1", 8765);
-    if (m_ptcpSocket->waitForConnected(1000)) {
-         connected = true;
-         setName(QString("Network<" + getAddress() + QString(">")));
-    }
+
 }
 
 QString ClientSocketAdapter::getAddress() {
     QString addr = m_ptcpSocket->localAddress().toString() + ":" + QString(m_ptcpSocket->localPort());
     return addr;
+}
+
+bool ClientSocketAdapter::connect(QString host, int port) {
+    bool connected = false;
+    m_ptcpSocket->connectToHost(host, port);
+    if (m_ptcpSocket->waitForConnected(1000)) {
+         connected = true;
+         setName(QString("Network<" + getAddress() + QString(">")));
+    }
+    return connected;
 }
 
 bool ClientSocketAdapter::isLocal() {
@@ -27,10 +32,7 @@ bool ClientSocketAdapter::isConnected() {
     return connected;
 }
 
-QString ClientSocketAdapter::getName() {
-    return name;
-    //return QString("Network<") + getAddress() + QString(">");
-}
+
 
 void ClientSocketAdapter::send(QString data) {
     sendString(data);

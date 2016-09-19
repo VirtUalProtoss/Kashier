@@ -10,8 +10,9 @@ public:
     QString getAddress();
     bool isLocal();
     bool isConnected();
-    QString getName();
+
     void send(QString);
+    bool connect(QString host, int port);
 public slots:
     void disconnect();
 private:

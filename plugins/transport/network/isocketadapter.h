@@ -5,13 +5,12 @@
 #include "itransport.h"
 
 
-class ISocketAdapter : public ITransport {
+class ISocketAdapter : public QObject {
     Q_OBJECT
 public:
     explicit ISocketAdapter(QObject *parent);
     virtual ~ISocketAdapter();
     virtual void sendString(const QString& str) = 0;
-    bool isLocal();
     virtual bool isConnected();
 
 signals:

@@ -1,0 +1,7 @@
+Subscribe
+	source;destination;msg_type;wait_type(timeout|after_action)
+
+source = [transport_name[<address:port>|<*>]::]component_name[<self_name[:{instance_id|thread_id}>]]
+destination = [transport_name[<address:port>|<*>]::]component_name[<self_name[:{instance_id|thread_id}>]]
+msg_type = IMessage(Message|Query|Reply|RPC)[<params>]
+wait_type = persistant|temp

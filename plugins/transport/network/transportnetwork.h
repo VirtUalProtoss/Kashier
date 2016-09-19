@@ -1,7 +1,7 @@
 #ifndef TRANSPORTNETWORK_H
 #define TRANSPORTNETWORK_H
 
-//#include <QObject>
+#include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
 
@@ -25,18 +25,20 @@ public:
 
     void changeMode(QString mode, QMap<QString, QVariant> params);
 signals:
-
+    void message(Packet*);
 public slots:
     void on_newConnection();
     void on_disconnected();
     void on_message(QString msg);
     void on_message(Packet* msg);
     void disconnect();
+    void on_init_complete();
 private:
     QueueBroker* m_broker;
 	ClientSocketAdapter* m_ptcpClient;
-	QList<ISocketAdapter*> m_clients;
+    QMap<QString, ISocketAdapter*> m_clients;
     QTcpServer* m_ptcpServer;
+    QString m_mode;
 };
 
 #endif // TRANSPORTNETWORK_H

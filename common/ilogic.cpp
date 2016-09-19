@@ -5,6 +5,12 @@ ILogic::ILogic(QObject *parent) : QObject(parent) {
 
 }
 
+void ILogic::setInitParams(QMap<QString, QVariant> *initParams)
+{
+    _initParams = initParams;
+    emit init_complete();
+}
+
 QString ILogic::getName() {
     return name;
 }

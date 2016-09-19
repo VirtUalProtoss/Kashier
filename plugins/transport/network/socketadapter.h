@@ -11,6 +11,8 @@ public:
       SocketAdapter(QObject *parent, QTcpSocket *pSock = 0);
       virtual ~SocketAdapter();
       virtual void sendString(const QString& str);
+      virtual QString getName();
+      virtual void setName(QString);
 public slots:
       void on_send(QString);
       void disconnect();
@@ -20,6 +22,7 @@ protected slots:
 protected:
       QTcpSocket *m_ptcpSocket;
       qint16 m_msgSize;
+      QString name;
 };
 
 #endif // SOCKETADAPTER_H
