@@ -27,7 +27,7 @@ public:
 
     void changeMode(QString mode, QMap<QString, QVariant> params);
 signals:
-    void message(Packet*);
+    void message(Packet*, QString);
 public slots:
     void on_newConnection();
     void on_disconnected();

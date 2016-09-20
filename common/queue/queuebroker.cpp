@@ -31,7 +31,7 @@ void QueueBroker::publishComponents(QString transport, QString target) {
                 continue;
             params[logic->getName()] = logic->getName();
         }
-        IMessage *msg = mBuild->getMessage(broker, QString("registerComponent"), params);
+        IMessage *msg = mBuild->getMessage(target, QString("registerComponent"), params);
         emit message(dstTransport, msg);
     }
 }
@@ -214,10 +214,10 @@ void QueueBroker::receive(IMessage *message) {
     routeMessage(message, QString("Local"));
 }
 
-void QueueBroker::receive(Packet *pkt) {
+void QueueBroker::receive(Packet *pkt, QString source) {
     IMessage* msg = new IMessage();
     msg->fromString(pkt->getData());
-    receive(msg);
+    routeMessage(msg, source);
 }
 
 void QueueBroker::receive(QString message) {

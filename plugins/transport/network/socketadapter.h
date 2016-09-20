@@ -13,16 +13,19 @@ public:
       virtual void sendString(const QString& str);
       virtual QString getName();
       virtual void setName(QString);
+      inline bool isConnected() { return m_connected; }
 public slots:
       void on_send(QString);
       void disconnect();
 protected slots:
       void on_readyRead();
       void on_disconnected();
+      void on_connected();
 protected:
       QTcpSocket *m_ptcpSocket;
       qint16 m_msgSize;
       QString name;
+      bool m_connected;
 };
 
 #endif // SOCKETADAPTER_H

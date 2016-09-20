@@ -63,7 +63,7 @@ private:
 public slots:
     void send(IMessage *message);
     void receive(IMessage *message);
-    void receive(Packet *pkt);
+    void receive(Packet *pkt, QString source);
     void receive(QString message);
 signals:
     //void network_message(QString);

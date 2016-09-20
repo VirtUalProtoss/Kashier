@@ -11,6 +11,7 @@ SocketAdapter::SocketAdapter(QObject *parent, QTcpSocket *pSock) : ISocketAdapte
         m_ptcpSocket = pSock;
     connect(m_ptcpSocket, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
     connect(m_ptcpSocket, SIGNAL(disconnected()), this, SLOT(on_disconnected()));
+    connect(m_ptcpSocket, SIGNAL(connected()), this, SLOT(on_connected()));
 }
 
 SocketAdapter::~SocketAdapter() {
@@ -63,7 +64,12 @@ void SocketAdapter::on_send(QString msg) {
 
 void SocketAdapter::on_disconnected() {
     m_ptcpSocket->deleteLater();
+    m_connected = false;
     emit disconnected();
+}
+
+void SocketAdapter::on_connected() {
+    m_connected = true;
 }
 
 void SocketAdapter::disconnect() {
