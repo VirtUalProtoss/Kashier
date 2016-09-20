@@ -1,6 +1,8 @@
 #ifndef CLIENTSOCKETADAPTER_H
 # define CLIENTSOCKETADAPTER_H
 
+#include <QTcpSocket>
+#include <QHostAddress>
 # include "socketadapter.h"
 
 class ClientSocketAdapter : public SocketAdapter {
@@ -8,6 +10,9 @@ class ClientSocketAdapter : public SocketAdapter {
 public:
     explicit ClientSocketAdapter(QObject *parent);
     QString getAddress();
+    inline QString getRemoteAddress() { return m_ptcpSocket->peerAddress().toString(); }
+    inline int getPort() { return m_ptcpSocket->localPort(); }
+    inline int getRemotePort() { return m_ptcpSocket->peerPort(); }
     bool isLocal();
     bool isConnected();
 

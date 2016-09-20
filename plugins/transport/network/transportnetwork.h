@@ -22,6 +22,7 @@ public:
     explicit TransportNetwork(QObject *parent = 0);
     QString getName();
     QString getAddress();
+    QString getRemoteAddress();
     bool isLocal() { return false; }
 
     void changeMode(QString mode, QMap<QString, QVariant> params);
@@ -34,6 +35,7 @@ public slots:
     void on_message(Packet* msg);
     void disconnect();
     void on_init_complete();
+    void on_message(ITransport*, IMessage*);
 private:
     QueueBroker* m_broker;
 	ClientSocketAdapter* m_ptcpClient;

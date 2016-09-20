@@ -34,12 +34,13 @@ public:
     void removeComponent(ITransport* component);
     void removeComponent(ILogic* component);
 
-    void publishComponents();
+    void publishComponents(QString transport = QString("Network"), QString target = QString("Broker<*>"));
     QList<Subscribe *> searchSubscribes(QString source, QString mType);
     void routePacket(Packet *packet);
     QString getMapName(ITransport *transport, ILogic *component);
-    void registerRemoteSubscribe(QString key, QString sub);
     QList<ITransport *> getTransports(QString trName);
+    void processBrokerMessage(IMessage *msg, ITransport *srcTransport);
+    void removeSubscriptions(QString dstTransportName);
 private:
     QList<IMessage*> queue;
     //   source   message_type  subscription list
@@ -52,10 +53,8 @@ private:
     QMap<QString, ILogic*> componentMap;
     QMap<QString, ITransport*> remoteComponents;
 
-    //QMap<ITransport*, ILogic*> getComponentMap(QString &pair);
     ITransport* getTransport(QString &transport);
     ILogic* getLogic(QString &logic);
-    IMessage* getMessage(QString &messageType);
 
     void registerRemoteComponents(IMessage *msg, QString srcTransport);
     void routeMessage(IMessage *msg, QString srcTransport);
@@ -69,6 +68,7 @@ public slots:
 signals:
     //void network_message(QString);
     void message(Packet*);
+    void message(ITransport*, IMessage*);
 };
 
 #endif // QUEUEBROKER_H

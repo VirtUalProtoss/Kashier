@@ -10,8 +10,10 @@ public:
     QString toString();
     void fromString(QString pkt);
     void setSourceAddress(QString addr);
+    inline void setSourceAddress(QString address, int port) { sourceAddress = address; sourcePort = port; }
+    inline void setDestinationAddress(QString address, int port) { destinationAddress = address; destinationPort = port; }
     void setDestinationAddress(QString addr);
-    void setData(QString pdata);
+    inline void setData(QString pdata) { data = pdata; }
     inline QString getDestinationAddress() { return destinationAddress; }
     inline int getDestinationPort() { return destinationPort; }
     inline QString getSourceAddress() { return sourceAddress; }

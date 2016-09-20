@@ -2,14 +2,18 @@
 #include <QStringList>
 
 Packet::Packet(QObject *parent) : QObject(parent) {
-
+    sourceAddress = QString("127.0.0.1");
+    sourcePort = 0;
+    destinationAddress = QString("0.0.0.0");
+    destinationPort = 0;
+    data = QString("");
 }
 
 QString Packet::toString() {
     return \
-        sourceAddress + ":" + sourcePort + "$$" + \
-        destinationAddress + ":" + destinationPort + "$$" + \
-        QString(data.length()) + "$$" + \
+        sourceAddress + ":" + QString::number(sourcePort) + "$$" + \
+        destinationAddress + ":" + QString::number(destinationPort) + "$$" + \
+        QString::number(data.length()) + "$$" + \
         data + "$&";
 }
 
@@ -29,16 +33,13 @@ void Packet::fromString(QString in_msg) {
 
 void Packet::setSourceAddress(QString addr)
 {
-    sourceAddress = addr.split(":")[0];
-    sourcePort = addr.split(":")[1].toInt();
+    QStringList aList = addr.split(":");
+    sourceAddress = aList[0];
+    sourcePort = aList[1].toInt();
 }
 
 void Packet::setDestinationAddress(QString addr)
 {
     destinationAddress = addr.split(":")[0];
     destinationPort = addr.split(":")[1].toInt();
-}
-
-void Packet::setData(QString pdata) {
-    data = pdata;
 }

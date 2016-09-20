@@ -8,8 +8,7 @@ class Subscribe : public QObject {
 public:
     explicit Subscribe(QObject *parent = 0);
     Subscribe(QString sub);
-    static QString normalizeAddress(QString addr);
-    static QString normalizeComponentName(QString cName);
+
     QString getSource() { return m_source_transport + "::" + m_source_component; }
     QString getDestination() { return m_destination_transport + "::" + m_destination_component; }
     QString getDestinationTransport() { return m_destination_transport; }

@@ -10,6 +10,7 @@ class ITransport : public QObject {
 public:
     explicit ITransport(QObject *parent = 0);
     virtual QString getAddress();
+    virtual QString getRemoteAddress();
     virtual QString getName();
     virtual void setName(QString);
     virtual bool isLocal();

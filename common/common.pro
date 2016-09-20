@@ -38,7 +38,8 @@ SOURCES += service.cpp \
     queue/subscribe.cpp \
     ilogic.cpp \
     itransport.cpp \
-    plugininterface.cpp
+    plugininterface.cpp \
+    queue/uri.cpp
 
 HEADERS += service.h \
     queue/imessagebody.h \
@@ -54,4 +55,5 @@ HEADERS += service.h \
     kashiercommon_global.h \
     ilogic.h \
     itransport.h \
-    plugininterface.h
+    plugininterface.h \
+    queue/uri.h

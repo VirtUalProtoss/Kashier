@@ -54,7 +54,19 @@ QString TransportNetwork::getName() {
 
 QString TransportNetwork::getAddress() {
     if (m_mode == "server") {
-        return m_ptcpServer->serverAddress().toString() + ":" + QString(m_ptcpServer->serverPort());
+        return m_ptcpServer->serverAddress().toString();
+    }
+    else if (m_mode == "client") {
+        return m_ptcpClient->getAddress();
+    }
+    else {
+        return QString("127.0.0.1");
+    }
+}
+
+QString TransportNetwork::getRemoteAddress() {
+    if (m_mode == "server") {
+        return QString("0.0.0.0");
     }
     else if (m_mode == "client") {
         return m_ptcpClient->getAddress();
@@ -68,30 +80,30 @@ void TransportNetwork::on_newConnection() {
     QTcpSocket* pclientSock = m_ptcpServer->nextPendingConnection();
     ServerSocketAdapter *pSockHandle = new ServerSocketAdapter(pclientSock);
 
-    QTextStream(stdout) << "New connection from " << pSockHandle->getAddress() << endl;
-    m_clients[pSockHandle->getAddress()] = pSockHandle;
-    pSockHandle->setName(QString("Network<" + pSockHandle->getAddress() + QString(">")));
-    //m_broker->addComponent(pSockHandle);
-    //broker->addComponentMap(pSockHandle, pSockHandle->getName());
 
-    connect(m_broker, 		SIGNAL(message(Packet*)),                   SLOT(on_message(Packet*)));
+    QString fullAddr = pSockHandle->getAddress() + ":" + QString::number(pSockHandle->getPort());
+    QTextStream(stdout) << "New connection from " << fullAddr << endl;
+    pSockHandle->setName(QString("Broker<") + fullAddr + QString(">"));
+    m_clients[pSockHandle->getName()] = pSockHandle;
+
+    connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
     connect(pSockHandle, 	SIGNAL(disconnected()), 					SLOT(on_disconnected()));
     connect(this,        	SIGNAL(message(Packet*)), 	m_broker, 		SLOT(receive(Packet*)));
     connect(pSockHandle, 	SIGNAL(message(QString)), 					SLOT(on_message(QString)));
 
-    //QStringList subscribes;
-    //subscribes << QString(pSockHandle->getName() + ":Broker;Message<Broker>;Local:Broker;Persist");
-    //foreach (QString subscribe, subscribes)
-    //    m_broker->addSubscribe(subscribe);
-    m_broker->publishComponents();
+    QStringList subscribes;
+    subscribes << QString("Network::" + pSockHandle->getName() + ";Message<Broker>;Broker;Persist");
+    foreach (QString subscribe, subscribes)
+        m_broker->addSubscribe(subscribe);
+    m_broker->publishComponents(getName(), pSockHandle->getName());
 }
 
 void TransportNetwork::on_disconnected() {
 
     ServerSocketAdapter* client = static_cast<ServerSocketAdapter*>(sender());
-    QTextStream(stdout) << "Client disconnected: " << client->getAddress() << endl;
+    QTextStream(stdout) << "Client disconnected: " << client->getName() << endl;
     m_clients.remove(client->getAddress());
-    //m_broker->removeComponent(client);
+    m_broker->removeSubscriptions(client->getName());
     delete client;
 }
 
@@ -101,36 +113,50 @@ void TransportNetwork::on_message(QString msg) {
     qDebug() << "Network message" << msg << "from" << source->getAddress();
     Packet* pkt = new Packet();
     pkt->fromString(msg);
+
     emit message(pkt);
 }
 
 void TransportNetwork::on_message(Packet *pkt) {
     // Пришел пакет от брокера
     qDebug() << "Broker message" << pkt->toString();
-    QString sAddr;
-    SocketAdapter* p_sock = 0;
-    QString dAddr = pkt->getDestinationAddress() + ":" + QString(pkt->getDestinationPort());
+    QString dstAddr = pkt->getDestinationAddress();
+    QString dAddr = dstAddr + ":" + QString::number(pkt->getDestinationPort());
+    QString msg = QString("");
+
     if (m_mode == "server") {
-        sAddr = m_ptcpServer->serverAddress().toString() + ":" + QString(m_ptcpServer->serverPort());
-        if (m_clients.contains(dAddr)) {
-            p_sock = (SocketAdapter*)m_clients[sAddr];
+
+
+        if (dstAddr == QString("0.0.0.0")) {
+            foreach (ISocketAdapter *mc_sock, m_clients.values()) {
+                ServerSocketAdapter * srvSock = (ServerSocketAdapter *)mc_sock;
+                pkt->setSourceAddress(srvSock->getLocalAddress(), srvSock->getLocalPort());
+                pkt->setDestinationAddress(srvSock->getAddress(), srvSock->getPort());
+                msg = pkt->toString();
+                qDebug() << "Sending message" << msg << "to" << srvSock->getName();
+                mc_sock->sendString(msg);
+            }
+        }
+        else {
+            if (m_clients.contains(dAddr)) {
+                ServerSocketAdapter * srvSock = (ServerSocketAdapter *)m_clients[dAddr];
+                pkt->setSourceAddress(srvSock->getLocalAddress(), srvSock->getLocalPort());
+                pkt->setDestinationAddress(srvSock->getAddress(), srvSock->getPort());
+                msg = pkt->toString();
+                qDebug() << "Sending message" << msg << "to" << srvSock->getName();
+                m_clients[dAddr]->sendString(msg);
+            }
         }
     }
     else if (m_mode == "client") {
-        sAddr = m_ptcpClient->getAddress();
-        p_sock = (SocketAdapter*)m_ptcpClient;
+        pkt->setSourceAddress(m_ptcpClient->getAddress(), m_ptcpClient->getPort());
+        pkt->setDestinationAddress(m_ptcpClient->getRemoteAddress(), m_ptcpClient->getRemotePort());
+        msg = pkt->toString();
+        qDebug() << "Sending message" << msg << "to" << m_ptcpClient->getName();
+        m_ptcpClient->sendString(msg);
     }
     else {
         qDebug() << "Mode" << m_mode << "not implemented";
-    }
-    pkt->setSourceAddress(sAddr);
-    QString msg = pkt->toString();
-    if (p_sock) {
-        qDebug() << "Sending message" << msg << "to" << dAddr;
-        p_sock->sendString(msg);
-    }
-    else {
-        qDebug() << "No such socket address" << dAddr;
     }
 }
 
@@ -145,4 +171,8 @@ void TransportNetwork::on_init_complete() {
     if (_initParams->contains("mode"))
         mode = _initParams->value("mode").toString();
     changeMode(mode, *_initParams);
+}
+
+void TransportNetwork::on_message(ITransport *, IMessage *) {
+
 }

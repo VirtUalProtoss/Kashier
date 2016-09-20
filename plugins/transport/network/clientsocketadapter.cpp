@@ -1,8 +1,6 @@
 #include "clientsocketadapter.h"
 #include <QVector>
-#include <QTcpSocket>
 #include <QDataStream>
-#include <QHostAddress>
 
 
 ClientSocketAdapter::ClientSocketAdapter(QObject *parent) : SocketAdapter(parent) {
@@ -10,8 +8,7 @@ ClientSocketAdapter::ClientSocketAdapter(QObject *parent) : SocketAdapter(parent
 }
 
 QString ClientSocketAdapter::getAddress() {
-    QString addr = m_ptcpSocket->localAddress().toString() + ":" + QString(m_ptcpSocket->localPort());
-    return addr;
+    return m_ptcpSocket->localAddress().toString();
 }
 
 bool ClientSocketAdapter::connect(QString host, int port) {
