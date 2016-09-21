@@ -73,7 +73,7 @@ QString URI::normalizeAddress(QString addr) {
                     tAddr = "<*>";
                 }
             }
-            nAddr = addr.split("<")[0] + tAddr;
+            nAddr = addr.split("<")[0] + "<" + tAddr + ">";
         }
         else {
             // нормализуем

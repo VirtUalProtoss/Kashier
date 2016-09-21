@@ -12,13 +12,14 @@ QString ClientSocketAdapter::getAddress() {
 }
 
 bool ClientSocketAdapter::connect(QString host, int port) {
-    bool connected = false;
+    m_connected = false;
     m_ptcpSocket->connectToHost(host, port);
     if (m_ptcpSocket->waitForConnected(1000)) {
-         connected = true;
+         m_connected = true;
          setName(QString("Network<" + getAddress() + QString(">")));
     }
-    return connected;
+    emit connected();
+    return m_connected;
 }
 
 bool ClientSocketAdapter::isLocal() {
@@ -26,7 +27,7 @@ bool ClientSocketAdapter::isLocal() {
 }
 
 bool ClientSocketAdapter::isConnected() {
-    return connected;
+    return m_connected;
 }
 
 
@@ -36,5 +37,5 @@ void ClientSocketAdapter::send(QString data) {
 }
 
 void ClientSocketAdapter::disconnect() {
-    connected = false;
+    m_connected = false;
 }

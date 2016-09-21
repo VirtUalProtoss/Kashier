@@ -31,8 +31,13 @@ void QueueBroker::publishComponents(QString transport, QString target) {
                 continue;
             params[logic->getName()] = logic->getName();
         }
-        IMessage *msg = mBuild->getMessage(target, QString("registerComponent"), params);
-        emit message(dstTransport, msg);
+        if (params.count() > 0) {
+            IMessage *msg = mBuild->getMessage(target, QString("registerComponent"), params);
+            emit message(dstTransport, msg);
+        }
+        else {
+            qDebug() << "No components to publish found";
+        }
     }
 }
 
@@ -259,8 +264,9 @@ void QueueBroker::addComponent(ITransport *component) {
         sub = QString("Network::Broker;Broker;*;*");
     addSubscribe(sub);
     */
-    QString normName = URI::normalizeAddress(component->getName());
-    transports[normName] = component;
+    //QString normName = URI::normalizeAddress(component->getName());
+    if (!transports.contains(component->getName()))
+        transports[component->getName()] = component;
     //if (!remoteComponents.contains(component->getName()))
     //    remoteComponents[component->getName()] = component;
     //if (component->getName() == "Local")
@@ -271,15 +277,15 @@ void QueueBroker::addComponent(PluginInterface *component, QMap<QString, QVarian
     qDebug() << params;
     ILogic* lcom = dynamic_cast<ILogic *>(component);
     if (lcom) {
-        addComponent(lcom);
         lcom->setParent(this);
         lcom->setInitParams(&params);
+        addComponent(lcom);
     }
     ITransport* tcom = dynamic_cast<ITransport *>(component);
     if (tcom) {
-        addComponent(tcom);
         tcom->setParent(this);
         tcom->setInitParams(&params);
+        addComponent(tcom);
     }
     qDebug() << typeid(*component).name();
 }

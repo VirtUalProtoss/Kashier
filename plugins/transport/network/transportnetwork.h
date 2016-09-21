@@ -31,6 +31,7 @@ signals:
 public slots:
     void on_newConnection();
     void on_disconnected();
+    void on_client_connected();
     void on_message(QString msg);
     void on_message(Packet* msg);
     void disconnect();

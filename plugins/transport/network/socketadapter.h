@@ -3,8 +3,9 @@
 
 #include "isocketadapter.h"
 
-
+class IMessage;
 class QTcpSocket;
+
 class SocketAdapter : public ISocketAdapter {
     Q_OBJECT
 public:
@@ -21,11 +22,14 @@ protected slots:
       void on_readyRead();
       void on_disconnected();
       void on_connected();
+      void on_message(ITransport*, IMessage*);
 protected:
       QTcpSocket *m_ptcpSocket;
       qint16 m_msgSize;
       QString name;
       bool m_connected;
+signals:
+    void sock_message(ITransport*, IMessage*);
 };
 
 #endif // SOCKETADAPTER_H

@@ -18,6 +18,11 @@ SocketAdapter::~SocketAdapter() {
 
 }
 
+void SocketAdapter::on_message(ITransport *tr, IMessage *msg) {
+    emit sock_message(tr, msg);
+}
+
+
 void SocketAdapter::on_readyRead() {
     QString buff;
     QDataStream stream(m_ptcpSocket);

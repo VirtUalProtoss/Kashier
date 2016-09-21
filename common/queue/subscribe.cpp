@@ -29,7 +29,7 @@ Subscribe::Subscribe(QString sub) {
             m_destination_transport = URI::normalizeAddress(destination[0]);
             m_destination_component = URI::normalizeComponentName(destination[1]);
         }
-        m_type = coms[2];
+        m_type = URI::getComponent(coms[2]);
         m_wait_type = coms[3];
     }
     else {

@@ -5,8 +5,6 @@
 #include <QHostAddress>
 #include "socketadapter.h"
 
-class IMessage;
-
 class ServerSocketAdapter : public SocketAdapter {
     Q_OBJECT
 public:
@@ -15,10 +13,7 @@ public:
     inline QString getLocalAddress() { return m_ptcpSocket->localAddress().toString(); }
     inline int getLocalPort() { return m_ptcpSocket->localPort(); }
     int getPort() { return m_ptcpSocket->peerPort(); }
-signals:
-    void message(ITransport*, IMessage*);
-public slots:
-    void on_message(ITransport*, IMessage*);
+
 };
 
 #endif // SERVERSOCKETADAPTER_H

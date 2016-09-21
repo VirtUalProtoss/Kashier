@@ -21,7 +21,9 @@ public:
 public slots:
     void disconnect();
 private:
-    bool connected = false;
+    bool m_connected = false;
+signals:
+    void connected();
 };
 
 #endif // CLIENTSOCKETADAPTER_H

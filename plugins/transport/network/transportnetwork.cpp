@@ -24,11 +24,12 @@ void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) 
     if (mode=="client") {
         m_ptcpClient = new ClientSocketAdapter(this);
 
-        connect(m_ptcpClient, 	SIGNAL(disconnected()),     m_ptcpClient, 	SLOT(disconnect()));
-        connect(m_ptcpClient, 	SIGNAL(message(QString)),                   SLOT(on_message(QString)));
-
-        connect(m_broker, 		SIGNAL(message(Packet*)),                   SLOT(on_message(Packet*)));
-        connect(this,        	SIGNAL(message(Packet*)), 	m_broker,       SLOT(receive(Packet*)));
+        connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    m_ptcpClient,  SLOT(on_message(ITransport *, IMessage *)));
+        connect(m_ptcpClient,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
+        connect(m_ptcpClient, 	SIGNAL(disconnected()), 					SLOT(disconnect()));
+        connect(m_ptcpClient, 	SIGNAL(connected()), 					SLOT(on_client_connected()));
+        connect(this,        	SIGNAL(message(Packet*, QString)), 	m_broker, 		SLOT(receive(Packet*, QString)));
+        connect(m_ptcpClient, 	SIGNAL(message(QString)), 					SLOT(on_message(QString)));
 
         if (params.contains("address")){
             QString addr = params["address"].toString();
@@ -40,7 +41,7 @@ void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) 
             qDebug() << "No connection data specified";
         }
 
-        m_broker->publishComponents();
+        //m_broker->publishComponents();
     }
     if (mode=="proxy") {
         ;
@@ -48,8 +49,8 @@ void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) 
 }
 
 QString TransportNetwork::getName() {
-
-    return QString("Network");
+    QString port = QString("0");
+    return QString("Network<") + m_mode + ":" + port + QString(">");
 }
 
 QString TransportNetwork::getAddress() {
@@ -87,13 +88,13 @@ void TransportNetwork::on_newConnection() {
     m_clients[pSockHandle->getName()] = pSockHandle;
 
     connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    pSockHandle,  SLOT(on_message(ITransport *, IMessage *)));
-    connect(pSockHandle,	SIGNAL(message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
+    connect(pSockHandle,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
     connect(pSockHandle, 	SIGNAL(disconnected()), 					SLOT(on_disconnected()));
     connect(this,        	SIGNAL(message(Packet*, QString)), 	m_broker, 		SLOT(receive(Packet*, QString)));
     connect(pSockHandle, 	SIGNAL(message(QString)), 					SLOT(on_message(QString)));
 
     QStringList subscribes;
-    subscribes << QString("Network::" + pSockHandle->getName() + ";Message<Broker>;Broker;Persist");
+    subscribes << getName() + QString("::") + pSockHandle->getName() + QString(";Broker;Message<Broker>;Persist");
     foreach (QString subscribe, subscribes)
         m_broker->addSubscribe(subscribe);
     m_broker->publishComponents(getName(), pSockHandle->getName());
@@ -108,10 +109,24 @@ void TransportNetwork::on_disconnected() {
     delete client;
 }
 
+void TransportNetwork::on_client_connected() {
+    ClientSocketAdapter* client = static_cast<ClientSocketAdapter*>(sender());
+    QString fullAddr = client->getRemoteAddress() + ":" + QString::number(client->getRemotePort());
+    client->setName(QString("Broker<") + fullAddr + QString(">"));
+
+    m_broker->addComponent(this);
+
+    QStringList subscribes;
+    subscribes << getName() + QString("::") + client->getName() + QString(";Broker;Message<Broker>;Persist");
+    foreach (QString subscribe, subscribes)
+        m_broker->addSubscribe(subscribe);
+    m_broker->publishComponents(getName(), client->getName());
+}
+
 void TransportNetwork::on_message(QString msg) {
     // пришло сетевое сообщение
     ServerSocketAdapter *source = (ServerSocketAdapter*)sender();
-    qDebug() << "Network message" << msg << "from" << source->getAddress();
+    qDebug() << "Network message" << msg << "from" << source->getName();
     Packet* pkt = new Packet();
     pkt->fromString(msg);
 
