@@ -22,26 +22,27 @@ public:
     QString getName();
     QString getAddress();
     QString getRemoteAddress();
-    bool isLocal() { return false; }
+    inline bool isLocal() { return false; }
 
     void changeMode(QString mode, QMap<QString, QVariant> params);
 signals:
-    void message(Packet*, QString);
+    void message(QString, QString);
 public slots:
     void on_newConnection();
     void on_disconnected();
     void on_client_connected();
-    void on_message(QString msg);
-    void on_message(Packet* msg);
+    void on_network_message(QString msg);
     void disconnect();
     void on_init_complete();
-    void on_message(ITransport*, IMessage*);
+    void on_broker_message(ITransport*, IMessage*);
 private:
     QueueBroker* m_broker;
     SocketAdapter* m_ptcpClient;
     QMap<QString, SocketAdapter*> m_clients;
     QTcpServer* m_ptcpServer;
     QString m_mode;
+
+    void sendPacket(SocketAdapter *sock, Packet *pkt);
 };
 
 #endif // TRANSPORTNETWORK_H

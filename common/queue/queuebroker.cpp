@@ -124,7 +124,9 @@ QList<ITransport *> QueueBroker::getTransports(QString trName) {
 }
 
 void QueueBroker::on_message(QString message, QString source) {
-    IMessage *msg = new IMessage();
+    IMessage *msg = new IMessage(message);
+    ITransport *tr = static_cast<ITransport*>(sender());
+    routeMessage(msg, tr->getName());
 }
 
 void QueueBroker::addComponent(ILogic *component) {

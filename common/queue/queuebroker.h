@@ -6,7 +6,6 @@
 
 #include "imessage.h"
 #include "query.h"
-#include "packet.h"
 #include "messagebuilder.h"
 #include "subscribe.h"
 
