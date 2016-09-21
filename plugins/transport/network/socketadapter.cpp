@@ -4,11 +4,13 @@
 #include <QTcpSocket>
 #include <QDataStream>
 
-SocketAdapter::SocketAdapter(QObject *parent, QTcpSocket *pSock) : ISocketAdapter(parent), m_msgSize(-1) {
+SocketAdapter::SocketAdapter(QObject *parent, QTcpSocket *pSock) : QObject(parent), m_msgSize(-1) {
+    m_ptcpSocket->IPv4Protocol;
     if (0 == pSock)
         m_ptcpSocket = new QTcpSocket(this);
     else
         m_ptcpSocket = pSock;
+
     connect(m_ptcpSocket, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
     connect(m_ptcpSocket, SIGNAL(disconnected()), this, SLOT(on_disconnected()));
     connect(m_ptcpSocket, SIGNAL(connected()), this, SLOT(on_connected()));
@@ -21,7 +23,6 @@ SocketAdapter::~SocketAdapter() {
 void SocketAdapter::on_message(ITransport *tr, IMessage *msg) {
     emit sock_message(tr, msg);
 }
-
 
 void SocketAdapter::on_readyRead() {
     QString buff;
@@ -78,5 +79,12 @@ void SocketAdapter::on_connected() {
 }
 
 void SocketAdapter::disconnect() {
+    m_connected = false;
+}
 
+void SocketAdapter::sock_connect(QString host, int port) {
+    m_ptcpSocket->connectToHost(host, port);
+    if (m_ptcpSocket->waitForConnected(1000)) {
+         setName(QString("Network<" + getAddress() + QString(">")));
+    }
 }

@@ -4,6 +4,10 @@ IMessage::IMessage(QObject *parent) : QObject(parent) {
 
 }
 
+IMessage::IMessage(QString msg) {
+    fromString(msg);
+}
+
 QString IMessage::getName() {
     return QString("IMessage");
 }

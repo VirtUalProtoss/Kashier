@@ -22,7 +22,7 @@ void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) 
 
     }
     if (mode=="client") {
-        m_ptcpClient = new ClientSocketAdapter(this);
+        m_ptcpClient = new SocketAdapter(this);
 
         connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    m_ptcpClient,  SLOT(on_message(ITransport *, IMessage *)));
         connect(m_ptcpClient,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
@@ -35,7 +35,7 @@ void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) 
             QString addr = params["address"].toString();
             int port = 8765;
             if (params.contains("port")) port = params["port"].toInt();
-            m_ptcpClient->connect(addr, port);
+            m_ptcpClient->sock_connect(addr, port);
         }
         else {
             qDebug() << "No connection data specified";
@@ -79,7 +79,7 @@ QString TransportNetwork::getRemoteAddress() {
 
 void TransportNetwork::on_newConnection() {
     QTcpSocket* pclientSock = m_ptcpServer->nextPendingConnection();
-    ServerSocketAdapter *pSockHandle = new ServerSocketAdapter(pclientSock);
+    SocketAdapter *pSockHandle = new SocketAdapter(pclientSock);
 
 
     QString fullAddr = pSockHandle->getAddress() + ":" + QString::number(pSockHandle->getPort());
@@ -101,16 +101,15 @@ void TransportNetwork::on_newConnection() {
 }
 
 void TransportNetwork::on_disconnected() {
-
-    ServerSocketAdapter* client = static_cast<ServerSocketAdapter*>(sender());
-    QTextStream(stdout) << "Client disconnected: " << client->getName() << endl;
-    m_clients.remove(client->getName());
-    m_broker->removeSubscriptions(client->getName());
-    delete client;
+    SocketAdapter* pSock = static_cast<SocketAdapter*>(sender());
+    QTextStream(stdout) << "Socket disconnected: " << pSock->getName() << endl;
+    m_clients.remove(pSock->getName());
+    m_broker->removeSubscribes(pSock->getName());
+    delete pSock;
 }
 
 void TransportNetwork::on_client_connected() {
-    ClientSocketAdapter* client = static_cast<ClientSocketAdapter*>(sender());
+    SocketAdapter* client = static_cast<SocketAdapter*>(sender());
     QString fullAddr = client->getRemoteAddress() + ":" + QString::number(client->getRemotePort());
     client->setName(QString("Broker<") + fullAddr + QString(">"));
 
@@ -125,7 +124,7 @@ void TransportNetwork::on_client_connected() {
 
 void TransportNetwork::on_message(QString msg) {
     // пришло сетевое сообщение
-    ServerSocketAdapter *source = (ServerSocketAdapter*)sender();
+    SocketAdapter *source = (SocketAdapter*)sender();
     qDebug() << "Network message" << msg << "from" << source->getName();
     Packet* pkt = new Packet();
     pkt->fromString(msg);
@@ -144,18 +143,17 @@ void TransportNetwork::on_message(Packet *pkt) {
 
 
         if (dstAddr == QString("0.0.0.0")) {
-            foreach (ISocketAdapter *mc_sock, m_clients.values()) {
-                ServerSocketAdapter * srvSock = (ServerSocketAdapter *)mc_sock;
-                pkt->setSourceAddress(srvSock->getLocalAddress(), srvSock->getLocalPort());
-                pkt->setDestinationAddress(srvSock->getAddress(), srvSock->getPort());
+            foreach (SocketAdapter *mc_sock, m_clients.values()) {
+                pkt->setSourceAddress(mc_sock->getLocalAddress(), mc_sock->getLocalPort());
+                pkt->setDestinationAddress(mc_sock->getAddress(), mc_sock->getPort());
                 msg = pkt->toString();
-                qDebug() << "Sending message" << msg << "to" << srvSock->getName();
+                qDebug() << "Sending message" << msg << "to" << mc_sock->getName();
                 mc_sock->sendString(msg);
             }
         }
         else {
             if (m_clients.contains(dAddr)) {
-                ServerSocketAdapter * srvSock = (ServerSocketAdapter *)m_clients[dAddr];
+                SocketAdapter * srvSock = m_clients[dAddr];
                 pkt->setSourceAddress(srvSock->getLocalAddress(), srvSock->getLocalPort());
                 pkt->setDestinationAddress(srvSock->getAddress(), srvSock->getPort());
                 msg = pkt->toString();
@@ -178,7 +176,7 @@ void TransportNetwork::on_message(Packet *pkt) {
 
 void TransportNetwork::disconnect() {
     // TODO: unregister remote transports, components, subscribes, notify local components
-    ClientSocketAdapter* client = static_cast<ClientSocketAdapter*>(sender());
+    SocketAdapter* client = static_cast<SocketAdapter*>(sender());
     QTextStream(stdout) << "Client disconnected" << client->getName() << endl;
 }
 
@@ -190,7 +188,7 @@ void TransportNetwork::on_init_complete() {
     changeMode(mode, *_initParams);
 }
 
-void sendPacket(ServerSocketAdapter *sock, Packet *pkt) {
+void sendPacket(SocketAdapter *sock, Packet *pkt) {
     if (sock->isConnected()) {
         qDebug() << "Send message" << pkt->getData() << "to" << sock->getName();
         pkt->setDestinationAddress(sock->getAddress(), sock->getPort());
@@ -203,7 +201,7 @@ void sendPacket(ServerSocketAdapter *sock, Packet *pkt) {
 }
 
 void TransportNetwork::on_message(ITransport *tr, IMessage *msg) {
-    ServerSocketAdapter *isock = static_cast<ServerSocketAdapter*>(sender());
+    SocketAdapter *isock = static_cast<SocketAdapter*>(sender());
     if (tr==this) {
         QString target = msg->getTarget();
         if (isock->getName() == target) {
@@ -214,14 +212,12 @@ void TransportNetwork::on_message(ITransport *tr, IMessage *msg) {
             if (m_mode=="server") {
                 if (m_clients.contains(target)) {
                     if (target=="*") {
-                        foreach(ISocketAdapter *isock, m_clients.values()) {
-                            ServerSocketAdapter *sock = (ServerSocketAdapter *)isock;
-                            sendPacket(sock, pkt);
+                        foreach(SocketAdapter *isock, m_clients.values()) {
+                            sendPacket(isock, pkt);
                         }
                     }
                     else {
-                        ServerSocketAdapter *sock = (ServerSocketAdapter *)m_clients[target];
-                        sendPacket(sock, pkt);
+                        sendPacket(m_clients[target], pkt);
                     }
                 }
             }

@@ -13,6 +13,7 @@ class IMessage : public QObject {
     Q_OBJECT
 public:
     explicit IMessage(QObject *parent = 0);
+    IMessage(QString msg);
     static IMessage fromStream(QByteArray* message);
     virtual QString getName();
     virtual void setType(IMessageType* type);

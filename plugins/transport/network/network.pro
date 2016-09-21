@@ -11,16 +11,10 @@ INCLUDEPATH += . \
     ../../../common \
     ../../../common/queue
 
-HEADERS += isocketadapter.h \
-    socketadapter.h \
-    clientsocketadapter.h \
-    serversocketadapter.h \
+HEADERS += socketadapter.h \
     transportnetwork.h
 
-SOURCES += isocketadapter.cpp \
-    socketadapter.cpp \
-    clientsocketadapter.cpp \
-    serversocketadapter.cpp \
+SOURCES += socketadapter.cpp \
     transportnetwork.cpp
 
 CONFIG(debug, debug|release) {
@@ -33,4 +27,4 @@ CONFIG(debug, debug|release) {
     TARGET = transport_network
 } # CONFIG(debug, debug|release)
 
-VERSION = 0.0.1
+VERSION = 0.1.0

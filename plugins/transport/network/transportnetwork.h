@@ -3,13 +3,12 @@
 
 #include <QObject>
 #include <QTcpServer>
-#include <QTcpSocket>
+//#include <QTcpSocket>
 
 #include "itransport.h"
 #include "packet.h"
 
-#include "serversocketadapter.h"
-#include "clientsocketadapter.h"
+#include "socketadapter.h"
 
 #include "plugininterface.h"
 #include "queuebroker.h"
@@ -39,8 +38,8 @@ public slots:
     void on_message(ITransport*, IMessage*);
 private:
     QueueBroker* m_broker;
-	ClientSocketAdapter* m_ptcpClient;
-    QMap<QString, ISocketAdapter*> m_clients;
+    SocketAdapter* m_ptcpClient;
+    QMap<QString, SocketAdapter*> m_clients;
     QTcpServer* m_ptcpServer;
     QString m_mode;
 };
