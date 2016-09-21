@@ -31,11 +31,11 @@ public:
 public slots:
       void on_send(QString);
       void disconnect();
+      void on_message(ITransport*, IMessage*);
 protected slots:
       void on_readyRead();
       void on_disconnected();
       void on_connected();
-      void on_message(ITransport*, IMessage*);
 protected:
       QTcpSocket *m_ptcpSocket;
       qint16 m_msgSize;
@@ -45,6 +45,7 @@ signals:
     void sock_message(ITransport*, IMessage*);
     void message(QString text);
     void disconnected();
+    void connected();
 };
 
 #endif // SOCKETADAPTER_H

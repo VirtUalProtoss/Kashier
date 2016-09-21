@@ -25,11 +25,11 @@ void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) 
         m_ptcpClient = new SocketAdapter(this);
 
         connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    m_ptcpClient,  SLOT(on_message(ITransport *, IMessage *)));
-        connect(m_ptcpClient,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
+        connect(m_ptcpClient,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_broker_message(ITransport *, IMessage *)));
         connect(m_ptcpClient, 	SIGNAL(disconnected()), 					SLOT(disconnect()));
         connect(m_ptcpClient, 	SIGNAL(connected()), 					SLOT(on_client_connected()));
-        connect(this,        	SIGNAL(message(Packet*, QString)), 	m_broker, 		SLOT(receive(Packet*, QString)));
-        connect(m_ptcpClient, 	SIGNAL(message(QString)), 					SLOT(on_message(QString)));
+        connect(this,        	SIGNAL(message(QString, QString)), 	m_broker, 		SLOT(on_message(QString, QString)));
+        connect(m_ptcpClient, 	SIGNAL(message(QString)), 					SLOT(on_network_message(QString)));
 
         if (params.contains("address")){
             QString addr = params["address"].toString();
@@ -88,10 +88,10 @@ void TransportNetwork::on_newConnection() {
     m_clients[pSockHandle->getName()] = pSockHandle;
 
     connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    pSockHandle,  SLOT(on_message(ITransport *, IMessage *)));
-    connect(pSockHandle,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
+    connect(pSockHandle,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_broker_message(ITransport *, IMessage *)));
     connect(pSockHandle, 	SIGNAL(disconnected()), 					SLOT(on_disconnected()));
     connect(this,        	SIGNAL(message(QString, QString)), 	m_broker, 		SLOT(on_message(QString, QString)));
-    connect(pSockHandle, 	SIGNAL(message(QString)), 					SLOT(on_message(QString)));
+    connect(pSockHandle, 	SIGNAL(message(QString)), 					SLOT(on_network_message(QString)));
 
     QStringList subscribes;
     subscribes << getName() + QString("::") + pSockHandle->getName() + QString(";Broker;Message<Broker>;Persist");
