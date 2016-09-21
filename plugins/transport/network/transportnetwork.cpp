@@ -86,7 +86,8 @@ void TransportNetwork::on_newConnection() {
     pSockHandle->setName(QString("Broker<") + fullAddr + QString(">"));
     m_clients[pSockHandle->getName()] = pSockHandle;
 
-    connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
+    connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    pSockHandle,  SLOT(on_message(ITransport *, IMessage *)));
+    connect(pSockHandle,	SIGNAL(message(ITransport*, IMessage*)),    SLOT(on_message(ITransport *, IMessage *)));
     connect(pSockHandle, 	SIGNAL(disconnected()), 					SLOT(on_disconnected()));
     connect(this,        	SIGNAL(message(Packet*, QString)), 	m_broker, 		SLOT(receive(Packet*, QString)));
     connect(pSockHandle, 	SIGNAL(message(QString)), 					SLOT(on_message(QString)));
@@ -102,7 +103,7 @@ void TransportNetwork::on_disconnected() {
 
     ServerSocketAdapter* client = static_cast<ServerSocketAdapter*>(sender());
     QTextStream(stdout) << "Client disconnected: " << client->getName() << endl;
-    m_clients.remove(client->getAddress());
+    m_clients.remove(client->getName());
     m_broker->removeSubscriptions(client->getName());
     delete client;
 }
@@ -162,7 +163,8 @@ void TransportNetwork::on_message(Packet *pkt) {
 
 void TransportNetwork::disconnect() {
     // TODO: unregister remote transports, components, subscribes, notify local components
-    ;
+    ClientSocketAdapter* client = static_cast<ClientSocketAdapter*>(sender());
+    QTextStream(stdout) << "Client disconnected" << client->getName() << endl;
 }
 
 void TransportNetwork::on_init_complete() {
@@ -186,40 +188,44 @@ void sendPacket(ServerSocketAdapter *sock, Packet *pkt) {
 }
 
 void TransportNetwork::on_message(ITransport *tr, IMessage *msg) {
+    ServerSocketAdapter *isock = static_cast<ServerSocketAdapter*>(sender());
     if (tr==this) {
-        Packet *pkt = new Packet();
         QString target = msg->getTarget();
-        QString mData = msg->toString();
-        pkt->setData(mData);
-        if (m_mode=="server") {
-            if (m_clients.contains(target)) {
-                if (target=="*") {
-                    foreach(ISocketAdapter *isock, m_clients.values()) {
-                        ServerSocketAdapter *sock = (ServerSocketAdapter *)isock;
+        if (isock->getName() == target) {
+            Packet *pkt = new Packet();
+
+            QString mData = msg->toString();
+            pkt->setData(mData);
+            if (m_mode=="server") {
+                if (m_clients.contains(target)) {
+                    if (target=="*") {
+                        foreach(ISocketAdapter *isock, m_clients.values()) {
+                            ServerSocketAdapter *sock = (ServerSocketAdapter *)isock;
+                            sendPacket(sock, pkt);
+                        }
+                    }
+                    else {
+                        ServerSocketAdapter *sock = (ServerSocketAdapter *)m_clients[target];
                         sendPacket(sock, pkt);
                     }
                 }
-                else {
-                    ServerSocketAdapter *sock = (ServerSocketAdapter *)m_clients[target];
-                    sendPacket(sock, pkt);
+            }
+            else if (m_mode=="client") {
+                if (m_ptcpClient) {
+                    if (m_ptcpClient->isConnected()) {
+                        qDebug() << "Send message" << pkt->getData() << "to" << m_ptcpClient->getName();
+                        pkt->setDestinationAddress(m_ptcpClient->getRemoteAddress(), m_ptcpClient->getRemotePort());
+                        pkt->setSourceAddress(m_ptcpClient->getAddress(), m_ptcpClient->getPort());
+                        m_ptcpClient->sendString(pkt->toString());
+                    }
+                    else {
+                        qDebug() << "Client disconnected";
+                    }
                 }
             }
-        }
-        else if (m_mode=="client") {
-            if (m_ptcpClient) {
-                if (m_ptcpClient->isConnected()) {
-                    qDebug() << "Send message" << pkt->getData() << "to" << m_ptcpClient->getName();
-                    pkt->setDestinationAddress(m_ptcpClient->getRemoteAddress(), m_ptcpClient->getRemotePort());
-                    pkt->setSourceAddress(m_ptcpClient->getAddress(), m_ptcpClient->getPort());
-                    m_ptcpClient->sendString(pkt->toString());
-                }
-                else {
-                    qDebug() << "Client disconnected";
-                }
+            else {
+                qDebug() << "Mode" << m_mode << "not implemented";
             }
-        }
-        else {
-            qDebug() << "Mode" << m_mode << "not implemented";
         }
     }
 }

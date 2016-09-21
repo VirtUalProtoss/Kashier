@@ -251,12 +251,14 @@ void QueueBroker::addComponent(ILogic *component) {
 
 void QueueBroker::addComponent(ITransport *component) {
     qDebug() << "Add transport component:" << component->getName() << "[" << transports.size() << "]";
+    /*
     QString sub;
     if (component->isLocal())
         sub = QString("Broker;Broker;*;*");
     else
         sub = QString("Network::Broker;Broker;*;*");
     addSubscribe(sub);
+    */
     QString normName = URI::normalizeAddress(component->getName());
     transports[normName] = component;
     //if (!remoteComponents.contains(component->getName()))

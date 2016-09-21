@@ -93,9 +93,9 @@ QString URI::normalizeComponentName(QString cName) {
             // self-name defined
             QString selfName = cName.split("<")[1].split(">")[0];
             if (!selfName.contains(":")) {
-                selfName = "<" + selfName + ":*>";
+                selfName =  selfName + ":*";
             }
-            nName = cName.split("<")[0] + selfName;
+            nName = cName.split("<")[0] + "<" + selfName + ">";
         }
         else {
             // нормализуем
