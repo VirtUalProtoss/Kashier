@@ -1,7 +1,9 @@
 #include "itransport.h"
+#include "queuebroker.h"
+
 
 ITransport::ITransport(QObject *parent) : QObject(parent) {
-
+    m_broker = static_cast<QueueBroker*>(parent);
 }
 
 QString ITransport::getAddress() {

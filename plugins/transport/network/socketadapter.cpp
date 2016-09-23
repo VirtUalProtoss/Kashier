@@ -10,7 +10,7 @@ SocketAdapter::SocketAdapter(QObject *parent, QTcpSocket *pSock) : QObject(paren
         m_ptcpSocket = new QTcpSocket(this);
     else
         m_ptcpSocket = pSock;
-
+    name = QString("");
     connect(m_ptcpSocket, SIGNAL(readyRead()), this, SLOT(on_readyRead()));
     connect(m_ptcpSocket, SIGNAL(disconnected()), this, SLOT(on_disconnected()));
     connect(m_ptcpSocket, SIGNAL(connected()), this, SLOT(on_connected()));
@@ -45,7 +45,10 @@ void SocketAdapter::on_readyRead() {
 }
 
 QString SocketAdapter::getName() {
-    return name;
+    if (name.length() == 0)
+        return m_ptcpSocket->objectName();
+    else
+        return name;
 }
 
 void SocketAdapter::setName(QString pName) {

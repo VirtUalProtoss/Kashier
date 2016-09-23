@@ -5,6 +5,8 @@
 
 #include "packet.h"
 
+class QueueBroker;
+
 class ITransport : public QObject {
     Q_OBJECT
 public:
@@ -26,6 +28,7 @@ public slots:
 protected:
     QString name = QString("ITransport");
     QMap<QString, QVariant>* _initParams;
+    QueueBroker* m_broker;
 };
 
 #endif // ITRANSPORT_H

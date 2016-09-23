@@ -9,7 +9,7 @@ Subscribe::Subscribe(QObject *parent) : QObject(parent) {
 
 Subscribe::Subscribe(QString sub) {
     m_subscribe = sub;
-    QStringList coms = sub.split(";");
+    QStringList coms = m_subscribe.split(";");
     if (coms.length() == 4) {
         QStringList source = coms[0].split("::");
         if (source.length() == 1) {
@@ -36,6 +36,7 @@ Subscribe::Subscribe(QString sub) {
         qDebug() << "Invalid subscribe" << sub;
         qDebug() << "Format: source;destination;message_type;wait_type";
     }
+
 }
 
 QString Subscribe::hash() {

@@ -1,12 +1,12 @@
 #include "ilogic.h"
 #include <QDebug>
+#include "queuebroker.h"
 
 ILogic::ILogic(QObject *parent) : QObject(parent) {
-
+    m_broker = static_cast<QueueBroker*>(parent);
 }
 
-void ILogic::setInitParams(QMap<QString, QVariant> *initParams)
-{
+void ILogic::setInitParams(QMap<QString, QVariant> *initParams) {
     _initParams = initParams;
     emit init_complete();
 }
@@ -30,8 +30,7 @@ void ILogic::receive(IMessage *msg) {
     qDebug() << "ILogic" << getName() << "receive message" << msg->toString();
 }
 
-void ILogic::run()
-{
+void ILogic::run() {
 
 }
 

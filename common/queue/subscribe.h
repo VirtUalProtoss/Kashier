@@ -2,6 +2,7 @@
 #define SUBSCRIBE_H
 
 #include <QObject>
+#include <QDateTime>
 
 class Subscribe : public QObject {
     Q_OBJECT
@@ -26,6 +27,8 @@ private:
     QString m_destination_component;
     QString m_type;
     QString m_wait_type;
+    QDateTime m_addTime;
+    QDateTime m_removeTime;
 };
 
 #endif // SUBSCRIBE_H

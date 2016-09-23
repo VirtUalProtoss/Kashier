@@ -21,11 +21,15 @@ QString URI::getURI(QString transport, QString component, QMap<QString, QVariant
 QString URI::getComponent(QString uri) {
     QStringList parts = uri.split("::");
     if (parts.length() == 1) {
-        return parts[0].split("<")[0];
+        return parts[0]; //.split("<")[0];
     }
     else {
-        return parts[1].split("<")[0];
+        return parts[1]; //.split("<")[0];
     }
+}
+
+QString URI::getName(QString uri) {
+    return uri.split("<")[0];
 }
 
 QString URI::getComponentParams(QString uri) {
@@ -41,10 +45,10 @@ QString URI::getComponentParams(QString uri) {
 QString URI::getTransport(QString uri) {
     QStringList parts = uri.split("::");
     if (parts.length() == 1) {
-        return QString("Local");
+        return QString("Local<*>");
     }
     else {
-        return parts[0].split("<")[0];
+        return parts[0]; //.split("<")[0];
     }
 }
 
@@ -91,11 +95,14 @@ QString URI::normalizeComponentName(QString cName) {
     else {
         if (cName.contains("<") && cName.contains(">")) {
             // self-name defined
+            /*
             QString selfName = cName.split("<")[1].split(">")[0];
             if (!selfName.contains(":")) {
                 selfName =  selfName + ":*";
             }
             nName = cName.split("<")[0] + "<" + selfName + ">";
+            */
+            nName = cName;
         }
         else {
             // нормализуем

@@ -13,6 +13,7 @@
 #include "itransport.h"
 #include "plugininterface.h"
 #include "subscribe.h"
+#include "logicqueuebroker.h"
 
 
 class QueueBroker : public QObject {
@@ -36,17 +37,18 @@ private:
     QMap<QString, ILogic*>      m_components;
     QMap<QString, ITransport*>  m_transports;
 
-    ITransport* getTransport(QString &transport);
-    ILogic* getLogic(QString &logic);
+    ITransport* getTransport(QString transport);
+    ILogic* getLogic(QString logic);
 
     void routeMessage(IMessage *msg, QString srcTransport);
     bool matchMap(QString src, QString dest);
 
+    void send(ITransport *tr, IMessage *msg);
 public slots:
     // local components messages
-    void on_message(QString message);
+    void on_message(IMessage*);
     // transports messages, source = in-transport sender
-    void on_message(QString message, QString source);
+    void on_message(QString message);
 signals:
     // signal to transport for send message
     void message(ITransport*, IMessage*);

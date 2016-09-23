@@ -1,7 +1,6 @@
 #include "transportnetwork.h"
 
 TransportNetwork::TransportNetwork(QObject *parent) : ITransport(parent) {
-    m_broker = static_cast<QueueBroker*>(parent);
     connect(this, SIGNAL(init_complete()), this, SLOT(on_init_complete()));
 }
 
@@ -28,7 +27,7 @@ void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) 
         connect(m_ptcpClient,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_broker_message(ITransport *, IMessage *)));
         connect(m_ptcpClient, 	SIGNAL(disconnected()), 					SLOT(disconnect()));
         connect(m_ptcpClient, 	SIGNAL(connected()), 					SLOT(on_client_connected()));
-        connect(this,        	SIGNAL(message(QString, QString)), 	m_broker, 		SLOT(on_message(QString, QString)));
+        connect(this,        	SIGNAL(message(QString)), 	m_broker, 		SLOT(on_message(QString)));
         connect(m_ptcpClient, 	SIGNAL(message(QString)), 					SLOT(on_network_message(QString)));
 
         if (params.contains("address")){
@@ -79,10 +78,10 @@ QString TransportNetwork::getRemoteAddress() {
 
 void TransportNetwork::on_newConnection() {
     QTcpSocket* pclientSock = m_ptcpServer->nextPendingConnection();
-    SocketAdapter *pSockHandle = new SocketAdapter(pclientSock);
+    SocketAdapter *pSockHandle = new SocketAdapter(this, pclientSock);
 
 
-    QString fullAddr = pSockHandle->getAddress() + ":" + QString::number(pSockHandle->getPort());
+    QString fullAddr = pSockHandle->getRemoteAddress() + ":" + QString::number(pSockHandle->getRemotePort());
     QTextStream(stdout) << "New connection from " << fullAddr << endl;
     pSockHandle->setName(QString("Broker<") + fullAddr + QString(">"));
     m_clients[pSockHandle->getName()] = pSockHandle;
@@ -90,11 +89,11 @@ void TransportNetwork::on_newConnection() {
     connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    pSockHandle,  SLOT(on_message(ITransport *, IMessage *)));
     connect(pSockHandle,	SIGNAL(sock_message(ITransport*, IMessage*)),    SLOT(on_broker_message(ITransport *, IMessage *)));
     connect(pSockHandle, 	SIGNAL(disconnected()), 					SLOT(on_disconnected()));
-    connect(this,        	SIGNAL(message(QString, QString)), 	m_broker, 		SLOT(on_message(QString, QString)));
+    connect(this,        	SIGNAL(message(QString)), 	m_broker, 		SLOT(on_message(QString)));
     connect(pSockHandle, 	SIGNAL(message(QString)), 					SLOT(on_network_message(QString)));
 
     QStringList subscribes;
-    subscribes << getName() + QString("::") + pSockHandle->getName() + QString(";Broker;Message<Broker>;Persist");
+    subscribes << getName() + QString("::") + pSockHandle->getName() + QString(";Broker;Message;Persist");
     foreach (QString subscribe, subscribes)
         m_broker->addSubscribe(subscribe);
     m_broker->publishComponents(getName(), pSockHandle->getName());
@@ -113,10 +112,11 @@ void TransportNetwork::on_client_connected() {
     QString fullAddr = client->getRemoteAddress() + ":" + QString::number(client->getRemotePort());
     client->setName(QString("Broker<") + fullAddr + QString(">"));
 
+    qDebug() << "Connect to server:" << client->getRemoteAddress() + ":" + QString::number(client->getRemotePort()) << client->isConnected();
     m_broker->addComponent(this);
 
     QStringList subscribes;
-    subscribes << getName() + QString("::") + client->getName() + QString(";Broker;Message<Broker>;Persist");
+    subscribes << getName() + QString("::") + client->getName() + QString(";Broker;Message;Persist");
     foreach (QString subscribe, subscribes)
         m_broker->addSubscribe(subscribe);
     m_broker->publishComponents(getName(), client->getName());
@@ -129,7 +129,7 @@ void TransportNetwork::on_network_message(QString msg) {
     Packet* pkt = new Packet();
     pkt->fromString(msg);
     QString data = pkt->getData();
-    emit message(data, source->getName());
+    emit message(data);
 }
 
 void TransportNetwork::disconnect() {
@@ -162,7 +162,7 @@ void TransportNetwork::on_broker_message(ITransport *tr, IMessage *msg) {
     // message from broker
     SocketAdapter *isock = static_cast<SocketAdapter*>(sender());
     if (tr==this) {
-        QString target = msg->getTarget();
+        QString target = msg->getTarget().split("::")[0];
         if (isock->getName() == target) {
             Packet *pkt = new Packet();
 

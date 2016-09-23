@@ -26,7 +26,7 @@ public:
 
     void changeMode(QString mode, QMap<QString, QVariant> params);
 signals:
-    void message(QString, QString);
+    void message(QString);
 public slots:
     void on_newConnection();
     void on_disconnected();
@@ -36,7 +36,6 @@ public slots:
     void on_init_complete();
     void on_broker_message(ITransport*, IMessage*);
 private:
-    QueueBroker* m_broker;
     SocketAdapter* m_ptcpClient;
     QMap<QString, SocketAdapter*> m_clients;
     QTcpServer* m_ptcpServer;

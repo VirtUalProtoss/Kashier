@@ -19,6 +19,7 @@ public:
     static QString getTransportAddress(QString uri);
     static QString normalizeAddress(QString addr);
     static QString normalizeComponentName(QString cName);
+    static QString getName(QString uri);
 };
 
 #endif // URI_H

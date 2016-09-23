@@ -5,6 +5,7 @@
 
 #include "imessage.h"
 
+class QueueBroker;
 
 class ILogic : public QObject {
     Q_OBJECT
@@ -31,6 +32,7 @@ public slots:
 protected:
     QString name = "ILogic";
     QMap<QString, QVariant>* _initParams;
+    QueueBroker* m_broker;
 };
 
 #endif // ILOGIC_H

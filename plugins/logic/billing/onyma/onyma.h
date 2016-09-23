@@ -18,6 +18,7 @@
 #include "queue/imessage.h"
 
 #include "orm/test_table.h"
+#include "queuebroker.h"
 
 #include "plugininterface.h"
 
