@@ -1,28 +1,20 @@
 TEMPLATE = lib
-DEPENDPATH += .
-INCLUDEPATH += . ./queue
-
-#OBJECTS_DIR = _build
-DESTDIR  = ../../lib
-
-CONFIG += c++11
+VERSION = 0.0.1
+include(../idef.pri)
+include(defines.pri)
+DESTDIR  = $$APPDIR/lib
 
 #CONFIG(release, release): DEFINES += QT_NO_DEBUG_OUTPUT
-
+CONFIG -= plugin
 QT -= gui
 
 #QT_MESSAGE_PATTERN="%{file} %{line} %{message}"
-
 
 CONFIG(debug, debug|release) {
     TARGET = KashierCommond
 } else {
     TARGET = KashierCommon
 } # CONFIG(debug, debug|release)
-
-VERSION = 0.0.1
-
-include(defines.pri)
 
 # Input
 SOURCES += service.cpp \

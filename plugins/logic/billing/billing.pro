@@ -1,14 +1,8 @@
 
-CONFIG += c++11 plugin
-
-QT -= gui
-
 TEMPLATE = lib
-DESTDIR  = ../../../../bin/plugins
-DEPENDPATH += ../../../../lib
+VERSION = 0.0.1
+include(../../../idef.pri)
 INCLUDEPATH += . \
-    ../../../common \
-    ../../../common/queue \
     ../../db \
     ../../../../../QxOrm/include
 
@@ -20,13 +14,9 @@ SOURCES += onyma/onyma.cpp \
     onyma/orm/test_table.cpp
 
 CONFIG(debug, debug|release) {
-    win32: LIBS += -L../../../../lib/ -lKashierCommond -lQxOrmd
-    unix: LIBS += -L../../../../lib/ -lKashierCommond -lQxOrmd  #-Wl,-rpath,lib -Wl,-rpath,.
-    TARGET = logic_billing_onymad
+    win32: LIBS += -lQxOrmd
+    unix: LIBS += -lQxOrmd
 } else {
-    win32: LIBS += -L../../../../lib/ -lQxOrm -lKashierCommon
-    unix: LIBS += -L../../../../lib/ -lQxOrm -lKashierCommon  #-Wl,-rpath,lib -Wl,-rpath,.
-    TARGET = logic_billing_onyma
-} # CONFIG(debug, debug|release)
-
-VERSION = 0.0.1
+    win32: LIBS += -lQxOrm
+    unix: LIBS += -lQxOrm
+}

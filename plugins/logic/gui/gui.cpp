@@ -1,5 +1,6 @@
 #include "gui.h"
 
+#include <QDebug>
 
 GUI::GUI(QObject *parent) : ILogic(parent) {
     m_mainWindow = new MainWindow();

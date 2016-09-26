@@ -4,11 +4,9 @@
 #
 #-------------------------------------------------
 
-CONFIG += c++11
-
-QT -= gui
-
 TEMPLATE = subdirs
 SUBDIRS  = common/common.pro \
     app/app.pro \
     plugins/plugins.pro
+
+include(idef.pri)

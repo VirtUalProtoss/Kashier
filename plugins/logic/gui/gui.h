@@ -6,10 +6,13 @@
 
 
 #include "mainwindow.h"
-#include "../ilogic.h"
+#include "ilogic.h"
+#include "plugininterface.h"
 
 
-class GUI : public ILogic {
+class GUI : public ILogic, public PluginInterface {
+    Q_PLUGIN_METADATA(IID "Kashier.Transport.Network")
+    Q_INTERFACES(PluginInterface)
 public:
     GUI(QObject *parent);
     QString getName();
