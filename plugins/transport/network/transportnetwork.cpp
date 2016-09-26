@@ -83,7 +83,7 @@ void TransportNetwork::on_newConnection() {
 
     QString fullAddr = pSockHandle->getRemoteAddress() + ":" + QString::number(pSockHandle->getRemotePort());
     QTextStream(stdout) << "New connection from " << fullAddr << endl;
-    pSockHandle->setName(QString("Broker<") + fullAddr + QString(">"));
+    pSockHandle->setName(QString("Network<") + fullAddr + QString(">"));
     m_clients[pSockHandle->getName()] = pSockHandle;
 
     connect(m_broker, 		SIGNAL(message(ITransport*, IMessage*)),    pSockHandle,  SLOT(on_message(ITransport *, IMessage *)));
@@ -93,7 +93,8 @@ void TransportNetwork::on_newConnection() {
     connect(pSockHandle, 	SIGNAL(message(QString)), 					SLOT(on_network_message(QString)));
 
     QStringList subscribes;
-    subscribes << getName() + QString("::") + pSockHandle->getName() + QString(";Broker;Message;Persist");
+    //subscribes << getName() + QString("::") + pSockHandle->getName() + QString(";Broker;Message;Persist");
+    subscribes << pSockHandle->getName() + QString("::Broker;Broker;Message;Persist");
     foreach (QString subscribe, subscribes)
         m_broker->addSubscribe(subscribe);
     m_broker->publishComponents(getName(), pSockHandle->getName());
@@ -110,13 +111,14 @@ void TransportNetwork::on_disconnected() {
 void TransportNetwork::on_client_connected() {
     SocketAdapter* client = static_cast<SocketAdapter*>(sender());
     QString fullAddr = client->getRemoteAddress() + ":" + QString::number(client->getRemotePort());
-    client->setName(QString("Broker<") + fullAddr + QString(">"));
+    client->setName(QString("Network<") + fullAddr + QString(">"));
 
     qDebug() << "Connect to server:" << client->getRemoteAddress() + ":" + QString::number(client->getRemotePort()) << client->isConnected();
     m_broker->addComponent(this);
 
     QStringList subscribes;
-    subscribes << getName() + QString("::") + client->getName() + QString(";Broker;Message;Persist");
+    //subscribes << getName() + QString("::") + client->getName() + QString(";Broker;Message;Persist");
+    subscribes << client->getName() + QString("::Broker;Broker;Message;Persist");
     foreach (QString subscribe, subscribes)
         m_broker->addSubscribe(subscribe);
     m_broker->publishComponents(getName(), client->getName());
@@ -158,31 +160,47 @@ void TransportNetwork::sendPacket(SocketAdapter *sock, Packet *pkt) {
     }
 }
 
+void TransportNetwork::sendSockMessage(SocketAdapter *sock, IMessage *msg) {
+    if (sock->isConnected()) {
+        QString sender = QString("Network<") + sock->getLocalAddress() + ":" + QString::number(sock->getLocalPort()) + QString(">");
+        msg->setSender(sender + QString("::") + msg->getSender());
+        Packet *pkt = new Packet();
+        pkt->setData(msg->toString());
+        qDebug() << "Send message" << pkt->getData() << "to" << sock->getName();
+        pkt->setDestinationAddress(sock->getRemoteAddress(), sock->getRemotePort());
+        pkt->setSourceAddress(sock->getLocalAddress(), sock->getLocalPort());
+        sock->sendString(pkt->toString());
+    }
+    else {
+        qDebug() << "Socket" << sock->getName() << "disconnected";
+    }
+}
+
 void TransportNetwork::on_broker_message(ITransport *tr, IMessage *msg) {
     // message from broker
     SocketAdapter *isock = static_cast<SocketAdapter*>(sender());
     if (tr==this) {
         QString target = msg->getTarget().split("::")[0];
         if (isock->getName() == target) {
-            Packet *pkt = new Packet();
+            //Packet *pkt = new Packet();
 
-            QString mData = msg->toString();
-            pkt->setData(mData);
+            //QString mData = msg->toString();
+            //pkt->setData(mData);
             if (m_mode == "server") {
                 if (m_clients.contains(target)) {
                     if (target=="*") {
                         foreach(SocketAdapter *isock, m_clients.values()) {
-                            sendPacket(isock, pkt);
+                            sendSockMessage(isock, msg);
                         }
                     }
                     else {
-                        sendPacket(m_clients[target], pkt);
+                        sendSockMessage(m_clients[target], msg);
                     }
                 }
             }
             else if (m_mode == "client") {
                 if (m_ptcpClient) {
-                    sendPacket(m_ptcpClient, pkt);
+                    sendSockMessage(m_ptcpClient, msg);
                 }
             }
             else {

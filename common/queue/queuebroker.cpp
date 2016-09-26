@@ -41,7 +41,7 @@ void QueueBroker::removeSubscribes(QString dstTransportName) {
 ILogic *QueueBroker::getLogic(QString logic) {
     ILogic* nLogic = 0;
     foreach (ILogic* key, m_components.values()) {
-        if (key->getName() == logic)
+        if (URI::normalizeComponentName(key->getName()) == logic)
             nLogic = key;
     }
     return nLogic;
@@ -83,16 +83,21 @@ QList<Subscribe *> QueueBroker::searchSubscribes(QString source, QString mType) 
             if (subSender == sender) {
                 // точное совпадение транспорта
                 if (subComponent == component)
-                    subs.append(sub);
-                if (URI::getName(subComponent) == URI::getName(component))
-                    subs.append(sub);
+                    if (!subs.contains(sub))
+                        subs.append(sub);
+                if (URI::normalizeComponentName(subComponent) == URI::normalizeComponentName(URI::getName(component)))
+                //if (URI::getName(subComponent) == URI::getName(component))
+                    if (!subs.contains(sub))
+                        subs.append(sub);
             }
             else if (URI::getName(subSender) == URI::getName(sender)) {
                 // совпадение по всем транспортам
                 if (subComponent == component)
-                    subs.append(sub);
-                if (URI::getName(subComponent) == URI::getName(component))
-                    subs.append(sub);
+                    if (!subs.contains(sub))
+                        subs.append(sub);
+                if (URI::normalizeComponentName(subComponent) == URI::normalizeComponentName(URI::getName(component)))
+                    if (!subs.contains(sub))
+                        subs.append(sub);
             }
             else {
                 ;
@@ -147,10 +152,10 @@ void QueueBroker::routeMessage(IMessage* msg, QString sourceTransport) {
 }
 
 void QueueBroker::send(ITransport *tr, IMessage *msg) {
-    if (!tr->isLocal()) {
-        // append network address into message
-        msg->setSender(tr->getName() + QString("::") + msg->getSender());
-    }
+    //if (!tr->isLocal()) {
+    //    // append network address into message
+    //    msg->setSender(tr->getName() + QString("::") + msg->getSender());
+    //}
     emit message(tr, msg);
 }
 

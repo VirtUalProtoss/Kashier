@@ -42,6 +42,7 @@ private:
     QString m_mode;
 
     void sendPacket(SocketAdapter *sock, Packet *pkt);
+    void sendSockMessage(SocketAdapter *sock, IMessage *msg);
 };
 
 #endif // TRANSPORTNETWORK_H
