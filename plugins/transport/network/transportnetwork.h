@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QTcpServer>
-//#include <QTcpSocket>
 
 #include "itransport.h"
 #include "packet.h"

@@ -26,6 +26,8 @@ public:
     void addComponent(PluginInterface* component, QMap<QString, QVariant> params);
     void removeComponent(ITransport* component);
     void removeComponent(ILogic* component);
+    void registerRemoteComponent(QString cName, QString rAddress);
+    QStringList getRemoteComponentAddress(QString cName);
 
     void publishComponents(QString transport = QString("Network"), QString target = QString("Broker<*>"));
     QList<Subscribe *> searchSubscribes(QString source, QString mType);
@@ -42,6 +44,7 @@ private:
 
     void routeMessage(IMessage *msg, QString srcTransport);
     bool matchMap(QString src, QString dest);
+    QMap<QString, QList<QString>> m_remoteComponents;
 
     void send(ITransport *tr, IMessage *msg);
 public slots:

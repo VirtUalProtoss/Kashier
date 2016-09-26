@@ -5,14 +5,13 @@ TEMPLATE = lib
 VERSION = 0.0.1
 include(../../../idef.pri)
 
-SOURCES += main.cpp \
+SOURCES += gui.cpp \
     loginwindow.cpp \
     mainwindow.cpp \
     paymentwindow.cpp \
-    settingswindow.cpp \
-    gui.cpp
+    settingswindow.cpp
 
-HEADERS  += \
+HEADERS  += gui.h \
     loginwindow.h \
     mainwindow.h \
     paymentwindow.h \

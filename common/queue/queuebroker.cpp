@@ -156,7 +156,22 @@ void QueueBroker::send(ITransport *tr, IMessage *msg) {
     //    // append network address into message
     //    msg->setSender(tr->getName() + QString("::") + msg->getSender());
     //}
-    emit message(tr, msg);
+    QString compTarget = msg->getTarget();
+    if (URI::getTransport(compTarget) == "Local<*>") {
+        QStringList addrs = getRemoteComponentAddress(compTarget);
+        if (addrs.length() > 0) {
+            foreach (QString addr, addrs) {
+                msg->setTarget(addr + "::" + compTarget);
+                emit message(tr, msg);
+            }
+        }
+        else {
+            qDebug() << "Target unreachable" << compTarget;
+        }
+    }
+    else {
+        emit message(tr, msg);
+    }
 }
 
 QList<ITransport *> QueueBroker::getTransports(QString trName) {
@@ -227,6 +242,31 @@ void QueueBroker::removeComponent(ITransport *component) {
 void QueueBroker::removeComponent(ILogic *component) {
 
     m_components.remove(URI::normalizeComponentName(component->getName()));
+}
+
+void QueueBroker::registerRemoteComponent(QString cName, QString rAddress) {
+    QString nComp = URI::normalizeComponentName(cName);
+    if (!m_remoteComponents.contains(nComp)) {
+        QList<QString> lst;
+        lst << rAddress;
+        m_remoteComponents[nComp] = lst;
+    }
+    else {
+        if (!m_remoteComponents[nComp].contains(rAddress)) {
+            QList<QString> lst;
+            lst << rAddress;
+            m_remoteComponents[nComp] = lst;
+        }
+    }
+}
+
+QStringList QueueBroker::getRemoteComponentAddress(QString cName) {
+    QString nComp = URI::normalizeComponentName(cName);
+    QStringList rAddrs;
+    if (m_remoteComponents.contains(nComp)) {
+        rAddrs = m_remoteComponents[nComp];
+    }
+    return rAddrs;
 }
 
 void QueueBroker::addSubscribe(QString &subscribe) {

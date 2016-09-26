@@ -33,6 +33,8 @@ protected:
     QString name = "ILogic";
     QMap<QString, QVariant>* _initParams;
     QueueBroker* m_broker;
+
+    void subscribe(QString sub);
 };
 
 #endif // ILOGIC_H

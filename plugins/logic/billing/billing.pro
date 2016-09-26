@@ -14,9 +14,9 @@ SOURCES += onyma/onyma.cpp \
     onyma/orm/test_table.cpp
 
 CONFIG(debug, debug|release) {
-    win32: LIBS += -lQxOrmd
-    unix: LIBS += -lQxOrmd
+    win32: LIBS += -lQxOrmd -lKashierCommond
+    unix: LIBS += -lQxOrmd -lKashierCommond
 } else {
-    win32: LIBS += -lQxOrm
-    unix: LIBS += -lQxOrm
+    win32: LIBS += -lQxOrm -lKashierCommon
+    unix: LIBS += -lQxOrm -lKashierCommon
 }

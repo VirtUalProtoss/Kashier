@@ -207,5 +207,11 @@ void TransportNetwork::on_broker_message(ITransport *tr, IMessage *msg) {
                 qDebug() << "Mode" << m_mode << "not implemented";
             }
         }
+        else {
+            if (isock->isConnected())
+                qDebug() << "Socket" << isock->getName() << "not match target" << target;
+            else
+                qDebug() << "Socket disconnected";
+        }
     }
 }

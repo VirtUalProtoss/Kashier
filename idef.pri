@@ -15,13 +15,13 @@ DIR_LOW = $$member(DLIST, -1)
 TARGET_NAME = $${DIR_HIGH}_$${DIR_LOW}
 
 CONFIG(debug, debug|release) {
-    win32: LIBS += -L$$APPDIR/lib/
-    unix: LIBS += -L$$APPDIR/lib/  #-Wl,-rpath,lib -Wl,-rpath,.
-    TARGET = $${TARGET_NAME}d_$${VERSION}
+    win32: LIBS += -L$$APPDIR/lib/ #-lKashierCommond
+    unix: LIBS += -L$$APPDIR/lib/ #-lKashierCommond #-Wl,-rpath,lib -Wl,-rpath,.
+    TARGET = $${TARGET_NAME}d #_$${VERSION}
 } else {
-    win32: LIBS += -L$$APPDIR/lib/
-    unix: LIBS += -L$$APPDIR/lib/  #-Wl,-rpath,lib -Wl,-rpath,.
-    TARGET = $${TARGET_NAME}_$${VERSION}
+    win32: LIBS += -L$$APPDIR/lib/ #-lKashierCommon
+    unix: LIBS += -L$$APPDIR/lib/ #-lKashierCommon #-Wl,-rpath,lib -Wl,-rpath,.
+    TARGET = $${TARGET_NAME} #_$${VERSION}
 } # CONFIG(debug, debug|release)
 
 

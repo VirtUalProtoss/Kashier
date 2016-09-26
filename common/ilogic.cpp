@@ -38,3 +38,7 @@ void ILogic::emit_message(IMessage *msg) {
     emit message(msg);
 }
 
+void ILogic::subscribe(QString sub) {
+    m_broker->addSubscribe(sub);
+}
+

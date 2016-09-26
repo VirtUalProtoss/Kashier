@@ -1,4 +1,8 @@
+#ifdef IS_GUI
+#include <QApplication>
+#else
 #include <QCoreApplication>
+#endif
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 
@@ -7,8 +11,11 @@
 
 
 int main(int argc, char *argv[]) {
+#ifdef IS_GUI
+    QApplication app(argc, argv);
+#else
     QCoreApplication app(argc, argv);
-
+#endif
     //QCoreApplication::setApplicationName("multiple-values-program");
     //QCoreApplication::setApplicationVersion(Q_VERSION);
 

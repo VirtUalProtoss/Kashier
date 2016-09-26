@@ -4,6 +4,7 @@
 #include <QStringList>
 #include <QDebug>
 
+#include "queuebroker.h"
 #include "uri.h"
 
 LogicQueueBroker::LogicQueueBroker(QObject *parent) : ILogic(parent) {
@@ -12,14 +13,18 @@ LogicQueueBroker::LogicQueueBroker(QObject *parent) : ILogic(parent) {
 
 void LogicQueueBroker::receive(IMessage *msg) {
     qDebug() << "Broker receive message" << msg->toString();
-    /*
+
     QStringList msgParts = msg->getText().split("::");
     if (msgParts[0] == "registerComponent") {
         QStringList comps = msgParts[1].split(";");
         foreach (QString comp, comps) {
-            qDebug() << "Component for register (obsolete, no action)" << comp;
+            QString rAddr = URI::getTransport(msg->getSender());
+            qDebug() << "Register remote component" << comp << rAddr;
+            m_broker->registerRemoteComponent(comp.split("==")[0], rAddr);
+            //qDebug() << "Component for register (obsolete, no action)" << comp;
         }
     }
+    /*
     if (msgParts[0] == "addSubscribe") {
         QStringList comps = msgParts[1].split(";");
         foreach (QString comp, comps) {

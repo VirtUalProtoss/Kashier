@@ -7,6 +7,7 @@
 TEMPLATE = subdirs
 SUBDIRS  = common/common.pro \
     app/app.pro \
+    app/app_gui.pro \
     plugins/plugins.pro
 
 include(idef.pri)
