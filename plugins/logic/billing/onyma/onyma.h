@@ -39,7 +39,7 @@ public:
     void run();
 
 private:
-    QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL", "onyma");
+    QSqlDatabase db; // = QSqlDatabase::addDatabase("QPSQL", "onyma");
     bool authentificated = false;
     bool connected = false;
     QMap<QString, int> commandMap;
@@ -50,6 +50,7 @@ signals:
     void message(IMessage*);
 
 public slots:
+    void on_init_complete();
 };
 
 #endif // ONYMA_H

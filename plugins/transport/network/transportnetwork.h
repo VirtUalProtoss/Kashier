@@ -22,6 +22,7 @@ public:
     QString getAddress();
     QString getRemoteAddress();
     inline bool isLocal() { return false; }
+    bool isLocalAddress(QString address);
 
     void changeMode(QString mode, QMap<QString, QVariant> params);
 signals:

@@ -20,7 +20,6 @@
 using namespace std;
 
 QString test() {
-
     QSqlError daoError; // = qx::dao::delete_all<test_table>();
     test_table_ptr test_table_1; test_table_1.reset(new test_table());
 
@@ -49,21 +48,15 @@ Onyma::Onyma(QObject *parent) : ILogic(parent) {
     //QMap<QString, QVariant> params;
     //execCommand("getPayments", params);
     //connect(SIGNAL(message(IMessage*)), SLOT(emit_message(IMessage*)));
+    connect(this, SIGNAL(init_complete()), this, SLOT(on_init_complete()));
 }
 
 int Onyma::connectDB() {
     qDebug() << "connectDB()";
-    /*
-    connected = db.open();
-    if (!connected) {
-        QSqlError msgError = db.lastError();
-        qDebug() << "error open db" << msgError.text() << endl;
-        return 1;
-    }
-    */
     //QString username = "s.sobolevskiy";
     //QString password = "NjgZYX3J";
     //authentificated = auth(&username, &password);
+
     if (_initParams->contains("driver")) {
         qx::QxSqlDatabase::getSingleton()->setDriverName(_initParams->value("driver").toString());
     }
@@ -78,7 +71,6 @@ int Onyma::connectDB() {
     }
     qx::QxSqlDatabase::getSingleton()->setUserName(_initParams->value("username").toString());
     qx::QxSqlDatabase::getSingleton()->setPassword(_initParams->value("password").toString());
-
     return 0;
 }
 
@@ -175,6 +167,10 @@ void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
     IMessage *msg = msgBuild->getMessage(params["target"].toString(), QString("getPayments"), params);
     emit message(msg);
     //test();
+}
+
+void Onyma::on_init_complete() {
+    connectDB();
 }
 
 void Onyma::receive(IMessage *msg) {

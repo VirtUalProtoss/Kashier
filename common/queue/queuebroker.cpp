@@ -68,41 +68,51 @@ QList<Subscribe *> QueueBroker::searchSubscribes(QString source, QString mType) 
     QString component = URI::normalizeComponentName(URI::getComponent(source));
 
     QList<Subscribe *> subs;
+    bool matched = false;
     foreach (Subscribe* sub, m_subscribes) {
 
-        if (sub->getType() != mType)
+        if (sub->getType() != URI::normalizeComponentName(mType))
             continue;
+
+        matched = false;
         QString subSource = sub->getSource();
         QString subSender = URI::getTransport(subSource);
         QString subComponent = URI::getComponent(subSource);
         // точные совпадения
         if (subSource == sender + QString("::") + component)
-            subs.append(sub);
+            matched = true;
+        QString nComp = URI::normalizeComponentName(URI::getName(component));
         // совпадения по типу компонента
         if (sub->getType() != "Reply") {
             if (subSender == sender) {
                 // точное совпадение транспорта
                 if (subComponent == component)
-                    if (!subs.contains(sub))
-                        subs.append(sub);
-                if (URI::normalizeComponentName(subComponent) == URI::normalizeComponentName(URI::getName(component)))
-                //if (URI::getName(subComponent) == URI::getName(component))
-                    if (!subs.contains(sub))
-                        subs.append(sub);
+                    matched = true;
+                if (URI::normalizeComponentName(subComponent) == nComp)
+                    matched = true;
             }
             else if (URI::getName(subSender) == URI::getName(sender)) {
                 // совпадение по всем транспортам
                 if (subComponent == component)
-                    if (!subs.contains(sub))
-                        subs.append(sub);
-                if (URI::normalizeComponentName(subComponent) == URI::normalizeComponentName(URI::getName(component)))
-                    if (!subs.contains(sub))
-                        subs.append(sub);
+                    matched = true;
+                if (URI::normalizeComponentName(subComponent) == nComp)
+                    matched = true;
+            }
+            else if (subSender == "*") {
+                if (subComponent == component)
+                    matched = true;
+                if (URI::normalizeComponentName(subComponent) == nComp)
+                    matched = true;
+                if (subComponent == "*")
+                    matched = true;
             }
             else {
                 ;
             }
         }
+        if (matched)
+            if (!subs.contains(sub))
+                subs.append(sub);
     }
     return subs;
 }
@@ -202,6 +212,10 @@ void QueueBroker::on_message(QString message) {
     qDebug() << "receive(QString)" << message;
     IMessage *msg = new IMessage(message);
     ITransport *tr = static_cast<ITransport*>(sender());
+    QString msgDstAddr = URI::getTransport(msg->getTarget());
+    if (tr->isLocalAddress(URI::getTransportAddress(msgDstAddr))) {
+        msg->setTarget(URI::getComponent(msg->getTarget()));
+    }
     routeMessage(msg, tr->getName());
 }
 

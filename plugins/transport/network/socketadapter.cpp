@@ -89,6 +89,7 @@ void SocketAdapter::disconnect() {
 void SocketAdapter::sock_connect(QString host, int port) {
     m_ptcpSocket->connectToHost(host, port);
     if (m_ptcpSocket->waitForConnected(1000)) {
-         setName(QString("Network<" + getAddress() + QString(">")));
+         //setName(QString("Network<" + getAddress() + QString(">")));
+        emit connected();
     }
 }

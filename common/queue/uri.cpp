@@ -21,10 +21,10 @@ QString URI::getURI(QString transport, QString component, QMap<QString, QVariant
 QString URI::getComponent(QString uri) {
     QStringList parts = uri.split("::");
     if (parts.length() == 1) {
-        return parts[0]; //.split("<")[0];
+        return URI::normalizeComponentName(parts[0]); //.split("<")[0];
     }
     else {
-        return parts[1]; //.split("<")[0];
+        return URI::normalizeComponentName(parts[1]); //.split("<")[0];
     }
 }
 
@@ -45,7 +45,10 @@ QString URI::getComponentParams(QString uri) {
 QString URI::getTransport(QString uri) {
     QStringList parts = uri.split("::");
     if (parts.length() == 1) {
-        return QString("Local<*>");
+        if (parts[0] == "*")
+            return parts[0];
+        else
+            return QString("Local<*>");
     }
     else {
         return parts[0]; //.split("<")[0];
@@ -66,6 +69,9 @@ QString URI::normalizeAddress(QString addr) {
     QString nAddr;
     if (addr.length() == 0) {
         nAddr = QString("Local<*>");
+    }
+    else if (addr == "*") {
+        nAddr = QString("*");
     }
     else {
         if (addr.contains("<") && addr.contains(">")) {
@@ -91,6 +97,9 @@ QString URI::normalizeComponentName(QString cName) {
     QString nName;
     if (cName.length() == 0) {
         nName = QString("Local<*>");
+    }
+    else if (cName == "*") {
+        nName = QString("*");
     }
     else {
         if (cName.contains("<") && cName.contains(">")) {

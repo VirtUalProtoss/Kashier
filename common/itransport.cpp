@@ -26,6 +26,10 @@ bool ITransport::isLocal() {
     return true;
 }
 
+bool ITransport::isLocalAddress(QString address) {
+    return false;
+}
+
 void ITransport::send(QString data) {
 
 }

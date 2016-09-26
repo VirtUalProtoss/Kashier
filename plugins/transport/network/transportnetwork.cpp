@@ -76,6 +76,27 @@ QString TransportNetwork::getRemoteAddress() {
     }
 }
 
+bool TransportNetwork::isLocalAddress(QString address) {
+    bool local = false;
+    if (m_mode == "server") {
+        QString lAddress = QString("");
+        foreach (SocketAdapter* client, m_clients) {
+            lAddress = client->getLocalAddress() + QString::number(client->getLocalPort());
+            if (lAddress == address)
+                local = true;
+        }
+    }
+    else if (m_mode == "client") {
+        QString lAddress = m_ptcpClient->getLocalAddress() + QString::number(m_ptcpClient->getLocalPort());
+        if (lAddress == address)
+            local = true;
+    }
+    else {
+        qDebug() << "Mode" << m_mode << "not implemented";
+    }
+    return local;
+}
+
 void TransportNetwork::on_newConnection() {
     QTcpSocket* pclientSock = m_ptcpServer->nextPendingConnection();
     SocketAdapter *pSockHandle = new SocketAdapter(this, pclientSock);
@@ -109,19 +130,20 @@ void TransportNetwork::on_disconnected() {
 }
 
 void TransportNetwork::on_client_connected() {
-    SocketAdapter* client = static_cast<SocketAdapter*>(sender());
-    QString fullAddr = client->getRemoteAddress() + ":" + QString::number(client->getRemotePort());
-    client->setName(QString("Network<") + fullAddr + QString(">"));
+    //SocketAdapter* client = static_cast<SocketAdapter*>(sender());
+    m_ptcpClient = static_cast<SocketAdapter*>(sender());
+    QString fullAddr = m_ptcpClient->getRemoteAddress() + ":" + QString::number(m_ptcpClient->getRemotePort());
+    m_ptcpClient->setName(QString("Network<") + fullAddr + QString(">"));
 
-    qDebug() << "Connect to server:" << client->getRemoteAddress() + ":" + QString::number(client->getRemotePort()) << client->isConnected();
+    qDebug() << "Connect to server:" << fullAddr << m_ptcpClient->isConnected();
     m_broker->addComponent(this);
 
     QStringList subscribes;
     //subscribes << getName() + QString("::") + client->getName() + QString(";Broker;Message;Persist");
-    subscribes << client->getName() + QString("::Broker;Broker;Message;Persist");
+    subscribes << m_ptcpClient->getName() + QString("::Broker;Broker;Message;Persist");
     foreach (QString subscribe, subscribes)
         m_broker->addSubscribe(subscribe);
-    m_broker->publishComponents(getName(), client->getName());
+    m_broker->publishComponents(getName(), m_ptcpClient->getName());
 }
 
 void TransportNetwork::on_network_message(QString msg) {

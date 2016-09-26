@@ -16,6 +16,7 @@ public:
     virtual QString getName();
     virtual void setName(QString);
     virtual bool isLocal();
+    virtual bool isLocalAddress(QString address);
     virtual void send(QString);
     QString getType() { return QString("Transport"); }
     virtual void setInitParams(QMap<QString, QVariant>* initParams);
