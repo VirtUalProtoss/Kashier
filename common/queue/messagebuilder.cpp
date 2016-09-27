@@ -8,6 +8,8 @@ void MessageBuilder::setType(QString type) {
     IMessageType* mType;
     if (type == "Query")
         mType = new IMessageType(this, type);
+    else if (type == "Reply")
+        mType = new IMessageType(this, type);
     else
         mType = new IMessageType();
     message->setType(mType);

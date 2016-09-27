@@ -53,7 +53,9 @@ void MainWindow::on_btnPaymentsWInfoRefresh_clicked() {
     MessageBuilder* msgBuild = new MessageBuilder(this);
     msgBuild->setType(QString("Query"));
     msgBuild->setSender(getName());
-    emit message(msgBuild->getMessage(QString("Billing"), QString("getPayments"), params));
+    IMessage* msg = msgBuild->getMessage(QString("Billing"), QString("getPayments"), params);
+    msg->setProtocol(1);
+    emit message(msg);
     statusbar->showMessage("");
 }
 

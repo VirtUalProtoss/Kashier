@@ -8,10 +8,12 @@ INCLUDEPATH += . \
 
 include(../../../../../QxOrm/QxOrm.pri)
 HEADERS += onyma/onyma.h \
-    onyma/orm/test_table.h
+    onyma/orm/test_table.h \
+    billing.h
 
 SOURCES += onyma/onyma.cpp \
-    onyma/orm/test_table.cpp
+    onyma/orm/test_table.cpp \
+    billing.cpp
 
 CONFIG(debug, debug|release) {
     win32: LIBS += -lQxOrmd -lKashierCommond

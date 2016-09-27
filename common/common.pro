@@ -32,7 +32,8 @@ SOURCES += service.cpp \
     itransport.cpp \
     plugininterface.cpp \
     queue/uri.cpp \
-    logicqueuebroker.cpp
+    logicqueuebroker.cpp \
+    queue/reply.cpp
 
 HEADERS += service.h \
     queue/imessagebody.h \
@@ -50,4 +51,5 @@ HEADERS += service.h \
     plugininterface.h \
     queue/uri.h \
     queue/queuebroker.h \
-    logicqueuebroker.h
+    logicqueuebroker.h \
+    queue/reply.h

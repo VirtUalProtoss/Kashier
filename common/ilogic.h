@@ -18,7 +18,6 @@ public:
     virtual void setName(QString name);
     virtual bool isPublic();
     virtual void receive(IMessage*);
-    virtual void run();
     QString getType() { return QString("Logic"); }
 
 signals:

@@ -39,38 +39,27 @@ QString test() {
     return sDump;
 }
 
-Onyma::Onyma(QObject *parent) : ILogic(parent) {
-    //QSqlDatabase::addDatabase("QOCI", "onyma");
-    //db = QSqlDatabase::addDatabase("QPSQL", "onyma");
-    //if (!connected)
-    //    connectDB();
-    //run();
-    //QMap<QString, QVariant> params;
-    //execCommand("getPayments", params);
-    //connect(SIGNAL(message(IMessage*)), SLOT(emit_message(IMessage*)));
-    connect(this, SIGNAL(init_complete()), this, SLOT(on_init_complete()));
+Onyma::Onyma() {
+
 }
 
-int Onyma::connectDB() {
+int Onyma::connectDB(QMap<QString, QVariant> *params) {
     qDebug() << "connectDB()";
-    //QString username = "s.sobolevskiy";
-    //QString password = "NjgZYX3J";
-    //authentificated = auth(&username, &password);
 
-    if (_initParams->contains("driver")) {
-        qx::QxSqlDatabase::getSingleton()->setDriverName(_initParams->value("driver").toString());
+    if (params->contains("driver")) {
+        qx::QxSqlDatabase::getSingleton()->setDriverName(params->value("driver").toString());
     }
     else {
         qx::QxSqlDatabase::getSingleton()->setDriverName("QSQLITE");
     }
 
-    qx::QxSqlDatabase::getSingleton()->setDatabaseName(_initParams->value("database").toString());
-    qx::QxSqlDatabase::getSingleton()->setHostName(_initParams->value("host").toString());
-    if (_initParams->contains("port")) {
-        qx::QxSqlDatabase::getSingleton()->setPort(_initParams->value("port").toInt());
+    qx::QxSqlDatabase::getSingleton()->setDatabaseName(params->value("database").toString());
+    qx::QxSqlDatabase::getSingleton()->setHostName(params->value("host").toString());
+    if (params->contains("port")) {
+        qx::QxSqlDatabase::getSingleton()->setPort(params->value("port").toInt());
     }
-    qx::QxSqlDatabase::getSingleton()->setUserName(_initParams->value("username").toString());
-    qx::QxSqlDatabase::getSingleton()->setPassword(_initParams->value("password").toString());
+    qx::QxSqlDatabase::getSingleton()->setUserName(params->value("username").toString());
+    qx::QxSqlDatabase::getSingleton()->setPassword(params->value("password").toString());
     return 0;
 }
 
@@ -129,11 +118,7 @@ bool Onyma::auth(QString *username, QString *password) {
     return authentificated;
 }
 
-QString Onyma::getName() {
-    return QString("Billing");
-}
-
-void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
+void Onyma::execCommand(QString command, QMap<QString, QVariant> &params) {
     qDebug() << "Command:" << command << "Params:" << params;
 
     /*
@@ -150,57 +135,8 @@ void Onyma::execCommand(QString command, QMap<QString, QVariant> params) {
     qDebug() << pays_sql;
     QSqlQueryModel *model = getTable(&pays_sql, &params);
     */
-
-    MessageBuilder* msgBuild = new MessageBuilder();
-    msgBuild->setType(QString("Reply"));
-    msgBuild->setSender(getName());
-    //msgBuild->setHash(params["hash"]);
-    //IMessage *msg = new IMessage();
-    //msg->setHash(params["hash"].toString());
-    //msg->setSender(getName());
-    //msg->setType(QString("Reply"));
-    //QString("Onyma"), QString("search"), params);
     QString result = test();
     qDebug("%s", qPrintable(result));
-    msgBuild->setText(result);
-    //emit message(msg);
-    IMessage *msg = msgBuild->getMessage(params["target"].toString(), QString("getPayments"), params);
-    emit message(msg);
-    //test();
-}
-
-void Onyma::on_init_complete() {
-    connectDB();
-}
-
-void Onyma::receive(IMessage *msg) {
-    qDebug() << getName() << "receive message" << msg->toString();
-    QStringList items = msg->getText().split("::");
-    QString command = items[0];
-
-    if (items.length() > 1) {
-        QMap<QString, QVariant> params;
-        QStringList pList = items[1].split(";");
-        foreach (QString param, pList) {
-            if (param.length() == 0)
-                continue;
-            QStringList pArr = param.split("==");
-            QString key = pArr[0];
-            QString value = QString("");
-            if (pArr.length() > 1)
-                value = pArr[1];
-            params[key] = value;
-        }
-        params["hash"] = msg->getHash();
-        params["target"] = msg->getSender();
-        execCommand(command, params);
-    }
-}
-
-void Onyma::run() {
-    qDebug() << "run()";
-    connectDB();
-    QMap<QString, QVariant> params;
-    execCommand(QString("getPayments"), params);
+    params["result"] = result;
 }
 

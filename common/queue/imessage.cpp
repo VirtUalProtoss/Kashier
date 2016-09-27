@@ -65,7 +65,7 @@ QString IMessage::toString() {
     else
         target = QString("*");
 
-    return m_sender + "##" + target + "##" + m_type->toString() + "##" + getText();
+    return m_sender + "##" + target + "##" + m_type->toString() + "##" + QString::number(m_protocol) + "##" + getText();
 }
 
 void IMessage::fromString(QString msg) {
@@ -75,7 +75,8 @@ void IMessage::fromString(QString msg) {
         m_sender = items[0];
         m_target = items[1];
         type->fromString(items[2]);
-        m_text = items[3];
+        m_protocol = items[3].toInt();
+        m_text = items[4];
     }
     else {
         type->fromString(QString("Message"));

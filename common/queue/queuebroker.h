@@ -33,6 +33,7 @@ public:
     QList<Subscribe *> searchSubscribes(QString source, QString mType);
     QList<ITransport *> getTransports(QString trName);
     void removeSubscribes(QString dstTransportName);
+    void addTempSubscribe(Subscribe &sub, IMessage &msg);
 private:
     QList<Subscribe*> m_subscribes;
 
@@ -45,6 +46,7 @@ private:
     void routeMessage(IMessage *msg, QString srcTransport);
     bool matchMap(QString src, QString dest);
     QMap<QString, QList<QString>> m_remoteComponents;
+    QMap<QString, QString> m_addr_map;
 
     void send(ITransport *tr, IMessage *msg);
 public slots:

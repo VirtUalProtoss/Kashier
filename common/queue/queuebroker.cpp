@@ -38,6 +38,18 @@ void QueueBroker::removeSubscribes(QString dstTransportName) {
     // TODO: remove all subscriptions, for destination with dstTransportName
 }
 
+void QueueBroker::addTempSubscribe(Subscribe &sub, IMessage &msg) {
+    if (msg.getType() == "Query") {
+        QString src = msg.getTarget();
+        QString dst = msg.getSender();
+        Query *qMsg = new Query(msg);
+        QString hash = qMsg->getHash();
+        QString subscr = QString(src + ";" + dst + ";" + "Reply<" + hash + ">;Temp");
+
+        addSubscribe(subscr);
+    }
+}
+
 ILogic *QueueBroker::getLogic(QString logic) {
     ILogic* nLogic = 0;
     foreach (ILogic* key, m_components.values()) {
@@ -110,6 +122,10 @@ QList<Subscribe *> QueueBroker::searchSubscribes(QString source, QString mType) 
                 ;
             }
         }
+        if (URI::getName(sub->getType()) == "Reply" && sub->getType() == mType) {
+            // possible Reply<{hash}> subscription
+            matched = true;
+        }
         if (matched)
             if (!subs.contains(sub))
                 subs.append(sub);
@@ -126,7 +142,7 @@ void QueueBroker::routeMessage(IMessage* msg, QString sourceTransport) {
     QString sender = msg->getSender();
     QList<Subscribe *> foundedSubscriptions = searchSubscribes(sender, mType);
     qDebug() << "Found subscribes:" << foundedSubscriptions.length();
-
+    QList<Subscribe *> removeList;
     if (foundedSubscriptions.count() > 0) {
         foreach (Subscribe *subscr, foundedSubscriptions) {
 
@@ -139,12 +155,18 @@ void QueueBroker::routeMessage(IMessage* msg, QString sourceTransport) {
                     if (trDest->isLocal()) {
                         QString dst = URI::getComponent(subscr->getDestination());
                         ILogic *dComp = getLogic(dst);
-                        if (dComp)
+                        if (dComp) {
+                            addTempSubscribe(*subscr, *msg);
                             dComp->receive(msg);
+                        }
                     }
                     else {
+                        addTempSubscribe(*subscr, *msg);
                         send(trDest, msg);
                     }
+                }
+                if (subscr->getType() == "Reply<" + msg->getHash() + ">") {
+                    removeList.append(subscr);
                 }
             }
             else {
@@ -158,6 +180,10 @@ void QueueBroker::routeMessage(IMessage* msg, QString sourceTransport) {
         if (msg->getType() == "Reply") {
             qDebug() << "Reply time-out?";
         }
+    }
+    foreach (Subscribe *sub, removeList) {
+        if (m_subscribes.contains(sub))
+            m_subscribes.removeOne(sub);
     }
 }
 
@@ -198,6 +224,11 @@ QList<ITransport *> QueueBroker::getTransports(QString trName) {
     else {
         if (m_transports.contains(trName))
             trs.append(m_transports[trName]);
+        else if (m_addr_map.contains(trName))
+            trs.append(m_transports[m_addr_map[trName]]);
+        else {
+            ;
+        }
     }
     return trs;
 }
@@ -216,6 +247,8 @@ void QueueBroker::on_message(QString message) {
     if (tr->isLocalAddress(URI::getTransportAddress(msgDstAddr))) {
         msg->setTarget(URI::getComponent(msg->getTarget()));
     }
+    if (!m_addr_map.contains(URI::getTransport(msg->getSender())))
+        m_addr_map[URI::getTransport(msg->getSender())] = tr->getName();
     routeMessage(msg, tr->getName());
 }
 

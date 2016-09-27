@@ -31,6 +31,8 @@ public:
 
     virtual QString toString();
     virtual void fromString(QString msg);
+    inline int getProtocol() { return m_protocol; }
+    inline void setProtocol(int proto) { m_protocol = proto; }
 signals:
 
 public slots:
@@ -42,6 +44,7 @@ private:
     IMessageType* m_type;
     IMessageBody* m_body;
     QString m_text;
+    int m_protocol = 0;
 };
 
 #endif // IMESSAGE_H
