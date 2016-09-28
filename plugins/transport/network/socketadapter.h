@@ -15,6 +15,7 @@ public:
       ~SocketAdapter();
       void sendString(const QString& str);
       QString getName();
+      QString getRemoteName();
       void setName(QString);
       inline bool isConnected() { return m_connected; }
       void sock_connect(QString host, int port);

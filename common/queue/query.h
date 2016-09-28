@@ -19,6 +19,7 @@ public:
     QMap<QString, QVariant> getParams() { return m_params; }
 
     void processParams(QString params);
+
 private:
     QMap<QString, QVariant> m_params;
     QString m_command = QString("");

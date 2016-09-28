@@ -3,9 +3,11 @@
 #include "query.h"
 
 Reply::Reply() {
+    m_name = QString("Reply");
 }
 
 Reply::Reply(Query *query) {
+    m_name = QString("Reply");
     setSender(query->getTarget());
     QMap<QString, QVariant> params = query->getParams();
     setTarget(query->getSender());
@@ -15,6 +17,12 @@ Reply::Reply(Query *query) {
     }
     setText(text);
     setHash(query->getHash());
-    IMessageType *mType = new IMessageType(this, "Reply<" + getHash() + ">");
+    IMessageType *mType = new IMessageType("Reply");
     setType(mType);
+}
+
+QString Reply::getSubscribe() {
+    QString sub;
+    sub = m_target + ";" + m_sender + ";" + getName() + "<" + m_hash + ">" + ";" + m_type->toString();
+    return sub;
 }

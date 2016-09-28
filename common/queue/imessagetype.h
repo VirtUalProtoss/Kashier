@@ -1,21 +1,17 @@
 #ifndef IMESSAGETYPE_H
 #define IMESSAGETYPE_H
 
-#include <QObject>
+#include <QString>
 
-class IMessageType : public QObject {
-    Q_OBJECT
+class IMessageType {
 public:
-    explicit IMessageType(QObject *parent = 0, QString type = "Message");
+    explicit IMessageType(QString type = "Message");
 
     QString toString();
     void fromString(QString type);
-signals:
-
-public slots:
 
 private:
-    QString m_type = "";
+    QString m_type = "Message";
 };
 
 #endif // IMESSAGETYPE_H

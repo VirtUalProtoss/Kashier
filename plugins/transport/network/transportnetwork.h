@@ -41,7 +41,6 @@ private:
     QTcpServer* m_ptcpServer;
     QString m_mode;
 
-    void sendPacket(SocketAdapter *sock, Packet *pkt);
     void sendSockMessage(SocketAdapter *sock, IMessage *msg);
 };
 

@@ -5,13 +5,7 @@ MessageBuilder::MessageBuilder(QObject *parent) : QObject(parent) {
 }
 
 void MessageBuilder::setType(QString type) {
-    IMessageType* mType;
-    if (type == "Query")
-        mType = new IMessageType(this, type);
-    else if (type == "Reply")
-        mType = new IMessageType(this, type);
-    else
-        mType = new IMessageType();
+    IMessageType* mType = new IMessageType(type);
     message->setType(mType);
 }
 
@@ -25,7 +19,6 @@ void MessageBuilder::setText(QString text)
 }
 
 IMessage* MessageBuilder::getMessage(QString target, QString command, QMap<QString, QVariant> params) {
-    //setType(QString("Query") + "<" + target + ">");
     message->setTarget(target);
     IMessageBody* body = new IMessageBody(this);
     message->setBody(body);

@@ -21,10 +21,16 @@ QString URI::getURI(QString transport, QString component, QMap<QString, QVariant
 QString URI::getComponent(QString uri) {
     QStringList parts = uri.split("::");
     if (parts.length() == 1) {
-        return URI::normalizeComponentName(parts[0]); //.split("<")[0];
+        return URI::normalizeComponentName(parts[0]);
+    }
+    else if (parts.length() == 2) {
+        return URI::normalizeComponentName(parts[1]);
+    }
+    else if (parts.length() == 3) {
+        return URI::normalizeComponentName(parts[2]);
     }
     else {
-        return URI::normalizeComponentName(parts[1]); //.split("<")[0];
+        return URI::normalizeComponentName(parts[0]);
     }
 }
 
@@ -44,25 +50,42 @@ QString URI::getComponentParams(QString uri) {
 
 QString URI::getTransport(QString uri) {
     QStringList parts = uri.split("::");
-    if (parts.length() == 1) {
-        if (parts[0] == "*")
-            return parts[0];
-        else
-            return QString("Local<*>");
+    QString tr = "";
+    switch (parts.length()) {
+        case 1:
+            if (parts[0] == "*")
+                tr = parts[0];
+            else
+                tr = QString("Local<*>");
+            break;
+        case 2:
+            tr = parts[1];
+            break;
+        case 3:
+            tr = parts[1];
+            break;
+        default:
+            break;
     }
-    else {
-        return parts[0]; //.split("<")[0];
-    }
+
+    return tr;
+}
+
+QString URI::getParam(QString data) {
+    if (data.contains("<") && data.contains(">"))
+        return data.split("<")[1].split(">")[0];
+    else
+        return QString("");
 }
 
 QString URI::getTransportAddress(QString uri) {
     QStringList parts = uri.split("::");
-    if (parts.length() == 1) {
-        return QString("Local");
+    QString addr = "*";
+    if (parts.length() == 3) {
+        addr = getParam(normalizeComponentName(parts[0]));
+
     }
-    else {
-        return parts[0].split("<")[1].split(">")[0];
-    }
+    return addr;
 }
 
 QString URI::normalizeAddress(QString addr) {
@@ -103,14 +126,6 @@ QString URI::normalizeComponentName(QString cName) {
     }
     else {
         if (cName.contains("<") && cName.contains(">")) {
-            // self-name defined
-            /*
-            QString selfName = cName.split("<")[1].split(">")[0];
-            if (!selfName.contains(":")) {
-                selfName =  selfName + ":*";
-            }
-            nName = cName.split("<")[0] + "<" + selfName + ">";
-            */
             nName = cName;
         }
         else {

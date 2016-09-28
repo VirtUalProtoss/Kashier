@@ -9,6 +9,7 @@ class Reply : public IMessage {
 public:
     Reply();
     Reply(Query *query);
+    QString getSubscribe();
 };
 
 #endif // REPLY_H

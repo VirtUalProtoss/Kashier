@@ -8,10 +8,6 @@ IMessage::IMessage(QString msg) {
     fromString(msg);
 }
 
-QString IMessage::getName() {
-    return QString("IMessage");
-}
-
 void IMessage::setType(IMessageType *type) {
     m_type = type;
 }
@@ -58,6 +54,12 @@ QString IMessage::getTarget() {
     return m_target;
 }
 
+QString IMessage::getSubscribe() {
+    QString sub;
+    sub = m_sender + ";" + m_target + ";" + m_type->toString();
+    return sub;
+}
+
 QString IMessage::toString() {
     QString target;
     if (m_target.length() > 0)
@@ -70,7 +72,7 @@ QString IMessage::toString() {
 
 void IMessage::fromString(QString msg) {
     QStringList items = msg.split("##");
-    IMessageType *type = new IMessageType(this);
+    IMessageType *type = new IMessageType();
     if (items.length() > 1) {
         m_sender = items[0];
         m_target = items[1];

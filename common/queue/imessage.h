@@ -15,8 +15,9 @@ public:
     explicit IMessage(QObject *parent = 0);
     IMessage(QString msg);
     static IMessage fromStream(QByteArray* message);
-    virtual QString getName();
+    virtual inline QString getName() { return m_name; }
     virtual void setType(IMessageType* type);
+    virtual void setName(QString name) { m_name = name; }
     virtual void setBody(IMessageBody* body);
     virtual void setSender(QString sender);
     virtual void setTarget(QString target);
@@ -28,6 +29,7 @@ public:
     virtual QString getType();
     virtual QString getSender();
     virtual QString getTarget();
+    virtual QString getSubscribe();
 
     virtual QString toString();
     virtual void fromString(QString msg);
@@ -37,13 +39,14 @@ signals:
 
 public slots:
 
-private:
-    QString m_sender;
-    QString m_target;
-    QString m_hash;
+protected:
+    QString m_sender = QString("");
+    QString m_target = QString("");
+    QString m_hash = QString("");
     IMessageType* m_type;
     IMessageBody* m_body;
-    QString m_text;
+    QString m_text = QString("");
+    QString m_name = QString("IMessage");
     int m_protocol = 0;
 };
 

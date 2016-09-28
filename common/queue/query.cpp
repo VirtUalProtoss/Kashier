@@ -2,10 +2,11 @@
 #include "QCryptographicHash"
 
 Query::Query() {
-
+    m_name = QString("Query");
 }
 
 Query::Query(IMessage *message) : IMessage(message) {
+    m_name = QString("Query");
     processParams(message->getText());
 }
 

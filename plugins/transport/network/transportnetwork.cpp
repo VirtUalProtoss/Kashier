@@ -1,4 +1,5 @@
 #include "transportnetwork.h"
+#include "uri.h"
 
 TransportNetwork::TransportNetwork(QObject *parent) : ITransport(parent) {
     connect(this, SIGNAL(init_complete()), this, SLOT(on_init_complete()));
@@ -87,7 +88,7 @@ bool TransportNetwork::isLocalAddress(QString address) {
         }
     }
     else if (m_mode == "client") {
-        QString lAddress = m_ptcpClient->getLocalAddress() + QString::number(m_ptcpClient->getLocalPort());
+        QString lAddress = m_ptcpClient->getLocalAddress() + ":" + QString::number(m_ptcpClient->getLocalPort());
         if (lAddress == address)
             local = true;
     }
@@ -132,7 +133,7 @@ void TransportNetwork::on_disconnected() {
 void TransportNetwork::on_client_connected() {
     //SocketAdapter* client = static_cast<SocketAdapter*>(sender());
     m_ptcpClient = static_cast<SocketAdapter*>(sender());
-    QString fullAddr = m_ptcpClient->getRemoteAddress() + ":" + QString::number(m_ptcpClient->getRemotePort());
+    QString fullAddr = m_ptcpClient->getLocalAddress() + ":" + QString::number(m_ptcpClient->getLocalPort());
     m_ptcpClient->setName(QString("Network<") + fullAddr + QString(">"));
 
     qDebug() << "Connect to server:" << fullAddr << m_ptcpClient->isConnected();
@@ -170,22 +171,13 @@ void TransportNetwork::on_init_complete() {
     changeMode(mode, *_initParams);
 }
 
-void TransportNetwork::sendPacket(SocketAdapter *sock, Packet *pkt) {
-    if (sock->isConnected()) {
-        qDebug() << "Send message" << pkt->getData() << "to" << sock->getName();
-        pkt->setDestinationAddress(sock->getRemoteAddress(), sock->getRemotePort());
-        pkt->setSourceAddress(sock->getLocalAddress(), sock->getLocalPort());
-        sock->sendString(pkt->toString());
-    }
-    else {
-        qDebug() << "Socket" << sock->getName() << "disconnected";
-    }
-}
-
 void TransportNetwork::sendSockMessage(SocketAdapter *sock, IMessage *msg) {
     if (sock->isConnected()) {
         QString sender = QString("Network<") + sock->getLocalAddress() + ":" + QString::number(sock->getLocalPort()) + QString(">");
         msg->setSender(sender + QString("::") + msg->getSender());
+        if (URI::getTransportAddress(msg->getTarget()) == "*") {
+            msg->setTarget(sock->getRemoteName() + "::" + msg->getTarget());
+        }
         Packet *pkt = new Packet();
         pkt->setData(msg->toString());
         qDebug() << "Send message" << pkt->getData() << "to" << sock->getName();
@@ -201,39 +193,41 @@ void TransportNetwork::sendSockMessage(SocketAdapter *sock, IMessage *msg) {
 void TransportNetwork::on_broker_message(ITransport *tr, IMessage *msg) {
     // message from broker
     SocketAdapter *isock = static_cast<SocketAdapter*>(sender());
-    if (tr==this) {
-        QString target = msg->getTarget().split("::")[0];
-        if (isock->getName() == target) {
-            //Packet *pkt = new Packet();
-
-            //QString mData = msg->toString();
-            //pkt->setData(mData);
+    if (tr == this) {
+        QString target = URI::getTransportAddress(msg->getTarget());
+        if (target.length() > 0) {
             if (m_mode == "server") {
-                if (m_clients.contains(target)) {
-                    if (target=="*") {
-                        foreach(SocketAdapter *isock, m_clients.values()) {
-                            sendSockMessage(isock, msg);
-                        }
-                    }
-                    else {
-                        sendSockMessage(m_clients[target], msg);
+
+                if (target == "*") {
+                    foreach(SocketAdapter *isock, m_clients.values()) {
+                        sendSockMessage(isock, msg);
                     }
                 }
+                else {
+                    if (m_clients.contains(target))
+                        sendSockMessage(m_clients[target], msg);
+                }
+
             }
             else if (m_mode == "client") {
-                if (m_ptcpClient) {
-                    sendSockMessage(m_ptcpClient, msg);
+
+                if (isock->getName() == target || target == "*") {
+                    if (m_ptcpClient)
+                        sendSockMessage(m_ptcpClient, msg);
                 }
+                else {
+                    if (isock->isConnected())
+                        qDebug() << "Socket" << isock->getName() << "not match target" << target;
+                    else
+                        qDebug() << "Socket disconnected";
+                }
+
             }
-            else {
+            else
                 qDebug() << "Mode" << m_mode << "not implemented";
-            }
         }
         else {
-            if (isock->isConnected())
-                qDebug() << "Socket" << isock->getName() << "not match target" << target;
-            else
-                qDebug() << "Socket disconnected";
+            qDebug() << "No such address" << msg->getTarget();
         }
     }
 }

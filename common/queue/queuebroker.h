@@ -21,6 +21,7 @@ class QueueBroker : public QObject {
 public:
     explicit QueueBroker(QObject *parent);
     void addSubscribe(QString &subscribe);
+    void addSubscribe(Subscribe *subscribe);
     void addComponent(ILogic* component);
     void addComponent(ITransport* component);
     void addComponent(PluginInterface* component, QMap<QString, QVariant> params);
@@ -30,12 +31,13 @@ public:
     QStringList getRemoteComponentAddress(QString cName);
 
     void publishComponents(QString transport = QString("Network"), QString target = QString("Broker<*>"));
-    QList<Subscribe *> searchSubscribes(QString source, QString mType);
+    QList<Subscribe *> searchSubscribes(Subscribe *msgSub);
     QList<ITransport *> getTransports(QString trName);
     void removeSubscribes(QString dstTransportName);
     void addTempSubscribe(Subscribe &sub, IMessage &msg);
 private:
     QList<Subscribe*> m_subscribes;
+    QHash<QString, Subscribe*> m_sub_hashes;
 
     QMap<QString, ILogic*>      m_components;
     QMap<QString, ITransport*>  m_transports;
@@ -43,10 +45,10 @@ private:
     ITransport* getTransport(QString transport);
     ILogic* getLogic(QString logic);
 
-    void routeMessage(IMessage *msg, QString srcTransport);
+    void routeMessage(IMessage *msg, ITransport *srcTransport);
     bool matchMap(QString src, QString dest);
     QMap<QString, QList<QString>> m_remoteComponents;
-    QMap<QString, QString> m_addr_map;
+    QMap<QString, ITransport*> m_addr_map;
 
     void send(ITransport *tr, IMessage *msg);
 public slots:

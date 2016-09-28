@@ -20,6 +20,7 @@ public:
     static QString normalizeAddress(QString addr);
     static QString normalizeComponentName(QString cName);
     static QString getName(QString uri);
+    static QString getParam(QString data);
 };
 
 #endif // URI_H

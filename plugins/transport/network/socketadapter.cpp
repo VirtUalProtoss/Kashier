@@ -51,6 +51,10 @@ QString SocketAdapter::getName() {
         return name;
 }
 
+QString SocketAdapter::getRemoteName() {
+    return "Network<" + getRemoteAddress() + ":" + QString::number(getRemotePort()) + ">";
+}
+
 void SocketAdapter::setName(QString pName) {
     name = pName;
 }
