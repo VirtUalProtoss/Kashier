@@ -82,7 +82,7 @@ bool TransportNetwork::isLocalAddress(QString address) {
     if (m_mode == "server") {
         QString lAddress = QString("");
         foreach (SocketAdapter* client, m_clients) {
-            lAddress = client->getLocalAddress() + QString::number(client->getLocalPort());
+            lAddress = client->getLocalAddress() + ":" + QString::number(client->getLocalPort());
             if (lAddress == address)
                 local = true;
         }
