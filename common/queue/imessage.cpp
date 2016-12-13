@@ -16,11 +16,11 @@ void IMessage::setBody(IMessageBody *body) {
     m_body = body;
 }
 
-void IMessage::setSender(QString sender) {
+void IMessage::setSender(URI sender) {
     m_sender = sender;
 }
 
-void IMessage::setTarget(QString target) {
+void IMessage::setTarget(URI target) {
     m_target = target;
 }
 
@@ -46,36 +46,30 @@ QString IMessage::getType() {
     return m_type->toString();
 }
 
-QString IMessage::getSender() {
+URI IMessage::getSender() {
     return m_sender;
 }
 
-QString IMessage::getTarget() {
+URI IMessage::getTarget() {
     return m_target;
 }
 
 QString IMessage::getSubscribe() {
     QString sub;
-    sub = m_sender + ";" + m_target + ";" + m_type->toString();
+    sub = m_sender.toString() + ";" + m_target.toString() + ";" + m_type->toString();
     return sub;
 }
 
 QString IMessage::toString() {
-    QString target;
-    if (m_target.length() > 0)
-        target = m_target;
-    else
-        target = QString("*");
-
-    return m_sender + "##" + target + "##" + m_type->toString() + "##" + QString::number(m_protocol) + "##" + getText();
+    return m_sender.toString() + "##" + m_target.toString() + "##" + m_type->toString() + "##" + QString::number(m_protocol) + "##" + getText();
 }
 
 void IMessage::fromString(QString msg) {
     QStringList items = msg.split("##");
     IMessageType *type = new IMessageType();
     if (items.length() > 1) {
-        m_sender = items[0];
-        m_target = items[1];
+        m_sender = URI(items[0]);
+        m_target = URI(items[1]);
         type->fromString(items[2]);
         m_protocol = items[3].toInt();
         m_text = items[4];

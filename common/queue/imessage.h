@@ -8,6 +8,7 @@
 #include "imessagetype.h"
 #include "imessagesender.h"
 
+#include "uri.h"
 
 class IMessage : public QObject {
     Q_OBJECT
@@ -19,16 +20,16 @@ public:
     virtual void setType(IMessageType* type);
     virtual void setName(QString name) { m_name = name; }
     virtual void setBody(IMessageBody* body);
-    virtual void setSender(QString sender);
-    virtual void setTarget(QString target);
+    virtual void setSender(URI sender);
+    virtual void setTarget(URI target);
     virtual void setText(QString text);
     virtual void setHash(QString hash);
     virtual bool needResponce() { return false; }
     virtual QString getHash();
     virtual QString getText();
     virtual QString getType();
-    virtual QString getSender();
-    virtual QString getTarget();
+    virtual URI getSender();
+    virtual URI getTarget();
     virtual QString getSubscribe();
 
     virtual QString toString();
@@ -40,8 +41,8 @@ signals:
 public slots:
 
 protected:
-    QString m_sender = QString("");
-    QString m_target = QString("");
+    URI m_sender;
+    URI m_target;
     QString m_hash = QString("");
     IMessageType* m_type;
     IMessageBody* m_body;

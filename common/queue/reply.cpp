@@ -23,6 +23,6 @@ Reply::Reply(Query *query) {
 
 QString Reply::getSubscribe() {
     QString sub;
-    sub = m_target + ";" + m_sender + ";" + getName() + "<" + m_hash + ">" + ";" + m_type->toString();
+    sub = m_target.toString() + ";" + m_sender.toString() + ";" + getName() + "<" + m_hash + ">" + ";" + m_type->toString();
     return sub;
 }

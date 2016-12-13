@@ -174,9 +174,9 @@ void TransportNetwork::on_init_complete() {
 void TransportNetwork::sendSockMessage(SocketAdapter *sock, IMessage *msg) {
     if (sock->isConnected()) {
         QString sender = QString("Network<") + sock->getLocalAddress() + ":" + QString::number(sock->getLocalPort()) + QString(">");
-        msg->setSender(sender + QString("::") + msg->getSender());
-        if (URI::getTransportAddress(msg->getTarget()) == "*") {
-            msg->setTarget(sock->getRemoteName() + "::" + msg->getTarget());
+        msg->setSender(sender + QString("::") + sender + QString("::") + msg->getSender().toString());
+        if (msg->getTarget().getAddress() == "*") {
+            msg->setTarget(sock->getRemoteName() + "::" + msg->getTarget().toString());
         }
         Packet *pkt = new Packet();
         pkt->setData(msg->toString());
@@ -194,7 +194,7 @@ void TransportNetwork::on_broker_message(ITransport *tr, IMessage *msg) {
     // message from broker
     SocketAdapter *isock = static_cast<SocketAdapter*>(sender());
     if (tr == this) {
-        QString target = URI::getTransportAddress(msg->getTarget());
+        QString target = msg->getTarget().getAddress();
         if (target.length() > 0) {
             if (m_mode == "server") {
 
@@ -227,7 +227,7 @@ void TransportNetwork::on_broker_message(ITransport *tr, IMessage *msg) {
                 qDebug() << "Mode" << m_mode << "not implemented";
         }
         else {
-            qDebug() << "No such address" << msg->getTarget();
+            qDebug() << "No such address" << msg->getTarget().toString();
         }
     }
 }

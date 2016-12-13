@@ -13,19 +13,15 @@ Subscribe::Subscribe(QString sub) {
     m_addTime = QDateTime::currentDateTime();
     QStringList coms = m_subscribe.split(";");
     if (coms.length() == 4) {
-        m_source_transport = URI::getTransport(coms[0]);
-        m_source_component = URI::getComponent(coms[0]);
-        m_destination_transport = URI::getTransport(coms[1]);
-        m_destination_component = URI::getComponent(coms[1]);
-        m_type = URI::getComponent(coms[2]);
+        m_source = URI(coms[0]);
+        m_destination = URI(coms[1]);
+        m_type = coms[2];
         m_wait_type = coms[3];
     }
     else if (coms.length() == 3) {
-        m_source_transport = URI::getTransport(coms[0]);
-        m_source_component = URI::getComponent(coms[0]);
-        m_destination_transport = URI::getTransport(coms[1]);
-        m_destination_component = URI::getComponent(coms[1]);
-        m_type = URI::getComponent(coms[2]);
+        m_source = URI(coms[0]);
+        m_destination = URI(coms[1]);
+        m_type = coms[2];
         m_wait_type = "Temp";
     }
     else {
@@ -35,7 +31,7 @@ Subscribe::Subscribe(QString sub) {
 }
 
 QString Subscribe::getHash() {
-    QString hash = m_subscribe; //m_destination + ";" + m_source + ";" + m_type + ";" + m_wait_type;
+    QString hash = m_subscribe;
     QString blah = QString(QCryptographicHash::hash(hash.toUtf8(), QCryptographicHash::Md5).toHex());
     return blah;
 }
@@ -56,14 +52,14 @@ bool Subscribe::addrMatch(QString source, QString destination) {
     if (source == "*")
         return true;
 
-    QString srcComponent = URI::getComponent(source);
-    QString dstComponent = URI::getComponent(destination);
+    QString srcComponent = m_source.getComponent();
+    QString dstComponent = m_destination.getComponent();
 
     if (srcComponent == dstComponent)
         return true;
 
     QString nSrcComp = URI::normalizeComponentName(srcComponent);
-    QString nDstComp = URI::normalizeComponentName(URI::getName(dstComponent));
+    QString nDstComp = URI::normalizeComponentName(dstComponent);
 
     if (nSrcComp == nDstComp)
          return true;

@@ -4,6 +4,22 @@ URI::URI() {
 
 }
 
+URI::URI(QString uri) {
+    QStringList parts = uri.split("::");
+    if (parts.length() == 1) {
+        m_uri = URI::normalizeComponentName(parts[0]);
+    }
+    else if (parts.length() == 2) {
+        m_uri = URI::normalizeComponentName(parts[1]);
+    }
+    else if (parts.length() == 3) {
+        m_uri = URI::normalizeComponentName(parts[2]);
+    }
+    else {
+        m_uri = URI::normalizeComponentName(parts[0]);
+    }
+}
+
 QString URI::getURI(QString transport, QString component, QMap<QString, QVariant> params) {
     QString pstr;
     foreach (QString param, params.keys()) {
@@ -14,12 +30,12 @@ QString URI::getURI(QString transport, QString component, QMap<QString, QVariant
 
 /*
     URI format:
-    [transport_name[<address:port>|<*>]::]component_name[<self_name[:{instance_id|thread_id}>]]
+    [transport_name[<address:port>|<*>]{=Local<*>}::]component_name[<self_name[:{instance_id|thread_id}>]]{=<*>}
 
 */
 
-QString URI::getComponent(QString uri) {
-    QStringList parts = uri.split("::");
+QString URI::getComponent() {
+    QStringList parts = m_uri.split("::");
     if (parts.length() == 1) {
         return URI::normalizeComponentName(parts[0]);
     }
@@ -34,8 +50,8 @@ QString URI::getComponent(QString uri) {
     }
 }
 
-QString URI::getName(QString uri) {
-    return uri.split("<")[0];
+QString URI::getName() {
+    return m_uri.split("<")[0];
 }
 
 QString URI::getComponentParams(QString uri) {
@@ -48,9 +64,9 @@ QString URI::getComponentParams(QString uri) {
     }
 }
 
-QString URI::getTransport(QString uri) {
-    QStringList parts = uri.split("::");
-    QString tr = "";
+QString URI::getTransport() {
+    QStringList parts = m_uri.split("::");
+    QString tr = "TrAny<*>";
     switch (parts.length()) {
         case 1:
             if (parts[0] == "*")
@@ -78,8 +94,8 @@ QString URI::getParam(QString data) {
         return QString("");
 }
 
-QString URI::getTransportAddress(QString uri) {
-    QStringList parts = uri.split("::");
+QString URI::getAddress() {
+    QStringList parts = m_uri.split("::");
     QString addr = "*";
     if (parts.length() == 3) {
         addr = getParam(normalizeComponentName(parts[0]));

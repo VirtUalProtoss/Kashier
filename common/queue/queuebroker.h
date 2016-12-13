@@ -28,13 +28,11 @@ public:
     void removeComponent(ITransport* component);
     void removeComponent(ILogic* component);
     void registerRemoteComponent(QString cName, QString rAddress);
-    QStringList getRemoteComponentAddress(QString cName);
 
     void publishComponents(QString transport = QString("Network"), QString target = QString("Broker<*>"));
     QList<Subscribe *> searchSubscribes(Subscribe *msgSub);
     QList<ITransport *> getTransports(QString trName);
     void removeSubscribes(QString dstTransportName);
-    void addTempSubscribe(Subscribe &sub, IMessage &msg);
 private:
     QList<Subscribe*> m_subscribes;
     QHash<QString, Subscribe*> m_sub_hashes;
