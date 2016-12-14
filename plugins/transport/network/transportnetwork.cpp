@@ -173,13 +173,18 @@ void TransportNetwork::on_init_complete() {
 
 void TransportNetwork::sendSockMessage(SocketAdapter *sock, IMessage *msg) {
     if (sock->isConnected()) {
-        QString sender = QString("Network<") + sock->getLocalAddress() + ":" + QString::number(sock->getLocalPort()) + QString(">");
-        msg->setSender(sender + QString("::") + sender + QString("::") + msg->getSender().toString());
+        QString sender = "Network<" + sock->getLocalAddress() + ":" + QString::number(sock->getLocalPort()) + ">";
+        URI uSender = msg->getSender();
+        uSender.setTransport(sender);
+        msg->setSender(uSender);
         if (msg->getTarget().getAddress() == "*") {
-            msg->setTarget(sock->getRemoteName() + "::" + msg->getTarget().toString());
+            URI uTarget = msg->getTarget();
+            uTarget.setTransport(sock->getRemoteName());
+            msg->setTarget(uTarget);
         }
         Packet *pkt = new Packet();
-        pkt->setData(msg->toString());
+        QString msgStr = msg->toString();
+        pkt->setData(msgStr);
         qDebug() << "Send message" << pkt->getData() << "to" << sock->getName();
         pkt->setDestinationAddress(sock->getRemoteAddress(), sock->getRemotePort());
         pkt->setSourceAddress(sock->getLocalAddress(), sock->getLocalPort());
@@ -194,7 +199,7 @@ void TransportNetwork::on_broker_message(ITransport *tr, IMessage *msg) {
     // message from broker
     SocketAdapter *isock = static_cast<SocketAdapter*>(sender());
     if (tr == this) {
-        QString target = msg->getTarget().getAddress();
+        QString target = msg->getTarget().getTransportWAddr();
         if (target.length() > 0) {
             if (m_mode == "server") {
 

@@ -9,6 +9,7 @@ class Subscribe {
 public:
     explicit Subscribe();
     Subscribe(QString sub);
+    Subscribe(const Subscribe &sub);
 
     inline URI getSource() { return m_source; }
     inline URI getDestination() { return m_destination; }
@@ -16,18 +17,9 @@ public:
     QString getHash();
     QString toString() { return m_subscribe; }
     bool isTimeout();
-    bool addrMatch(QString source, QString destination);
-
+    bool addrMatch(URI destination);
 private:
     QString m_subscribe;
-    /*
-    QString m_source_address;
-    QString m_source_transport;
-    QString m_source_component;
-    QString m_destination_address;
-    QString m_destination_transport;
-    QString m_destination_component;
-    */
     QString m_type;
     QString m_wait_type;
     QDateTime m_addTime;

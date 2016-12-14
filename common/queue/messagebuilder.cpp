@@ -1,4 +1,5 @@
 #include "messagebuilder.h"
+#include "uri.h"
 
 MessageBuilder::MessageBuilder(QObject *parent) : QObject(parent) {
     message = new IMessage(this);
@@ -19,7 +20,10 @@ void MessageBuilder::setText(QString text)
 }
 
 IMessage* MessageBuilder::getMessage(QString target, QString command, QMap<QString, QVariant> params) {
-    message->setTarget(target);
+    URI uTarget = URI();
+    uTarget.setTransport(uTarget.getName(target));
+    uTarget.setAddress(uTarget.getParam(target));
+    message->setTarget(uTarget);
     IMessageBody* body = new IMessageBody(this);
     message->setBody(body);
     QString text;

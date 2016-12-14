@@ -49,6 +49,7 @@ private:
     QMap<QString, ITransport*> m_addr_map;
 
     void send(ITransport *tr, IMessage *msg);
+    QList<Subscribe *> populateSubscribeInstances(QList<Subscribe *> subs);
 public slots:
     // local components messages
     void on_message(IMessage*);

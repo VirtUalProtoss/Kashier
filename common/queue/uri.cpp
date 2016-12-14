@@ -1,22 +1,37 @@
 #include "uri.h"
 
 URI::URI() {
-
+    m_uri = QString("");
 }
 
+/*
+    URI format:
+    [transport_name[<address:port>|<*>]{=Local<*>}::]component_name[<self_name[:{instance_id|thread_id}>]]{=<*>}
+
+*/
+
 URI::URI(QString uri) {
-    QStringList parts = uri.split("::");
-    if (parts.length() == 1) {
-        m_uri = URI::normalizeComponentName(parts[0]);
+    m_uri = uri;
+    QStringList parts = m_uri.split("::");
+
+    if (parts.length() == 0) {
+        m_uri = QString("");
+    }
+    else if (parts.length() == 1) {
+        // Transport = Local<*>
+        m_transport = getName(QString(""));
+        m_address = getParam(m_transport);
+        m_component = getName(parts[0]);
+        m_component_instance = getParam(parts[0]);
     }
     else if (parts.length() == 2) {
-        m_uri = URI::normalizeComponentName(parts[1]);
-    }
-    else if (parts.length() == 3) {
-        m_uri = URI::normalizeComponentName(parts[2]);
+        m_transport = getName(parts[0]);
+        m_address = getParam(parts[0]);
+        m_component = getName(parts[1]);
+        m_component_instance = getParam(parts[1]);
     }
     else {
-        m_uri = URI::normalizeComponentName(parts[0]);
+        m_uri = QString("");
     }
 }
 
@@ -28,30 +43,12 @@ QString URI::getURI(QString transport, QString component, QMap<QString, QVariant
     return transport + "::" + component + "<" + pstr + ">";
 }
 
-/*
-    URI format:
-    [transport_name[<address:port>|<*>]{=Local<*>}::]component_name[<self_name[:{instance_id|thread_id}>]]{=<*>}
-
-*/
-
 QString URI::getComponent() {
-    QStringList parts = m_uri.split("::");
-    if (parts.length() == 1) {
-        return URI::normalizeComponentName(parts[0]);
-    }
-    else if (parts.length() == 2) {
-        return URI::normalizeComponentName(parts[1]);
-    }
-    else if (parts.length() == 3) {
-        return URI::normalizeComponentName(parts[2]);
-    }
-    else {
-        return URI::normalizeComponentName(parts[0]);
-    }
+    return m_component;
 }
 
-QString URI::getName() {
-    return m_uri.split("<")[0];
+QString URI::getName(QString name) {
+    return name.split("<")[0];
 }
 
 QString URI::getComponentParams(QString uri) {
@@ -65,26 +62,11 @@ QString URI::getComponentParams(QString uri) {
 }
 
 QString URI::getTransport() {
-    QStringList parts = m_uri.split("::");
-    QString tr = "TrAny<*>";
-    switch (parts.length()) {
-        case 1:
-            if (parts[0] == "*")
-                tr = parts[0];
-            else
-                tr = QString("Local<*>");
-            break;
-        case 2:
-            tr = parts[1];
-            break;
-        case 3:
-            tr = parts[1];
-            break;
-        default:
-            break;
-    }
+    return m_transport;
+}
 
-    return tr;
+QString URI::getTransportWAddr() {
+    return m_transport + "<" + m_address +">";
 }
 
 QString URI::getParam(QString data) {
@@ -95,13 +77,11 @@ QString URI::getParam(QString data) {
 }
 
 QString URI::getAddress() {
-    QStringList parts = m_uri.split("::");
-    QString addr = "*";
-    if (parts.length() == 3) {
-        addr = getParam(normalizeComponentName(parts[0]));
+    return m_address;
+}
 
-    }
-    return addr;
+QString URI::getInstance() {
+    return m_component_instance;
 }
 
 QString URI::normalizeAddress(QString addr) {

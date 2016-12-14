@@ -63,6 +63,28 @@ ITransport* QueueBroker::getTransport(QString transport) {
     return nTransport;
 }
 
+QList<Subscribe *> QueueBroker::populateSubscribeInstances(QList<Subscribe *> subs) {
+    QList<Subscribe *> popSubs;
+    foreach (Subscribe* sub, subs) {
+        if (sub->getDestination().getAddress() == "*") {
+            QString comp = sub->getDestination().getComponent();
+            if (m_remoteComponents.contains(comp)) {
+                foreach (QString addr, m_remoteComponents[comp]) {
+                    if (m_addr_map.contains(addr)) {
+                        Subscribe popSub = Subscribe(*sub);
+                        popSub.getDestination().setAddress(addr);
+                        popSubs.append(&popSub);
+                    }
+                }
+            }
+        }
+        else {
+            popSubs.append(sub);
+        }
+    }
+    return popSubs;
+}
+
 QList<Subscribe *> QueueBroker::searchSubscribes(Subscribe *msgSub) {
     QList<Subscribe *> subs;
 
@@ -73,7 +95,6 @@ QList<Subscribe *> QueueBroker::searchSubscribes(Subscribe *msgSub) {
     }
 
     // Медленный поиск по широковещательным подпискам
-    QString msgSource = msgSub->getSource().toString();
     bool matchType = false;
     bool matchSrc = false;
     QList<Subscribe *> removeList;
@@ -86,12 +107,10 @@ QList<Subscribe *> QueueBroker::searchSubscribes(Subscribe *msgSub) {
         matchType = false;
         matchSrc = false;
 
-        QString subSource = sub->getSource().toString();
-
         if (sub->getType() == "*" || sub->getType() == msgSub->getType())
             matchType = true;
 
-        if (sub->addrMatch(subSource, msgSource))
+        if (sub->addrMatch(msgSub->getSource()))
             matchSrc = true;
 
         if (matchType && matchSrc)
@@ -106,7 +125,9 @@ QList<Subscribe *> QueueBroker::searchSubscribes(Subscribe *msgSub) {
         if (m_sub_hashes.contains(sub->getHash()))
             m_sub_hashes.remove(sub->getHash());
     }
-    return subs;
+
+    QList<Subscribe *> popSubs = populateSubscribeInstances(subs);
+    return popSubs;
 }
 
 void QueueBroker::routeMessage(IMessage* msg, ITransport* sourceTransport) {

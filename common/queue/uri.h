@@ -24,14 +24,22 @@ public:
     static QString getComponentParams(QString uri);
     QString getTransport();
     QString getAddress();
+    QString getInstance();
+    inline void setAddress(QString addr) { m_address = addr; }
+    inline void setTransport(QString tr) { m_transport = tr; }
     static QString normalizeAddress(QString addr);
     static QString normalizeComponentName(QString cName);
-    QString getName();
+    QString getName(QString name);
     static QString getParam(QString data);
     inline QString toString() {
-        return m_transport + "<" + m_address +">::" + m_component;
+        QString instance = "*";
+        if (m_component_instance.length() > 0)
+            instance = m_component_instance;
+        QString rStr = m_transport + "<" + m_address +">::" + m_component + "<" + instance +">";
+        return rStr;
     }
 
+    QString getTransportWAddr();
 private:
     QString m_splitter;
     QString m_uri;

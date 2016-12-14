@@ -30,6 +30,15 @@ Subscribe::Subscribe(QString sub) {
     }
 }
 
+Subscribe::Subscribe(const Subscribe &sub) {
+    m_subscribe = sub.m_subscribe;
+    m_addTime = QDateTime::currentDateTime();
+    m_source = sub.m_source;
+    m_destination = sub.m_destination;
+    m_type = sub.m_type;
+    m_wait_type = sub.m_wait_type;
+}
+
 QString Subscribe::getHash() {
     QString hash = m_subscribe;
     QString blah = QString(QCryptographicHash::hash(hash.toUtf8(), QCryptographicHash::Md5).toHex());
@@ -48,12 +57,10 @@ bool Subscribe::isTimeout() {
     }
 }
 
-bool Subscribe::addrMatch(QString source, QString destination) {
-    if (source == "*")
-        return true;
+bool Subscribe::addrMatch(URI destination) {
 
     QString srcComponent = m_source.getComponent();
-    QString dstComponent = m_destination.getComponent();
+    QString dstComponent = destination.getComponent();
 
     if (srcComponent == dstComponent)
         return true;
