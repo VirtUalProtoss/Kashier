@@ -20,9 +20,9 @@ void MessageBuilder::setText(QString text)
 }
 
 IMessage* MessageBuilder::getMessage(QString target, QString command, QMap<QString, QVariant> params) {
-    URI uTarget = URI();
-    uTarget.setTransport(uTarget.getName(target));
-    uTarget.setAddress(uTarget.getParam(target));
+    URI uTarget = URI(target);
+    //uTarget.setTransport(uTarget.getName(target));
+    //uTarget.setAddress(uTarget.getParam(target));
     message->setTarget(uTarget);
     IMessageBody* body = new IMessageBody(this);
     message->setBody(body);

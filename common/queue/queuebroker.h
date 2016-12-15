@@ -30,7 +30,7 @@ public:
     void registerRemoteComponent(QString cName, QString rAddress);
 
     void publishComponents(QString transport = QString("Network"), QString target = QString("Broker<*>"));
-    QList<Subscribe *> searchSubscribes(Subscribe *msgSub);
+    void searchSubscribes(Subscribe *msgSub, QList<Subscribe *> *subs);
     QList<ITransport *> getTransports(QString trName);
     void removeSubscribes(QString dstTransportName);
 private:
@@ -49,7 +49,7 @@ private:
     QMap<QString, ITransport*> m_addr_map;
 
     void send(ITransport *tr, IMessage *msg);
-    QList<Subscribe *> populateSubscribeInstances(QList<Subscribe *> subs);
+    void populateSubscribeInstances(QList<Subscribe *> popSubs);
 public slots:
     // local components messages
     void on_message(IMessage*);

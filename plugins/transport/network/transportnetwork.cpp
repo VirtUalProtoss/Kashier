@@ -175,13 +175,15 @@ void TransportNetwork::sendSockMessage(SocketAdapter *sock, IMessage *msg) {
     if (sock->isConnected()) {
         QString sender = "Network<" + sock->getLocalAddress() + ":" + QString::number(sock->getLocalPort()) + ">";
         URI uSender = msg->getSender();
-        uSender.setTransport(sender);
+        uSender.setTransport(uSender.getName(sender));
+        uSender.setAddress(uSender.getParam(sender));
         msg->setSender(uSender);
-        if (msg->getTarget().getAddress() == "*") {
+        //if (msg->getTarget().getAddress() == "*") {
             URI uTarget = msg->getTarget();
-            uTarget.setTransport(sock->getRemoteName());
+            uTarget.setTransport(uTarget.getName(sock->getRemoteName()));
+            uTarget.setAddress(uTarget.getParam(sock->getRemoteName()));
             msg->setTarget(uTarget);
-        }
+        //}
         Packet *pkt = new Packet();
         QString msgStr = msg->toString();
         pkt->setData(msgStr);

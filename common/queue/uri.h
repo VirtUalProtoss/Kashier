@@ -15,11 +15,8 @@ class URI {
 public:
     explicit URI();
     URI(QString);
-    QString getURI(
-            QString transport = QString("Local<*>"),
-            QString component = QString("Broker<*>"),
-            QMap<QString, QVariant> params = QMap<QString, QVariant>()
-    );
+    URI(const URI& uri);
+    inline QString getURI() { return m_uri; }
     QString getComponent();
     static QString getComponentParams(QString uri);
     QString getTransport();
@@ -40,6 +37,8 @@ public:
     }
 
     QString getTransportWAddr();
+    bool isBroadcast();
+    bool isLocal();
 private:
     QString m_splitter;
     QString m_uri;

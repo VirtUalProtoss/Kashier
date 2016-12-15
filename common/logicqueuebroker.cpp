@@ -19,7 +19,7 @@ void LogicQueueBroker::receive(IMessage *msg) {
         QStringList comps = msgParts[1].split(";");
         foreach (QString comp, comps) {
             if (comp.length() > 0 ) {
-                QString rAddr = msg->getSender().getTransport();
+                QString rAddr = msg->getSender().getAddress();
                 qDebug() << "Register remote component" << comp << rAddr;
                 m_broker->registerRemoteComponent(comp.split("==")[0], rAddr);
                 //qDebug() << "Component for register (obsolete, no action)" << comp;

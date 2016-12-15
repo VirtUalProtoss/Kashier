@@ -30,11 +30,11 @@ Subscribe::Subscribe(QString sub) {
     }
 }
 
-Subscribe::Subscribe(const Subscribe &sub) {
+Subscribe::Subscribe(const Subscribe& sub) {
     m_subscribe = sub.m_subscribe;
     m_addTime = QDateTime::currentDateTime();
-    m_source = sub.m_source;
-    m_destination = sub.m_destination;
+    m_source = URI(sub.m_source);
+    m_destination = URI(sub.m_destination);
     m_type = sub.m_type;
     m_wait_type = sub.m_wait_type;
 }

@@ -35,12 +35,12 @@ URI::URI(QString uri) {
     }
 }
 
-QString URI::getURI(QString transport, QString component, QMap<QString, QVariant> params) {
-    QString pstr;
-    foreach (QString param, params.keys()) {
-        pstr += param + "=" + params.value(param).toString();
-    }
-    return transport + "::" + component + "<" + pstr + ">";
+URI::URI(const URI &uri) {
+    m_uri = uri.m_uri;
+    m_transport = uri.m_transport;
+    m_address = uri.m_address;
+    m_component = uri.m_component;
+    m_component_instance = uri.m_component_instance;
 }
 
 QString URI::getComponent() {
@@ -67,6 +67,20 @@ QString URI::getTransport() {
 
 QString URI::getTransportWAddr() {
     return m_transport + "<" + m_address +">";
+}
+
+bool URI::isBroadcast() {
+    if (m_address == "*" or m_address == "")
+        return true;
+    else
+        return false;
+}
+
+bool URI::isLocal() {
+    if (m_transport == "Network")
+        return false;
+    else
+        return true;
 }
 
 QString URI::getParam(QString data) {
