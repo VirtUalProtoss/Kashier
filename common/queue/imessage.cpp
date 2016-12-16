@@ -33,6 +33,18 @@ void IMessage::setHash(QString hash)
     m_hash = hash;
 }
 
+bool IMessage::needResponce() {
+    if (m_type->toString() == "Message" || m_type->toString() == "Reply") {
+        return false;
+    }
+    else if (m_type->toString() == "Query") {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 QString IMessage::getHash()
 {
     return m_hash;

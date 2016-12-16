@@ -57,6 +57,10 @@ bool Subscribe::isTimeout() {
     }
 }
 
+void Subscribe::setTimeout(int seconds) {
+    m_removeTime = m_addTime.addSecs(seconds);
+}
+
 bool Subscribe::addrMatch(URI destination) {
 
     QString srcComponent = m_source.getComponent();

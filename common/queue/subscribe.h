@@ -20,6 +20,7 @@ public:
     QString toString() { return m_subscribe; }
     bool isTimeout();
     bool addrMatch(URI destination);
+    void setTimeout(int seconds = 300);
 private:
     QString m_subscribe = QString("");
     QString m_type;

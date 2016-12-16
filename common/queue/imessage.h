@@ -24,7 +24,7 @@ public:
     virtual void setTarget(URI target);
     virtual void setText(QString text);
     virtual void setHash(QString hash);
-    virtual bool needResponce() { return false; }
+    virtual bool needResponce();
     virtual QString getHash();
     virtual QString getText();
     virtual QString getType();

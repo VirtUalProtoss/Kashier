@@ -83,7 +83,7 @@ void SocketAdapter::on_disconnected() {
 
 void SocketAdapter::on_connected() {
     m_connected = true;
-    emit connected();
+    //emit connected();
 }
 
 void SocketAdapter::disconnect() {

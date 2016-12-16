@@ -27,11 +27,12 @@ bool ITransport::isLocal() {
 }
 
 bool ITransport::isLocalAddress(QString address) {
+    qDebug() << "ITransport::isLocalAddress(QString address):" << address;
     return false;
 }
 
 void ITransport::send(QString data) {
-
+    qDebug() << "ITransport::send(QString data):" << data;
 }
 
 void ITransport::setInitParams(QMap<QString, QVariant> *initParams) {

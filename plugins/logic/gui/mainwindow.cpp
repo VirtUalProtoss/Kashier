@@ -49,11 +49,11 @@ void MainWindow::on_btnPaymentsWInfoRefresh_clicked() {
     statusbar->showMessage("Обновляю список платежей...");
     QMap<QString, QVariant> params;
     params["ab.mdate"] = "to_date('" + edtPaymentsDate->date().toString("yyyy-MM-dd") + "', 'yyyy-mm-dd')";
-    params["ab.operid"] = cmbPayOperator->currentText().length() > 0 ? cmbPayOperator->currentText() : "34491"; // 27452
+    params["ab.operid"] = cmbPayOperator->currentText().length() > 0 ? cmbPayOperator->currentText() : "27452"; // 27452
     MessageBuilder* msgBuild = new MessageBuilder(this);
-    msgBuild->setType(QString("Query"));
+    msgBuild->setType("Query");
     msgBuild->setSender(getName());
-    IMessage* msg = msgBuild->getMessage(QString("Billing"), QString("getPayments"), params);
+    IMessage* msg = msgBuild->getMessage("Billing", "getPayments", params);
     msg->setProtocol(1);
     emit message(msg);
     statusbar->showMessage("");

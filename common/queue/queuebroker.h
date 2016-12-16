@@ -43,7 +43,7 @@ private:
     ITransport* getTransport(QString transport);
     ILogic* getLogic(QString logic);
 
-    void routeMessage(IMessage *msg, ITransport *srcTransport);
+    void routeMessage(IMessage *msg);
     bool matchMap(QString src, QString dest);
     QMap<QString, QList<QString>> m_remoteComponents;
     QMap<QString, ITransport*> m_addr_map;

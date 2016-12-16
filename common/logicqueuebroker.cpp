@@ -49,3 +49,11 @@ void LogicQueueBroker::receive(IMessage *msg) {
 
     }
 }
+
+void LogicQueueBroker::on_init_complete() {
+    m_broker = static_cast<QueueBroker*>(this->parent());
+    QStringList subscribes;
+    subscribes << "Network<*>::Broker<*>;Broker;Message;Persist";
+    foreach (QString subscribe, subscribes)
+        m_broker->addSubscribe(subscribe);
+}

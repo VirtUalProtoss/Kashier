@@ -16,7 +16,7 @@ void QueueBroker::publishComponents(QString transport, QString target) {
         QString broker = QString("Broker");
         MessageBuilder* mBuild = new MessageBuilder(this);
         mBuild->setSender(broker);
-        mBuild->setType(QString("Message"));
+        mBuild->setType("Message");
         QMap<QString, QVariant> params;
 
         foreach (ILogic* logic, m_components.values()) {
@@ -26,7 +26,8 @@ void QueueBroker::publishComponents(QString transport, QString target) {
             params[logic->getName()] = logic->getName();
         }
         if (params.count() > 0) {
-            IMessage *msg = mBuild->getMessage(target + QString("::") + broker, QString("registerComponent"), params);
+            IMessage *msg = mBuild->getMessage(target + "::" + broker, "registerComponent", params);
+            msg->setProtocol(1);
             send(dstTransport, msg);
         }
         else {
@@ -36,7 +37,15 @@ void QueueBroker::publishComponents(QString transport, QString target) {
 }
 
 void QueueBroker::removeSubscribes(QString dstTransportName) {
-    // TODO: remove all subscriptions, for destination with dstTransportName
+    foreach (ITransport* tr, m_transports) {
+        if (tr->getName() == dstTransportName) {
+            foreach (Subscribe* sub, m_subscribes) {
+                if (sub->getDestination().getAddress() == tr->getAddress()) {
+                    m_subscribes.removeOne(sub);
+                }
+            }
+        }
+    }
 }
 
 ILogic *QueueBroker::getLogic(QString logic) {
@@ -122,8 +131,8 @@ void QueueBroker::searchSubscribes(Subscribe *msgSub, QList<Subscribe *> *subs) 
             continue;
         }
 
-        if (!sub->isTimeout())
-            continue;
+        //if (!sub->isTimeout())
+        //    continue;
 
         matchType = false;
         matchSrc = false;
@@ -151,7 +160,7 @@ void QueueBroker::searchSubscribes(Subscribe *msgSub, QList<Subscribe *> *subs) 
     //return &popSubs;
 }
 
-void QueueBroker::routeMessage(IMessage* msg, ITransport* sourceTransport) {
+void QueueBroker::routeMessage(IMessage* msg) {
     qDebug() << "routeMessage" << msg->toString();
 
     Subscribe *msgSub = new Subscribe(msg->getSubscribe());
@@ -159,13 +168,13 @@ void QueueBroker::routeMessage(IMessage* msg, ITransport* sourceTransport) {
 
     QList<Subscribe *> foundedSubscriptions;
     searchSubscribes(msgSub, &foundedSubscriptions);
-    qDebug() << "Found subscribes:" << foundedSubscriptions.length();
+    //qDebug() << "Found subscribes:" << foundedSubscriptions.count();
 
     if (foundedSubscriptions.count() > 0) {
         QList<Subscribe *> removeList;
         foreach (Subscribe *subscr, foundedSubscriptions) {
 
-            qDebug() << "Matched subscription" << subscr->toString() << msg->toString();
+            //qDebug() << "Matched subscription" << subscr->toString() << msg->toString();
 
             URI sDest = subscr->getDestination();
             QList<ITransport *> dstTransports = getTransports(sDest.getComponent());
@@ -197,10 +206,11 @@ void QueueBroker::routeMessage(IMessage* msg, ITransport* sourceTransport) {
         }
         // Удаление просроченных подписок
         foreach (Subscribe *sub, removeList) {
-            if (m_subscribes.contains(sub))
-                m_subscribes.removeOne(sub);
             if (m_sub_hashes.contains(sub->getHash()))
                 m_sub_hashes.remove(sub->getHash());
+            if (m_subscribes.contains(sub))
+                m_subscribes.removeOne(sub);
+
         }
     }
     else {
@@ -218,22 +228,24 @@ void QueueBroker::send(ITransport *tr, IMessage *msg) {
     emit message(tr, msg);
 }
 
-QList<ITransport *> QueueBroker::getTransports(QString trName) {
+QList<ITransport *> QueueBroker::getTransports(QString compName) {
     QList<ITransport *> trs;
-    QString nTrName = URI::normalizeComponentName(trName);
+    QString nCompName = URI::normalizeComponentName(compName);
 
-    if (m_addr_map.contains(trName))
-        trs.append(m_addr_map[trName]);
+    foreach (QString key, m_transports.keys()) {
+        if (key == compName) {
+            trs.append(m_transports[key]);
+        }
+    }
 
-    if (m_remoteComponents.contains(nTrName))
-        foreach (QString key, m_remoteComponents[nTrName]) {
-            QString addr = URI::getComponentParams(key);
-            if (m_addr_map.contains(addr))
-                trs.append(m_addr_map[addr]);
+    if (m_remoteComponents.contains(nCompName))
+        foreach (QString key, m_remoteComponents[nCompName]) {
+            if (m_addr_map.contains(key))
+                trs.append(m_addr_map[key]);
         }
 
-    if (m_remoteComponents.contains(trName))
-        foreach (QString key, m_remoteComponents[trName]) {
+    if (m_remoteComponents.contains(compName))
+        foreach (QString key, m_remoteComponents[compName]) {
             if (m_addr_map.contains(key))
                 trs.append(m_addr_map[key]);
         }
@@ -243,7 +255,7 @@ QList<ITransport *> QueueBroker::getTransports(QString trName) {
 
 void QueueBroker::on_message(IMessage *message) {
     qDebug() << "Receive local message(IMessage):" << message->toString();
-    routeMessage(message, getTransport(QString("Local<*>")));
+    routeMessage(message);
 }
 
 void QueueBroker::on_message(QString message) {
@@ -260,9 +272,15 @@ void QueueBroker::on_message(QString message) {
         if (!m_addr_map.contains(msgSrcAddr))
             m_addr_map[msgSrcAddr] = tr;
 
-        routeMessage(msg, tr);
+        routeMessage(msg);
     }
     else {
+        /* TODO: resend message
+         * if (tr->getMode() == 'proxy' && m_addr_map.contains(msgDstAddr)) {
+         *     ITransport *trDest = m_addr_map[msgDstAddr];
+         *     send(trDest, msg);
+         * }
+         */
         qDebug() << "Drop alien message" << msg->toString();
     }
 }
@@ -276,9 +294,10 @@ void QueueBroker::addComponent(ILogic *component) {
 
 void QueueBroker::addComponent(ITransport *component) {
     QString cName = component->getName();
-    qDebug() << "Add transport component:" << cName << "[" << m_transports.size() << "]";
-    if (!m_transports.contains(cName))
+    if (!m_transports.contains(cName)) {
+        qDebug() << "Add transport component:" << cName << "[" << m_transports.size() << "]";
         m_transports[cName] = component;
+    }
 }
 
 void QueueBroker::addComponent(PluginInterface *component, QMap<QString, QVariant> params) {
@@ -322,8 +341,6 @@ void QueueBroker::registerRemoteComponent(QString cName, QString rAddress) {
 }
 
 void QueueBroker::addSubscribe(QString &subscribe) {
-    qDebug() << "addSubscribe(QString)" << subscribe;
-
     Subscribe* sub = new Subscribe(subscribe);
     addSubscribe(sub);
 }

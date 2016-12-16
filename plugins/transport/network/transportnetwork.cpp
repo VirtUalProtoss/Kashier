@@ -40,8 +40,6 @@ void TransportNetwork::changeMode(QString mode, QMap<QString, QVariant> params) 
         else {
             qDebug() << "No connection data specified";
         }
-
-        //m_broker->publishComponents();
     }
     if (mode=="proxy") {
         ;
@@ -139,11 +137,11 @@ void TransportNetwork::on_client_connected() {
     qDebug() << "Connect to server:" << fullAddr << m_ptcpClient->isConnected();
     m_broker->addComponent(this);
 
-    QStringList subscribes;
+    //QStringList subscribes;
     //subscribes << getName() + QString("::") + client->getName() + QString(";Broker;Message;Persist");
-    subscribes << m_ptcpClient->getName() + QString("::Broker;Broker;Message;Persist");
-    foreach (QString subscribe, subscribes)
-        m_broker->addSubscribe(subscribe);
+    //subscribes << m_ptcpClient->getName() + QString("::Broker;Broker;Message;Persist");
+    //foreach (QString subscribe, subscribes)
+    //    m_broker->addSubscribe(subscribe);
     m_broker->publishComponents(getName(), m_ptcpClient->getName());
 }
 
@@ -161,6 +159,7 @@ void TransportNetwork::disconnect() {
     // TODO: unregister remote transports, components, subscribes, notify local components
     SocketAdapter* client = static_cast<SocketAdapter*>(sender());
     QTextStream(stdout) << "Client disconnected" << client->getName() << endl;
+    m_broker->removeComponent(this);
 }
 
 void TransportNetwork::on_init_complete() {
