@@ -28,9 +28,9 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>3</number>
       </property>
-      <widget class="QWidget" name="tab">
+      <widget class="QWidget" name="tabSearch">
        <attribute name="title">
         <string>Оплата</string>
        </attribute>
@@ -206,7 +206,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_2">
+      <widget class="QWidget" name="tabPayments">
        <attribute name="title">
         <string>Платежи</string>
        </attribute>
@@ -366,7 +366,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_3">
+      <widget class="QWidget" name="tabDetail">
        <attribute name="title">
         <string>Детализация</string>
        </attribute>
@@ -487,6 +487,11 @@
          </layout>
         </item>
        </layout>
+      </widget>
+      <widget class="QWidget" name="tabKKM">
+       <attribute name="title">
+        <string>ККМ</string>
+       </attribute>
       </widget>
      </widget>
     </item>
